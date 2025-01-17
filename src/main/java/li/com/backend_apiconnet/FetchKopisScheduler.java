@@ -121,30 +121,37 @@ public class FetchKopisScheduler {
         for (int i = 0; i < dbElements.getLength(); i++) {
             Element element = (Element) dbElements.item(i);
 
-            // 태그에서 데이터 추출
-            String mt20id = getTagValue("mt20id", element);
-            String prfnm = getTagValue("prfnm", element);
-            String prfpdfrom = getTagValue("prfpdfrom", element);
-            String prfpdto = getTagValue("prfpdto", element);
-            String fcltynm = getTagValue("fcltynm", element);
-            String poster = getTagValue("poster", element);
-            String area = getTagValue("area", element);
-            String genrenm = getTagValue("genrenm", element);
-            String openrun = getTagValue("openrun", element);
-            String prfstate = getTagValue("prfstate", element);
+            /*
+             * 공연Id(mt20id)        - festivalId
+            * 공연명(prfnm)          - festivalName
+            * 공연 시작일(prfpdfrom) - festivalStartDate
+            * 공연 종료일(prfpdto)   - festivalEndDate
+            * 공연 지역(area)        - festivalArea
+            * 공연 시설 명(fcltynm)  - festivalHallName
+            * 공연 상태(prfstate)     -festivalState
+            * 공연 URL ( 아마.. 포스터인가?,  poster)-festivalUrl
+            * */
+            String festivalId = getTagValue("mt20id", element);
+            String festivalName = getTagValue("prfnm", element);
+            String festivalStartDate = getTagValue("prfpdfrom", element);
+            String festivalEndDate = getTagValue("prfpdto", element);
+            String festivalHallName = getTagValue("fcltynm", element);
+            String festivalUrl = getTagValue("poster", element);
+            String festivalArea = getTagValue("area", element);
+            String festivalState = getTagValue("prfstate", element);
 
+            /*String genrenm = getTagValue("genrenm", element);
+            String openrun = getTagValue("openrun", element);*/
 
             KopisFesEntity kopisFesEntity = KopisFesEntity.builder()
-                    .mt20id(mt20id)
-                    .prfnm(prfnm)
-                    .prfpdfrom(prfpdfrom)
-                    .prfpdto(prfpdto)
-                    .fcltynm(fcltynm)
-                    .poster(poster)
-                    .area(area)
-                    .genrenm(genrenm)
-                    .openrun(openrun)
-                    .prfstate(prfstate)
+                    .festivalId(festivalId)
+                    .festivalName(festivalName)
+                    .festivalStartDate(festivalStartDate)
+                    .festivalEndDate(festivalEndDate)
+                    .festivalHallName(festivalHallName)
+                    .festivalUrl(festivalUrl)
+                    .festivalArea(festivalArea)
+                    .festivalState(festivalState)
                     .build();
 
             kopiseEntity.add(kopisFesEntity);
