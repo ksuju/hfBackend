@@ -90,9 +90,9 @@ public class FetchKopisScheduler {
 
                 // XML 응답에서 데이터를 파싱하고 리스트에 추가
                 List<KopisFesEntity> parsedData = parseXmlToEntity(xmlResponse);
-                kopisFesEntity.addAll(parsedData); // 데이터를 최종 리스트에 추가
+                kopisFesEntity.addAll(parsedData);
 
-                currentPage++; // 다음 페이지로 이동
+                currentPage++;
             }
 
             try {
@@ -133,7 +133,7 @@ public class FetchKopisScheduler {
             String openrun = getTagValue("openrun", element);
             String prfstate = getTagValue("prfstate", element);
 
-            // Performance 객체 생성
+
             KopisFesEntity kopisFesEntity = KopisFesEntity.builder()
                     .mt20id(mt20id)
                     .prfnm(prfnm)
