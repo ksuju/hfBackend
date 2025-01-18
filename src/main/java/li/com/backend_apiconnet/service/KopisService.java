@@ -21,4 +21,8 @@ public class KopisService {
         kopisRepository.saveAll(kopisFesEntity);
 
     }
+
+    public List<KopisFesEntity> selectList(String keyword) {
+        return kopisRepository.findByFestivalNameContaining(keyword);
+    }
 }

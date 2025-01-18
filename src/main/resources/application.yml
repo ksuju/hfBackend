@@ -11,8 +11,8 @@ spring:
       org.hibernate.orm.jdbc.extract: TRACE
       org.springframework.transaction.interceptor: TRACE
   jpa:
-    hibernate:
-      ddl-auto: create
+    #hibernate:
+    #  ddl-auto: create #스키마 변경시에만 수정.
     properties:
       hibernate:
         show_sql: true

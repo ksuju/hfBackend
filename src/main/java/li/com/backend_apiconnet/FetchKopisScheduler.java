@@ -39,70 +39,73 @@ public class FetchKopisScheduler {
 
     @Scheduled(cron = "${schedule.cron}")
     public void getKopisApiData() {
-        try {
 
-            log.info("getKopisApiData 실행");
-
-            /*조회 후 Entity에 Insert*/
-            List<KopisFesEntity> kopisFesEntity = new ArrayList<>();
-
-
-            /*각 달의 첫날과 마지막날 추출*/
-            LocalDate now = LocalDate.now();
-            YearMonth yearMonth = YearMonth.of(now.getYear(), now.getMonth());
-            String stdate = yearMonth.atDay(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-            String eddate = yearMonth.atEndOfMonth().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-
-            /*가져올 데이터 row와 page. page는 필수값인데,
-            * 총 추출 데이터를 알 방법이 없다.   단, 다른 축제 페이지 기준 한 달 30건 가량이 잡히는고로,
-            * 100row * 3page해서 대략 300건 가량이 있다고 가정하고 추출 작업 진행
-            * */
-            int rows = 100;
-            int currentPage = 1;
-            int maxPage = 3;
-
-
-            while (currentPage <= maxPage) {
-
-                String apiUrl = String.format(
-                        "http://www.kopis.or.kr/openApi/restful/pblprfr?service=%s&stdate=%s&eddate=%s&rows=%d&cpage=%d",
-                        serviceKey, stdate, eddate, rows, currentPage
-                );
-
-                System.out.println("API 호출 URL currentPage: " + currentPage);
-
-                // HTTP 연결
-                URL url = new URL(apiUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setRequestProperty("Content-Type", "application/xml");
-
-                // 응답 읽기
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
-                StringBuilder responseBuilder = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    responseBuilder.append(line);
-                }
-                reader.close();
-
-                String xmlResponse = responseBuilder.toString();
-
-                // XML 응답에서 데이터를 파싱하고 리스트에 추가
-                List<KopisFesEntity> parsedData = parseXmlToEntity(xmlResponse);
-                kopisFesEntity.addAll(parsedData);
-
-                currentPage++;
-            }
+        if(useSchedule == true) {
 
             try {
-                kopisService.save(kopisFesEntity);
-            } catch (Exception e) {
-                log.error("Kopis Scheduler save중에 에러가 발생했습니다", e);
-            }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+                log.info("getKopisApiData 실행");
+
+                /*조회 후 Entity에 Insert*/
+                List<KopisFesEntity> kopisFesEntity = new ArrayList<>();
+
+
+                /*각 달의 첫날과 마지막날 추출*/
+                LocalDate now = LocalDate.now();
+                YearMonth yearMonth = YearMonth.of(now.getYear(), now.getMonth());
+                String stdate = yearMonth.atDay(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+                String eddate = yearMonth.atEndOfMonth().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+                /*가져올 데이터 row와 page. page는 필수값인데,
+                 * 총 추출 데이터를 알 방법이 없다.   단, 다른 축제 페이지 기준 한 달 30건 가량이 잡히는고로,
+                 * 100row * 3page해서 대략 300건 가량이 있다고 가정하고 추출 작업 진행
+                 * */
+                int rows = 100;
+                int currentPage = 1;
+                int maxPage = 5;
+
+                while (currentPage <= maxPage) {
+
+                    String apiUrl = String.format(
+                            "http://www.kopis.or.kr/openApi/restful/pblprfr?service=%s&stdate=%s&eddate=%s&rows=%d&cpage=%d",
+                            serviceKey, stdate, eddate, rows, currentPage
+                    );
+
+                    // HTTP 연결
+                    URL url = new URL(apiUrl);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.setRequestProperty("Content-Type", "application/xml");
+
+                    // 응답 읽기
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+                    StringBuilder responseBuilder = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        responseBuilder.append(line);
+                    }
+                    reader.close();
+
+                    String xmlResponse = responseBuilder.toString();
+
+                    // XML 응답에서 데이터를 파싱하고 리스트에 추가
+                    List<KopisFesEntity> parsedData = parseXmlToEntity(xmlResponse);
+                    kopisFesEntity.addAll(parsedData);
+
+                    currentPage++;
+                }
+
+                try {
+                    kopisService.save(kopisFesEntity);
+                } catch (Exception e) {
+                    log.error("Kopis Scheduler save중에 에러가 발생했습니다", e);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else{
+
         }
     }
 
