@@ -32,23 +32,23 @@ public class FetchKopisScheduler {
     @Value("${schedule.use}")
     private boolean useSchedule;
 
+    //공연 OpenApi. KOPIS Open Api 사용.
     @Value("${kopis.api.service-key}")
-    private String serviceKey;
+    private String serviceKeyForKopis;
 
     private final KopisService kopisService;
 
-    @Scheduled(cron = "${schedule.cron}")
+    @Scheduled(cron = "${schedule.cron_for_kopis}")
     public void getKopisApiData() {
 
+        log.info("kopis 스케쥴러 실행~");
+
         if(useSchedule == true) {
-
             try {
-
                 log.info("getKopisApiData 실행");
 
-                /*조회 후 Entity에 Insert*/
+                /*조회 후 Entity에 Insert */
                 List<KopisFesEntity> kopisFesEntity = new ArrayList<>();
-
 
                 /*각 달의 첫날과 마지막날 추출*/
                 LocalDate now = LocalDate.now();
@@ -68,7 +68,7 @@ public class FetchKopisScheduler {
 
                     String apiUrl = String.format(
                             "http://www.kopis.or.kr/openApi/restful/pblprfr?service=%s&stdate=%s&eddate=%s&rows=%d&cpage=%d",
-                            serviceKey, stdate, eddate, rows, currentPage
+                            serviceKeyForKopis, stdate, eddate, rows, currentPage
                     );
 
                     // HTTP 연결
@@ -94,18 +94,14 @@ public class FetchKopisScheduler {
 
                     currentPage++;
                 }
-
                 try {
                     kopisService.save(kopisFesEntity);
                 } catch (Exception e) {
                     log.error("Kopis Scheduler save중에 에러가 발생했습니다", e);
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }else{
-
         }
     }
 

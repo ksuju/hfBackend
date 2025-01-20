@@ -29,7 +29,10 @@ public class SpringSecuritySetting {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // 허용할 origin 설정
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:3000", // 로컬 개발 환경
+                "https://open-api-and-front.vercel.app" // Vercel 배포 URL
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 허용할 HTTP 메서드
         configuration.setAllowedHeaders(Arrays.asList("*")); // 허용할 헤더
         configuration.setAllowCredentials(true); // 인증 정보 허용
