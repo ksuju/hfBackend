@@ -30,7 +30,7 @@ public class KopisFesEntity{
     private final String festivalUrl;
 
     @CreatedDate
-    @Getter
+    @Getter//Setter는?
     private LocalDateTime createDate;
 
     @LastModifiedDate
