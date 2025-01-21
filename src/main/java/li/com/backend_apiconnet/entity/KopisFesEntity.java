@@ -28,6 +28,7 @@ public class KopisFesEntity{
     private final String festivalHallName;
     private final String festivalState;
     private final String festivalUrl;
+    private final String inputType; //어느 카테고리로 들어왔는지.
 
     @CreatedDate
     @Getter//Setter는?

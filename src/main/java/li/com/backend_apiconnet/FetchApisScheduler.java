@@ -38,6 +38,7 @@ public class FetchApisScheduler {
 
         if(useSchedule == true) {
 
+            log.info("apis스케쥴러 실행~");
             //stdate = eventStartDate
             List<KopisFesEntity> kopisFesEntity = new ArrayList<>();
 
@@ -76,13 +77,17 @@ public class FetchApisScheduler {
                     responseBuilder.append(line);
                 }
                 reader.close();
-
                 String jsonResponse = responseBuilder.toString();
-                System.out.println("응답 데이터: " + jsonResponse);
-
+                try {
+                    kopisService.saveForApis(jsonResponse);
+                }catch (Exception e){
+                    log.error("Apis Scheduler save중에 에러가 발생했습니다", e);
+                }
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                log.error("Apis Scheduler Api 호출시 에러가 발생했습니다", e);
             }
+
+            log.info("apis스케쥴러 종료~");
         }
     }
 }

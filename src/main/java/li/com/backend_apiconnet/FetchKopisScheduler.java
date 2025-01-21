@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -41,11 +42,9 @@ public class FetchKopisScheduler {
     @Scheduled(cron = "${schedule.cron_for_kopis}")
     public void getKopisApiData() {
 
-        log.info("kopis 스케쥴러 실행~");
-
         if(useSchedule == true) {
             try {
-                log.info("getKopisApiData 실행");
+                log.info("Kopis스케쥴러 실행");
 
                 /*조회 후 Entity에 Insert */
                 List<KopisFesEntity> kopisFesEntity = new ArrayList<>();
@@ -58,7 +57,7 @@ public class FetchKopisScheduler {
 
                 /*가져올 데이터 row와 page. page는 필수값인데,
                  * 총 추출 데이터를 알 방법이 없다.   단, 다른 축제 페이지 기준 한 달 30건 가량이 잡히는고로,
-                 * 100row * 3page해서 대략 300건 가량이 있다고 가정하고 추출 작업 진행
+                 * 100row * 5page해서 대략 500건 가량이 있다고 가정하고 추출 작업 진행
                  * */
                 int rows = 100;
                 int currentPage = 1;
@@ -71,13 +70,13 @@ public class FetchKopisScheduler {
                             serviceKeyForKopis, stdate, eddate, rows, currentPage
                     );
 
-                    // HTTP 연결
+
                     URL url = new URL(apiUrl);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
                     connection.setRequestProperty("Content-Type", "application/xml");
 
-                    // 응답 읽기
+
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
                     StringBuilder responseBuilder = new StringBuilder();
                     String line;
@@ -95,25 +94,26 @@ public class FetchKopisScheduler {
                     currentPage++;
                 }
                 try {
-                    kopisService.save(kopisFesEntity);
+                    kopisService.saveForKopis(kopisFesEntity);
                 } catch (Exception e) {
                     log.error("Kopis Scheduler save중에 에러가 발생했습니다", e);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("Kopis Scheduler Api 호출시 에러가 발생했습니다", e);
             }
         }
+        log.info("Kopis스케쥴러 종료");
     }
 
     private List<KopisFesEntity> parseXmlToEntity(String xml) throws Exception {
         List<KopisFesEntity> kopiseEntity = new ArrayList<>();
 
-        // XML 파싱을 위한 DocumentBuilder 생성
+
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document document = builder.parse(new java.io.ByteArrayInputStream(xml.getBytes()));
 
-        // <db> 태그 가져오기
+        // xml로 받아온 데이터의 <db> 태그 Get
         NodeList dbElements = document.getElementsByTagName("db");
 
         // 각 <db> 태그의 데이터 추출
@@ -151,6 +151,9 @@ public class FetchKopisScheduler {
                     .festivalUrl(festivalUrl)
                     .festivalArea(festivalArea)
                     .festivalState(festivalState)
+                    .createDate(LocalDateTime.now())
+                    .modifyDate(LocalDateTime.now())
+                    .inputType("KOPIS")
                     .build();
 
             kopiseEntity.add(kopisFesEntity);
