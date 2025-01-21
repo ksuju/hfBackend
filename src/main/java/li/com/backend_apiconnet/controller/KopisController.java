@@ -26,6 +26,12 @@ public class KopisController {
     * */
     @GetMapping("")
     public List<KopisFesEntity> getSearchKeyWordList(@RequestParam(value = "keyword" ,required = false)String keyword){
+
+        //이건 festivalNameContaining이라, "공주"지역을 검색했는데, "팥쥐공주"처럼
+        //축제, 공연명의 결과값을 조회할 수 있다.
+
+        //근데 그렇다고 festivalHallNameContaining을 하자니,
+        //518기념관같은경우는 광주로 검색해도 표시되지 않는다.
         List<KopisFesEntity> result =  kopisService.selectList(keyword);
         return result;
     }

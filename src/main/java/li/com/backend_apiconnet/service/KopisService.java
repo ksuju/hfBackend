@@ -22,6 +22,7 @@ public class KopisService {
     private final KopisRepository kopisRepository;
 
     public List<KopisFesEntity> selectList(String keyword) {
+       // return kopisRepository.findByFestivalNameContaining(keyword);
         return kopisRepository.findByFestivalNameContaining(keyword);
     }
 
