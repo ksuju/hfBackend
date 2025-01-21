@@ -42,8 +42,8 @@ public class FestivalPost {
         comments.add(comment);
     }
 
-    public void removeComment(FestivalComment articleComment) {
-        comments.remove(articleComment);
+    public void removeComment(FestivalComment comment) {
+        comments.remove(comment);
     }
 
 }
