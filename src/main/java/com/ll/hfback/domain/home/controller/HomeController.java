@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HomeController {
     @GetMapping({"/", ""})
     public String mainPage() {
+
         return "Welcome to Main Page";
     }
 }
