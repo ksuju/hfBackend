@@ -1,7 +1,7 @@
-package li.com.backend_apiconnet.controller;
+package com.ll.hfback.domain.festival.controller;
 
-import li.com.backend_apiconnet.entity.KopisFesEntity;
-import li.com.backend_apiconnet.service.KopisService;
+import com.ll.hfback.domain.festival.entity.KopisFesEntity;
+import com.ll.hfback.domain.festival.service.KopisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
