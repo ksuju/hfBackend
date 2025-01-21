@@ -3,11 +3,7 @@ package com.ll.hfback.domain.festival.post.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ll.hfback.domain.festival.comment.entity.FestivalComment;
 import com.ll.hfback.domain.user.entity.User;
-import com.ll.hfback.global.jpa.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -15,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Setter
@@ -23,12 +20,11 @@ import static jakarta.persistence.CascadeType.ALL;
 @NoArgsConstructor
 @SuperBuilder
 @ToString(callSuper = true)
-public class FestivalPost extends BaseEntity {
-    private String title;
-    private String content;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+public class FestivalPost {
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @EqualsAndHashCode.Include
+    private Long festival_id;
 
     @JsonIgnore
     @OneToMany(mappedBy = "article", cascade = ALL, orphanRemoval = true) // fetch = FetchType.LAZY

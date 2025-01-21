@@ -1,11 +1,14 @@
 package com.ll.hfback.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ll.hfback.global.jpa.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Setter
@@ -13,11 +16,9 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class User extends BaseEntity {
-    @Column(unique = true)
-    private String username;
-    @JsonIgnore
-    private String password;
-//    @JsonIgnore
-//    private String refreshToken;
+public class User {
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @EqualsAndHashCode.Include
+    private Long member_id;
 }
