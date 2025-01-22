@@ -21,12 +21,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ChatMessageController {
     private final ChatMessageService chatMessageService;
-    
+
     @PostMapping("/messages") // 채팅 메시지 저장
     public void writeMessage(@PathVariable Long roomId,
                              @RequestBody ResponseMessage responseMessage) {
         chatMessageService.writeMessage(roomId,
-                responseMessage.getMemberId(),
-                responseMessage.getContent());
+                responseMessage);
     }
 }
