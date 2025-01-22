@@ -1,4 +1,4 @@
-package li.com.backend_apiconnet.entity;
+package com.ll.hfback.domain.festival.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
