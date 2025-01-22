@@ -2,7 +2,6 @@ package com.ll.hfback.domain.group.room.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import lombok.*;
 
 /**
@@ -22,16 +21,16 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Group {
+public class Room {
     @Id
-    private Long groupId;
+    private Long roomId;
 
     // FK
     private Long festivalId;
     private Long memberId;
     //
 
-    private String groupContent;
-    private int groupMemberLimit;
-    private int groupState;
+    private String roomContent;
+    private int roomMemberLimit;
+    private int roomState;
 }
