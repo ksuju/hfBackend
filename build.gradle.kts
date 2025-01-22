@@ -35,6 +35,9 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	// WebSocket, STOMP
+	implementation("org.springframework.boot:spring-boot-starter-websocket:3.4.1")
+
 }
 
 tasks.withType<Test> {
