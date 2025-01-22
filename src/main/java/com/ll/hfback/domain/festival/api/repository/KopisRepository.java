@@ -1,6 +1,6 @@
-package com.ll.hfback.domain.festival.repository;
+package com.ll.hfback.domain.festival.api.repository;
 
-import com.ll.hfback.domain.festival.entity.KopisFesEntity;
+import com.ll.hfback.domain.festival.api.entity.KopisFesEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
