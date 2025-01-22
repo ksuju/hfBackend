@@ -1,5 +1,6 @@
 package com.ll.hfback.global.security;
 
+import com.ll.hfback.global.app.AppConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,6 +29,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
+                AppConfig.getSiteFrontUrl(),
                 "http://localhost:3000", // 로컬 개발 환경
                 "https://open-api-and-front.vercel.app" // Vercel 배포 URL
         ));
