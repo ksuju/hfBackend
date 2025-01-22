@@ -13,7 +13,7 @@ public class MainController {
     @Value("${custom.site.frontUrl}")
     private String frontUrl;
 
-    @GetMapping("/")
+    @GetMapping("/api")
     public String mainPage(){
 
         System.out.println("backUrl = " + backUrl);
