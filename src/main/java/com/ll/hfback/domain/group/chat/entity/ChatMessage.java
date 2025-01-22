@@ -30,15 +30,14 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @ToString(callSuper = true)
 public class ChatMessage extends BaseEntity {
-    // FK
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne
     private Room room;   // room 엔티티와 연결
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Member member; // member 엔티티와 연결
 
     private String chatMessageContent;
-    @CreatedDate
-    private LocalDateTime chatMessageCreateTime;
+
     @Builder.Default
     private int chatMessageStatus = 1; // 기본값 = 1 (안읽음 상태), 0 (읽음 상태)
 }
