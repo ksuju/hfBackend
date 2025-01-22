@@ -5,10 +5,11 @@ FROM gradle:jdk21-graal-jammy as builder
 WORKDIR /app
 
 # 소스 코드와 Gradle 래퍼 복사
+# gradle kotlin 프로젝트로 kts 추가
 COPY gradlew .
 COPY gradle gradle
-COPY build.gradle .
-COPY settings.gradle .
+COPY build.gradle.kts .
+COPY settings.gradle.kts .
 
 # Gradle 래퍼에 실행 권한 부여
 RUN chmod +x ./gradlew
