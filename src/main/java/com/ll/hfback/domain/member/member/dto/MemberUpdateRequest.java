@@ -3,8 +3,7 @@ package com.ll.hfback.domain.member.member.dto;
 import com.ll.hfback.domain.member.member.entity.Member.Gender;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Data
 public class MemberUpdateRequest {
@@ -24,6 +23,6 @@ public class MemberUpdateRequest {
 
     private String profilePath;
     private String location;
-    private Date birthday;
+    private LocalDate birthday;
 
 }
