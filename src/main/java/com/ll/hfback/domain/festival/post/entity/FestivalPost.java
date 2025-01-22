@@ -2,6 +2,7 @@ package com.ll.hfback.domain.festival.post.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ll.hfback.domain.festival.comment.entity.FestivalComment;
+import com.ll.hfback.domain.group.room.entity.Room;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.global.jpa.BaseEntity;
 import jakarta.persistence.*;
@@ -54,5 +55,9 @@ public class FestivalPost extends BaseEntity {
     public void removeComment(FestivalComment comment) {
         comments.remove(comment);
     }
+
+
+    @OneToMany
+    private List<Room> roomList;
 
 }
