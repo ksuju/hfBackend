@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/articles")
+@RequestMapping("/api/v1/festivalPosts")
 @RequiredArgsConstructor
 public class ApiV1FestivalPostController {
     private final FestivalPostService festivalPostService;

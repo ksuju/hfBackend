@@ -27,7 +27,7 @@ public class FestivalPost {
     private Long festival_id;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "article", cascade = ALL, orphanRemoval = true) // fetch = FetchType.LAZY
+    @OneToMany(mappedBy = "festivalPost", cascade = ALL, orphanRemoval = true) // fetch = FetchType.LAZY
     @Builder.Default
     @ToString.Exclude
     private List<FestivalComment> comments = new ArrayList<>();
