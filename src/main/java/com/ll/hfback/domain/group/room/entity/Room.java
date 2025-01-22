@@ -28,8 +28,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @ToString(callSuper = true)
 public class Room extends BaseEntity {
-
-
     // FK
     @ManyToOne
     private KopisFesEntity festival;
@@ -49,7 +47,4 @@ public class Room extends BaseEntity {
 
     @Column(nullable = false)
     private int      roomState;
-
-
-
 }

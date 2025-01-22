@@ -1,8 +1,11 @@
 package com.ll.hfback.domain.group.chat.entity;
 
 import com.ll.hfback.domain.group.room.entity.Room;
+import com.ll.hfback.domain.member.member.entity.Member;
+import com.ll.hfback.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -24,23 +27,18 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@EntityListeners(AuditingEntityListener.class)
-public class ChatMessage {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long chatMessageId;
+@SuperBuilder
+@ToString(callSuper = true)
+public class ChatMessage extends BaseEntity {
     // FK
     @ManyToOne(fetch = FetchType.LAZY)
     private Room room;   // room 엔티티와 연결
-//    private Member member; // member 엔티티와 연결
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member; // member 엔티티와 연결
 
     private String chatMessageContent;
     @CreatedDate
     private LocalDateTime chatMessageCreateTime;
     @Builder.Default
     private int chatMessageStatus = 1; // 기본값 = 1 (안읽음 상태), 0 (읽음 상태)
-    
-    // 임시 필드 (나중에 member 엔티티와 연결 후 삭제)
-    private String nickname;
 }
