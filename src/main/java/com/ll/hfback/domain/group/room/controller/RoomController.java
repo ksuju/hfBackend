@@ -14,8 +14,7 @@ public class RoomController {
     @PostMapping("/{fesId}/rooms")
     public void createRoom(@PathVariable Long fesId,
                            @RequestBody ResponseRoom responseRoom) {
-        roomService.createRoom(fesId,
-                responseRoom);
+        roomService.createRoom(fesId, responseRoom);
     }
 
     @GetMapping("/room")
