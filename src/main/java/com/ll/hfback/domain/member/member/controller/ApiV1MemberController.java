@@ -27,6 +27,7 @@ public class ApiV1MemberController {
 
     // MEM07_CONTROL1 : 회원 목록 (관리자)
 
+
     // MEM07_CONTROL2 : 회원 상세 조회 (관리자)
 
 
