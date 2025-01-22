@@ -1,7 +1,7 @@
 package com.ll.hfback.domain.festival.post.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ll.hfback.domain.festival.comment.entity.FestivalComment;
+import com.ll.hfback.domain.festival.comment.entity.Comment;
 import com.ll.hfback.domain.member.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,7 +19,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @SuperBuilder
 @ToString(callSuper = true)
-public class FestivalPost {
+public class Post {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @EqualsAndHashCode.Include
@@ -41,10 +41,10 @@ public class FestivalPost {
     @OneToMany(mappedBy = "festivalpost", cascade = ALL, orphanRemoval = true) // fetch = FetchType.LAZY
     @Builder.Default
     @ToString.Exclude
-    private List<FestivalComment> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     public void addComment(Member memberAuthor, String content) {
-        FestivalComment comment = FestivalComment.builder()
+        Comment comment = Comment.builder()
                 .festivalpost(this)
                 .member(memberAuthor)
                 .content(content)
@@ -53,7 +53,7 @@ public class FestivalPost {
         comments.add(comment);
     }
 
-    public void removeComment(FestivalComment comment) {
+    public void removeComment(Comment comment) {
         comments.remove(comment);
     }
 

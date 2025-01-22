@@ -1,7 +1,6 @@
 package com.ll.hfback.global.initData;
 
-import com.ll.hfback.domain.festival.post.entity.FestivalPost;
-import com.ll.hfback.domain.festival.post.service.FestivalPostService;
+import com.ll.hfback.domain.festival.post.service.PostService;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class NotProd {
     @Bean
     public ApplicationRunner applicationRunner(
-            FestivalPostService festivalPostService
+            PostService postService
     ) {
         return new ApplicationRunner() {
             @Transactional
