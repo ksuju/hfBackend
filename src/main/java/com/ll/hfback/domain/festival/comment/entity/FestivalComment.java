@@ -22,10 +22,10 @@ public class FestivalComment {
     @EqualsAndHashCode.Include
     private Long comment_id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "festival_id")
+//    @JoinColumn(name = "festival_id")
     private FestivalPost festivalpost;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+//    @JoinColumn(name = "member_id")
     private User user;
 
     private String content;
