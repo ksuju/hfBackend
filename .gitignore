@@ -35,11 +35,5 @@ out/
 
 ### VS Code ###
 .vscode/
-<<<<<<< HEAD
-application-secret.yml
-=======
 
 application-secret.yml
-
-.fuck
->>>>>>> dev

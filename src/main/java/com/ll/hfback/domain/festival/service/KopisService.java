@@ -1,9 +1,9 @@
-package li.com.backend_apiconnet.service;
+package com.ll.hfback.domain.festival.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import li.com.backend_apiconnet.entity.KopisFesEntity;
-import li.com.backend_apiconnet.repository.KopisRepository;
+import com.ll.hfback.domain.festival.entity.KopisFesEntity;
+import com.ll.hfback.domain.festival.repository.KopisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
