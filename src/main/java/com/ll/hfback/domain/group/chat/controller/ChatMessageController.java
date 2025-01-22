@@ -26,7 +26,7 @@ public class ChatMessageController {
     public void writeMessage(@PathVariable Long roomId,
                              @RequestBody ResponseMessage responseMessage) {
         chatMessageService.writeMessage(roomId,
-                responseMessage.getNickname(),  // fix: 멤버 ID로 변경할 것 (엔티티가 없어서 현재는 임시방편)
+                responseMessage.getMemberId(),
                 responseMessage.getContent());
     }
 }
