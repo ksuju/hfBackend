@@ -1,4 +1,4 @@
-package com.ll.hfback.domain.festival.entity;
+package com.ll.hfback.domain.festival.api.entity;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
