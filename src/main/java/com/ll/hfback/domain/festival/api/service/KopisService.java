@@ -1,9 +1,9 @@
-package com.ll.hfback.domain.festival.service;
+package com.ll.hfback.domain.festival.api.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ll.hfback.domain.festival.entity.KopisFesEntity;
-import com.ll.hfback.domain.festival.repository.KopisRepository;
+import com.ll.hfback.domain.festival.api.entity.KopisFesEntity;
+import com.ll.hfback.domain.festival.api.repository.KopisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

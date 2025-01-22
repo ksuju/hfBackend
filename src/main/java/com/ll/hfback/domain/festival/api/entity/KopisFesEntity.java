@@ -1,4 +1,4 @@
-package com.ll.hfback.domain.festival.entity;
+package com.ll.hfback.domain.festival.api.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

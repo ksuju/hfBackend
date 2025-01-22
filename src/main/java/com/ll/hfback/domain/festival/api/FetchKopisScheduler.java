@@ -1,8 +1,8 @@
-package com.ll.hfback.domain.festival;
+package com.ll.hfback.domain.festival.api;
 
 
-import com.ll.hfback.domain.festival.entity.KopisFesEntity;
-import com.ll.hfback.domain.festival.service.KopisService;
+import com.ll.hfback.domain.festival.api.entity.KopisFesEntity;
+import com.ll.hfback.domain.festival.api.service.KopisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
