@@ -9,6 +9,7 @@ import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * packageName    : com.ll.hfback.domain.group.room.service
@@ -33,8 +34,8 @@ public class RoomService {
         // fesId에 해당하는 공연 가져옴 
         FestivalPost festivalPost = festivalPostRepository.findById(fesId).get();
         
-        // memberId에 해당하는 사용자(방장) 가져옴 fix: 하드코딩 수정 해야함
-        Member member = memberRepository.findById(1L).get();
+        // memberId에 해당하는 사용자(방장) 가져옴
+        Member member = memberRepository.findById(responseRoom.getMemberId()).get();
 
         // Room 객체 만들기 (Room 엔티티)
         Room room = Room.builder()
