@@ -15,4 +15,8 @@ public class FestivalCommentService {
     public List<FestivalComment> findByMemberId(Long id) {
         return festivalCommentRepository.findByMemberId(id);
     }
+
+    public List<FestivalComment> findByFestivalpostId(Long id) {
+        return festivalCommentRepository.findByFestivalpostId(id);
+    }
 }
