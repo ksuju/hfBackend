@@ -17,6 +17,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ResponseMessage {
-    private String nickname;    // fix: 추후 memberId로 수정
+    private Long memberId;
     private String content;
 }
