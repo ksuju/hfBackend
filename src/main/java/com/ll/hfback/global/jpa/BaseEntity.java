@@ -1,9 +1,6 @@
 package com.ll.hfback.global.jpa;
 
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
@@ -30,5 +27,6 @@ public class BaseEntity {
 
   @CreatedDate
   @Getter
+  @Column(nullable = false)
   private LocalDateTime createDate;
 }
