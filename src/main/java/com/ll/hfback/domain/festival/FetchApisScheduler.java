@@ -6,6 +6,8 @@ import com.ll.hfback.domain.festival.service.KopisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +24,8 @@ import java.util.List;
 @Component
 @Slf4j
 @RequiredArgsConstructor
+@EnableScheduling
+@Configuration
 public class FetchApisScheduler {
 
     @Value("${schedule.use}")
