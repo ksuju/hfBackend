@@ -53,6 +53,7 @@ public class FetchApisScheduler {
 
             String MobileOS = "ETC";   //OS구분
             String MobileApp = "LOCAL";//서비스명
+            String numOfRows = "1000";
 
             try{
                 /*
@@ -63,8 +64,8 @@ public class FetchApisScheduler {
                 * 그 대상은 조회된다.
                 * */
                 String apiUrl = String.format(
-                        "https://apis.data.go.kr/B551011/KorService1/searchFestival1?MobileOS=%s&MobileApp=%s&eventStartDate=%s&eventEndDate=%s&serviceKey=%s&_type=json",
-                        MobileOS, MobileApp, stdate, eddate, serviceKeyForApis
+                        "https://apis.data.go.kr/B551011/KorService1/searchFestival1?MobileOS=%s&MobileApp=%s&numOfRows=%s&eventStartDate=%s&eventEndDate=%s&serviceKey=%s&_type=json",
+                        MobileOS, MobileApp, numOfRows, stdate, eddate, serviceKeyForApis
                 );
 
                 //RestTemplate방식은 에러가 발생하는 듯 하다.

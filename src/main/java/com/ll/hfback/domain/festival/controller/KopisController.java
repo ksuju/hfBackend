@@ -17,24 +17,32 @@ import java.util.List;
 @RequestMapping("/kopis")
 public class KopisController {
 
-
     private final KopisService kopisService;
 
-    /*
-    * 처음부터 모든 데이터를 뿌려주는건 낭비이며, 화면에 전부 표시할수도 없다.
-    * 그렇다면, 일부데이터만 화면에 표시후, 더보기 같은 버튼을 사용해야 하나?
-    * 아니면 카카오 지도에 검색하지 않으면 어떤 결과도 표시되지 않게 해야하나
-    * */
+
+    @GetMapping("/slideData")
+    public List<KopisFesEntity> getSlideDataList(){
+
+        /*slide에서 처음 뿌려주는 값은 keyword가 포함되어선 안되고,
+        * 건수는 시작일, 종료일이 오늘에 해당하는 대상을 추려내야 할것같다.
+        * */
+        List<KopisFesEntity> result =  kopisService.selectListForSlide();
+        return result;
+
+    }
+
     @GetMapping("")
     public List<KopisFesEntity> getSearchKeyWordList(@RequestParam(value = "keyword" ,required = false)String keyword){
 
-        //이건 festivalNameContaining이라, "공주"지역을 검색했는데, "팥쥐공주"처럼
-        //축제, 공연명의 결과값을 조회할 수 있다.
-
-        //근데 그렇다고 festivalHallNameContaining을 하자니,
-        //518기념관같은경우는 광주로 검색해도 표시되지 않는다.
+        /*
+            이건 festivalNameContaining이라, "공주"지역을 검색했는데, "팥쥐공주"처럼
+            축제, 공연명의 결과값을 조회할 수 있다.
+            근데 그렇다고 festivalHallNameContaining을 하자니,
+            518기념관같은경우는 광주로 검색해도 표시되지 않는다.
+        */
         List<KopisFesEntity> result =  kopisService.selectList(keyword);
         return result;
     }
+
 
 }

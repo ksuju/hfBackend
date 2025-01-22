@@ -6,10 +6,14 @@ import com.ll.hfback.domain.festival.entity.KopisFesEntity;
 import com.ll.hfback.domain.festival.repository.KopisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +24,22 @@ import java.util.List;
 public class KopisService {
 
     private final KopisRepository kopisRepository;
+
+
+    public List<KopisFesEntity> selectListForSlide() {
+
+        //무작위 5건을 조회해오기를 바랬지만,
+        //쿼리결과를 캐싱할 수 있는 많은 경우의 수로 인해,
+        //같은 쿼리로 조회한 결과값 자체를 무작위로 만들기는 어려워보인다.
+        //캐싱설정을 없앨 방법이 있다고는 하는데.. 그걸 없애면서까지 하는게 의미가 있을지..
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String todayString = today.format(formatter);
+        Pageable pageable = PageRequest.of(0, 5);
+
+        return kopisRepository.selectListForSlide(todayString, pageable);
+    }
+
 
     public List<KopisFesEntity> selectList(String keyword) {
        // return kopisRepository.findByFestivalNameContaining(keyword);
@@ -42,12 +62,6 @@ public class KopisService {
             List<KopisFesEntity> festivalList = new ArrayList<>();
 
             for (JsonNode item : items) {
-
-                //Apis와 Kopis의 id값이 우연히라도 겹치면 문제가 되는고로,
-                //Apis의 경우 접두어 A-를 붙혀서 Id를 관리 >> 어차피 kopis에선 PF라는 키워드를 접두어로 ID생성
-                //String contentId = item.path("contentid").asText();
-                //String formattedFestivalId = String.format("A-%s", contentId);
-
                 KopisFesEntity entity = KopisFesEntity.builder()
                         .festivalId(item.path("contentid").asText())
                         .festivalName(item.path("title").asText())
@@ -74,4 +88,5 @@ public class KopisService {
             throw new RuntimeException("API 응답 처리 중 오류 발생", e);
         }
     }
+
 }
