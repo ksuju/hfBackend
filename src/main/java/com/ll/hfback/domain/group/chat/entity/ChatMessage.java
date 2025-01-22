@@ -31,9 +31,9 @@ import java.time.LocalDateTime;
 @ToString(callSuper = true)
 public class ChatMessage extends BaseEntity {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Room room;   // room 엔티티와 연결
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member; // member 엔티티와 연결
 
     private String chatMessageContent;
