@@ -1,8 +1,10 @@
 package com.ll.hfback.domain.group.room.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import com.ll.hfback.domain.group.chat.entity.ChatMessage;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 /**
  * packageName    : com.ll.hfback.domain.group.room.entity
@@ -23,6 +25,7 @@ import lombok.*;
 @Builder
 public class Room {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomId;
 
     // FK
@@ -33,4 +36,7 @@ public class Room {
     private String roomContent;
     private int roomMemberLimit;
     private int roomState;
+
+    @OneToMany
+    private List<ChatMessage> chatMessages; // 그룹 내 모든 메시지 저장
 }
