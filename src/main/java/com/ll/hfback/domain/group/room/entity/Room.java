@@ -1,10 +1,13 @@
 package com.ll.hfback.domain.group.room.entity;
 
-import com.ll.hfback.domain.group.chat.entity.ChatMessage;
-import jakarta.persistence.*;
+import com.ll.hfback.domain.festival.api.entity.KopisFesEntity;
+import com.ll.hfback.domain.member.member.entity.Member;
+import com.ll.hfback.global.jpa.BaseEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
-
-import java.util.List;
+import lombok.experimental.SuperBuilder;
 
 /**
  * packageName    : com.ll.hfback.domain.group.room.entity
@@ -22,21 +25,31 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class Room {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long roomId;
+@SuperBuilder
+@ToString(callSuper = true)
+public class Room extends BaseEntity {
+
 
     // FK
-    private Long festivalId;
-    private Long memberId;
+    @ManyToOne
+    private KopisFesEntity festival;
+
+    @ManyToOne
+    private Member member;
+
     //
+    @Column(nullable = false)
+    private String   roomTitle;
 
-    private String roomContent;
-    private int roomMemberLimit;
-    private int roomState;
+    @Column(nullable = false)
+    private String   roomContent;
 
-    @OneToMany
-    private List<ChatMessage> chatMessages; // 그룹 내 모든 메시지 저장
+    @Column(nullable = false)
+    private int      roomMemberLimit;
+
+    @Column(nullable = false)
+    private int      roomState;
+
+
+
 }
