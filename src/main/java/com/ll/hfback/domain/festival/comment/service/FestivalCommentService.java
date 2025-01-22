@@ -12,7 +12,7 @@ import java.util.List;
 public class FestivalCommentService {
     final FestivalCommentRepository festivalCommentRepository;
 
-    public List<FestivalComment> findByUserId(Long member_id) {
-        return festivalCommentRepository.findByUserId(member_id);
+    public List<FestivalComment> findByMemberId(Long id) {
+        return festivalCommentRepository.findByMemberId(id);
     }
 }
