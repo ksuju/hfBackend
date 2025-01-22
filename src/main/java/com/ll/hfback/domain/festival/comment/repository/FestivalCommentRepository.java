@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface FestivalCommentRepository extends JpaRepository<FestivalComment, Long> {
-    List<FestivalComment> findByFestivalpostId(Long id);
+    List<FestivalComment> findByFestivalId(String festivalId);
     List<FestivalComment> findByMemberId(Long id);
 }
