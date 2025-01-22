@@ -1,11 +1,11 @@
 package com.ll.hfback.domain.festival.post.controller;
 
-import com.ll.hfback.domain.festival.post.dto.FestivalPostDto;
-import com.ll.hfback.domain.festival.post.entity.FestivalPost;
+import com.ll.hfback.domain.festival.api.entity.KopisFesEntity;
 import com.ll.hfback.domain.festival.post.service.FestivalPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -16,14 +16,17 @@ import java.util.List;
 public class ApiV1FestivalPostController {
     private final FestivalPostService festivalPostService;
 
-    @GetMapping
-    public List<FestivalPostDto> getFestivalPosts() {
-        List<FestivalPost> festivalPosts = festivalPostService.findAll();
+    @GetMapping("/all")
+    public List<KopisFesEntity> getAllFestivalPosts() {
+        List<KopisFesEntity> kopisFesEntities = festivalPostService.findAll();
 
-        List<FestivalPostDto> festivalPostDtoList = festivalPosts.stream()
-                .map(FestivalPostDto::new)
-                .toList();
+        return kopisFesEntities;
+    }
 
-        return festivalPostDtoList;
+    @GetMapping("/search")
+    public List<KopisFesEntity> searchFestivalPosts(@RequestParam("keyword") String keyword) {
+        List<KopisFesEntity> kopisFesEntities = festivalPostService.searchByName(keyword);
+
+        return kopisFesEntities;
     }
 }

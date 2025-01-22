@@ -20,6 +20,7 @@ public class FestivalComment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "id")
     private FestivalPost festivalpost;
+    private String festivalId;
     @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "id")
     private Member member;
