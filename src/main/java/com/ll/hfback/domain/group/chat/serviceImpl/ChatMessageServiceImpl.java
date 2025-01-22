@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.group.chat.serviceImpl;
 
+import com.ll.hfback.domain.group.chat.dto.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.entity.ChatMessage;
 import com.ll.hfback.domain.group.chat.repository.ChatMessageRepository;
 import com.ll.hfback.domain.group.chat.service.ChatMessageService;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * packageName    : com.ll.hfback.domain.group.chat.service
@@ -25,27 +27,36 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ChatMessageServiceImpl implements ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final RoomRepository roomRepository;
     private final MemberRepository memberRepository;
     private final Logger logger = LoggerFactory.getLogger(ChatMessageServiceImpl.class.getName());
 
-    public void writeMessage(Long roomId, Long memberId, String content) {
+    @Transactional
+    public void writeMessage(Long roomId, ResponseMessage responseMessage) {
         logger.info("채팅 메시지 작성");
         try {
             // roomId로 채팅방 정보 가져오기
             Room room = roomRepository.findById(roomId).get();
 
             // memberId로 멤버 정보 가져오기
-            Member member = memberRepository.findById(memberId).get();
-            
+            Member member = memberRepository.findById(responseMessage.getMemberId()).get();
+
             // 채팅 메시지 저장
             ChatMessage chatMessage = ChatMessage.builder()
                     .room(room)
                     .member(member)
-                    .chatMessageContent(content)
+                    .chatMessageContent(responseMessage.getContent())
                     .build();
+
+            // Room 엔티티의 chatMessages 리스트에 추가
+            room.getChatMessages().add(chatMessage);
+
+            // Member 엔티티의 chatMessages 리스트에 추가
+            member.getChatMessages().add(chatMessage);
+
             chatMessageRepository.save(chatMessage);
             logger.info("채팅 메시지 작성 완료");
         } catch (Exception E) { // fix: 어떤 에러가 발생 할 수 있는지, 에러 유형별 처리 방법 생각 (던지기 x)
