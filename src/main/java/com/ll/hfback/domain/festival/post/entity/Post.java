@@ -1,17 +1,16 @@
 package com.ll.hfback.domain.festival.post.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ll.hfback.domain.festival.comment.entity.FestivalComment;
 import com.ll.hfback.domain.group.room.entity.Room;
+import com.ll.hfback.domain.festival.comment.entity.Comment;
 import com.ll.hfback.domain.member.member.entity.Member;
-import com.ll.hfback.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 
 @Entity
@@ -21,16 +20,19 @@ import static jakarta.persistence.CascadeType.ALL;
 @NoArgsConstructor
 @SuperBuilder
 @ToString(callSuper = true)
-public class FestivalPost extends BaseEntity {
-    private String festival_name;
-    private LocalDateTime festival_start_date;
-    private LocalDateTime festival_end_date;
-    private String festival_area;
-    private String festival_hall_name;
-    private boolean festival_status;
-    private String festival_url;
-    private boolean festival_state;
-    private String input_type;
+public class Post {
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @EqualsAndHashCode.Include
+    private String festivalId;
+    private String festivalName;
+    private String festivalStartDate;
+    private String festivalEndDate;
+    private String festivalArea;
+    private String festivalHallName;
+    private String festivalState;
+    private String festivalUrl;
+    private String inputType;
 
     @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "id")
@@ -40,10 +42,10 @@ public class FestivalPost extends BaseEntity {
     @OneToMany(mappedBy = "festivalpost", cascade = ALL, orphanRemoval = true) // fetch = FetchType.LAZY
     @Builder.Default
     @ToString.Exclude
-    private List<FestivalComment> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     public void addComment(Member memberAuthor, String content) {
-        FestivalComment comment = FestivalComment.builder()
+        Comment comment = Comment.builder()
                 .festivalpost(this)
                 .member(memberAuthor)
                 .content(content)
@@ -52,7 +54,7 @@ public class FestivalPost extends BaseEntity {
         comments.add(comment);
     }
 
-    public void removeComment(FestivalComment comment) {
+    public void removeComment(Comment comment) {
         comments.remove(comment);
     }
 

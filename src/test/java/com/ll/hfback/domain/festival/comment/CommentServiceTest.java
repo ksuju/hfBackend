@@ -1,7 +1,7 @@
 package com.ll.hfback.domain.festival.comment;
 
-import com.ll.hfback.domain.festival.comment.service.FestivalCommentService;
-import com.ll.hfback.domain.festival.post.service.FestivalPostService;
+import com.ll.hfback.domain.festival.comment.service.CommentService;
+import com.ll.hfback.domain.festival.post.service.PostService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,15 +15,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class FestivalCommentServiceTest {
+public class CommentServiceTest {
     @Autowired
-    private FestivalPostService festivalPostService;
+    private PostService postService;
     @Autowired
-    private FestivalCommentService festivalCommentService;
+    private CommentService commentService;
 
     @DisplayName("1번 게시글에 가져오기")
     @Test
-    @Rollback(false)
     void t1(){
 
     }
