@@ -12,11 +12,17 @@ import java.util.List;
 public class CommentService {
     final CommentRepository commentRepository;
 
-    public List<Comment> findByMemberId(Long id) {
+    public List<Comment> searchByMemberId(Long id) {
         return commentRepository.findByMemberId(id);
     }
 
-    public List<Comment> findByFestivalId(String id) {
-        return commentRepository.findByFestivalId(id);
+    // 해당 게시글에 작성된 모든 댓글 조회
+    public List<Comment> searchByFestivalId(String festivalId) {
+        return commentRepository.findByFestivalId(festivalId);
+    }
+
+    // 해당 댓글에 작성된 모든 답글 조회
+    public List<Comment> searchBySuperCommentId(Long superCommentId) {
+        return commentRepository.findBySuperCommentId(superCommentId);
     }
 }
