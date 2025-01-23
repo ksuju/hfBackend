@@ -1,12 +1,21 @@
 package com.ll.hfback.domain.group.room.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import com.ll.hfback.domain.group.room.response.ResponseRoom;
+import com.ll.hfback.domain.group.room.service.RoomService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
+@RequestMapping("/api/v1")
+@RequiredArgsConstructor
 public class RoomController {
+    private final RoomService roomService;
+
+    @PostMapping("/{fesId}/rooms")
+    public void createRoom(@PathVariable Long fesId,
+                           @RequestBody ResponseRoom responseRoom) {
+        roomService.createRoom(fesId, responseRoom);
+    }
 
     @GetMapping("/room")
     @ResponseBody

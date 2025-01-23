@@ -131,9 +131,6 @@ public class Member extends BaseEntity {
         reports.remove(report);
     }
 
-
-
-
     // Entity 메서드
     public void updateInfo(MemberUpdateRequest request) {
         email = request.getEmail();
