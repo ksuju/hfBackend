@@ -1,6 +1,7 @@
 package com.ll.hfback.domain.group.chat.controller;
 
-import com.ll.hfback.domain.group.chat.dto.response.ResponseMessage;
+import com.ll.hfback.domain.group.chat.request.RequestMessage;
+import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.entity.ChatMessage;
 import com.ll.hfback.domain.group.chat.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +34,8 @@ public class ChatMessageController {
     }
 
     @GetMapping("/messages")
-    public List<ChatMessage> readMessages(@PathVariable Long chatId,
-            @RequestParam(defaultValue = "-1") Long afterChatMessageId) {
+    public List<RequestMessage> readMessages(@PathVariable Long chatId,
+                                             @RequestParam(defaultValue = "-1") Long afterChatMessageId) {
 
         return chatMessageService.readMessages(chatId, afterChatMessageId);
     }

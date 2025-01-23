@@ -1,12 +1,12 @@
 package com.ll.hfback.domain.group.chat.serviceImpl;
 
-import com.ll.hfback.domain.group.chat.dto.response.ResponseMessage;
+import com.ll.hfback.domain.group.chat.request.RequestMessage;
+import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.entity.Chat;
 import com.ll.hfback.domain.group.chat.entity.ChatMessage;
 import com.ll.hfback.domain.group.chat.repository.ChatMessageRepository;
 import com.ll.hfback.domain.group.chat.repository.ChatRepository;
 import com.ll.hfback.domain.group.chat.service.ChatMessageService;
-import com.ll.hfback.domain.group.room.entity.Room;
 import com.ll.hfback.domain.group.room.repository.RoomRepository;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * packageName    : com.ll.hfback.domain.group.chat.service
@@ -87,13 +88,17 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     @Transactional
-    public List<ChatMessage> readMessages(Long chatId, Long afterChatMessageId) {
-        if (afterChatMessageId == -1) {
-            // 특정 메시지 이후가 아닌 전체 메시지를 조회
-            return chatRepository.findById(chatId)
-                    .map(Chat::getChatMessages) // Optional로 안전하게 접근
-                    .orElse(Collections.emptyList()); // 엔티티가 없으면 빈 리스트 반환
-        }
-        return chatMessageRepository.findByChatIdAndIdAfter(chatId, afterChatMessageId);
+    public List<RequestMessage> readMessages(Long chatId, Long afterChatMessageId) {
+        List<ChatMessage> chatMessages = chatMessageRepository.findByChatIdAndIdAfter(chatId, afterChatMessageId);
+
+        // ChatMessage 엔티티를 RequestMessage DTO로 변환
+        return chatMessages.stream()
+                .map(chatMessage -> {
+                    RequestMessage requestMessage = new RequestMessage();
+                    requestMessage.setNickname(chatMessage.getNickname());
+                    requestMessage.setContent(chatMessage.getChatMessageContent());
+                    return requestMessage;
+                })
+                .collect(Collectors.toList());
     }
 }

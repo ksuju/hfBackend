@@ -1,6 +1,7 @@
 package com.ll.hfback.domain.group.chat.service;
 
-import com.ll.hfback.domain.group.chat.dto.response.ResponseMessage;
+import com.ll.hfback.domain.group.chat.request.RequestMessage;
+import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.entity.ChatMessage;
 
 import java.util.List;
@@ -20,5 +21,5 @@ public interface ChatMessageService {
     // 채팅 메시지 저장
     void writeMessage(Long chatId, ResponseMessage responseMessage);
 
-    List<ChatMessage> readMessages(Long chatId, Long afterChatMessageId);
+    List<RequestMessage> readMessages(Long chatId, Long afterChatMessageId);
 }
