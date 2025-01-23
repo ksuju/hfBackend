@@ -46,4 +46,8 @@ public class MemberService {
             .orElseThrow(() -> new EntityNotFoundException(id + "번 사용자가 존재하지 않습니다."))
             .restore();
     }
+
+    public Member getMember(String email) {
+        return memberRepository.findByEmail(email);
+    }
 }

@@ -8,14 +8,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class ApiSecurityConfig {
 
-  private final JwtAuthorizationFilter jwtAuthorizationFilter;
+  // private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
   @Bean
   SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
@@ -25,6 +24,7 @@ public class ApiSecurityConfig {
             authorizeRequests -> authorizeRequests
                 .requestMatchers(HttpMethod.GET, "/api/*/members").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/*/members/*").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/*/members/*/verify-password").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/*/auth/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/*/auth/logout").permitAll()
                 .anyRequest().permitAll()
@@ -35,11 +35,11 @@ public class ApiSecurityConfig {
         .sessionManagement(
             sessionManagement -> sessionManagement.sessionCreationPolicy(
             SessionCreationPolicy.STATELESS)
-        )
-        .addFilterBefore(
-            jwtAuthorizationFilter,
-            UsernamePasswordAuthenticationFilter.class
         );
+//        .addFilterBefore(
+//            jwtAuthorizationFilter,
+//            UsernamePasswordAuthenticationFilter.class
+//        );
     return http.build();
   }
 

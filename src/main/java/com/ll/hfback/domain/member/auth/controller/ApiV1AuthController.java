@@ -5,7 +5,11 @@ import com.ll.hfback.domain.member.auth.dto.SignupRequest;
 import com.ll.hfback.domain.member.auth.dto.SignupResponse;
 import com.ll.hfback.domain.member.auth.service.AuthService;
 import com.ll.hfback.domain.member.member.entity.Member;
+import com.ll.hfback.domain.member.member.service.MemberService;
+import com.ll.hfback.global.jwt.JwtProvider;
 import com.ll.hfback.global.rsData.RsData;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +20,22 @@ import org.springframework.web.bind.annotation.*;
 public class ApiV1AuthController {
 
     private final AuthService authService;
+    private final MemberService memberService;
+    private final JwtProvider jwtProvider;
 
     // MEM01_LOGIN01 : 자체 로그인
     @PostMapping("/login")
-    public void login(@Valid @RequestBody LoginRequest request) {
-        // authService.join(request)
+    public RsData<Void> login(
+            @Valid @RequestBody LoginRequest request,
+            HttpServletResponse response
+        ) {
+        Member member = memberService.getMember(request.getEmail());
+        String token = jwtProvider.genAccessToken(member);
+
+        response.addCookie(new Cookie("accessToken", token));
+
+
+        return new RsData<>("200", "로그인에 성공하였습니다.");
     }
 
     // MEM01_LOGIN02 : 구글 소셜 로그인

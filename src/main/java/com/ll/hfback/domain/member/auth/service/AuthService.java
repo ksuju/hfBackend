@@ -3,6 +3,7 @@ package com.ll.hfback.domain.member.auth.service;
 import com.ll.hfback.domain.member.auth.dto.SignupRequest;
 import com.ll.hfback.domain.member.auth.repository.AuthRepository;
 import com.ll.hfback.domain.member.member.entity.Member;
+import com.ll.hfback.domain.member.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,9 +14,10 @@ public class AuthService {
 
     private final AuthRepository authRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MemberRepository memberRepository;
 
     public Member signup(SignupRequest request) {
-        Member CheckedSignUpMember = authRepository.findByEmail(request.getEmail());
+        Member CheckedSignUpMember = memberRepository.findByEmail(request.getEmail());
         if (CheckedSignUpMember != null) {
             throw new IllegalArgumentException("이미 존재하는 회원입니다.");
         }

@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Base64;
@@ -13,6 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class JwtProvider {
 
     @Value("${custom.jwt.secretKey}")
@@ -58,11 +60,20 @@ public class JwtProvider {
     }
 
     public Map getClaims(String token) {
-        return null;
+        String body = Jwts.parserBuilder()
+            .setSigningKey(getSecretKey()).build()
+            .parseClaimsJws(token).getBody()
+            .get("body", String.class);
+        return Ut.toMap(body);
     }
 
     public boolean verify(String token) {
-        return false;
+        try {
+            Jwts.parserBuilder().setSigningKey(getSecretKey()).build().parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }
