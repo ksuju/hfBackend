@@ -41,6 +41,14 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     public void writeMessage(Long roomId, ResponseMessage responseMessage) {
         logger.info("채팅 메시지 작성");
         try {
+            // 빈 메시지 또는 250자 초과 메시지 검사
+            if (responseMessage.getContent() == null || responseMessage.getContent().trim().isEmpty()) {
+                throw new IllegalArgumentException("채팅 메시지는 비어 있을 수 없습니다.");
+            }
+            if (responseMessage.getContent().length() > 250) {
+                throw new IllegalArgumentException("채팅 메시지는 250자를 넘을 수 없습니다.");
+            }
+
             // roomId로 모임방 정보 가져오기
             Room room = roomRepository.findById(roomId).orElse(null);
 
@@ -67,10 +75,15 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             } else {
                 logger.error("채팅 메시지 작성 실패, Room or Chat is null");
             }
-
-        } catch (Exception E) { // fix: 어떤 에러가 발생 할 수 있는지, 에러 유형별 처리 방법 생각 (던지기 x)
-            logger.error("채팅 메시지 작성 실패 : " + E);
+            // fix: 어떤 에러가 발생 할 수 있는지, 에러 유형별 처리 방법 생각 (던지기 x)
+            // 예외를 발생시켜 클라이언트에 알림, 필요하면 400 Bad Request와 같은 HTTP 응답 코드 설정
+            // 또는 커스텀 예외를 던질 수 있음
+        } catch (IllegalArgumentException e) {
+            logger.error("채팅 메시지 작성 실패: " + e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            logger.error("채팅 메시지 작성 실패 : " + e);
+            throw e;
         }
     }
-
 }
