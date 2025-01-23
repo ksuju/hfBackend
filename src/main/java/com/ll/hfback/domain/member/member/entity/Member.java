@@ -8,6 +8,7 @@ import com.ll.hfback.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import static jakarta.persistence.CascadeType.ALL;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+@DynamicInsert
 public class Member extends BaseEntity {
 
     @Column(unique = true, nullable = false, length = 30)
@@ -63,6 +65,7 @@ public class Member extends BaseEntity {
         BANNED  // 정지
     }
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "ENUM('USER', 'ADMIN') DEFAULT 'USER'")
     private MemberRole role;  // 권한 (관리자, 사용자)
     @Getter
@@ -71,9 +74,18 @@ public class Member extends BaseEntity {
         ADMIN
     }
 
+    @JsonIgnore
+    String refreshToken;
+
+
 
 
     // 1대1 관계 설정
+
+
+
+
+
 
 
     // 1:N 관계 설정
@@ -118,6 +130,7 @@ public class Member extends BaseEntity {
     public void removeReport(Report report) {
         reports.remove(report);
     }
+
 
 
 
