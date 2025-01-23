@@ -16,6 +16,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * packageName    : com.ll.hfback.domain.group.chat.service
  * fileName       : ChatMessageService
@@ -38,7 +41,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private final Logger logger = LoggerFactory.getLogger(ChatMessageServiceImpl.class.getName());
 
     @Transactional
-    public void writeMessage(Long roomId, ResponseMessage responseMessage) {
+    public void writeMessage(Long chatId, ResponseMessage responseMessage) {
         logger.info("채팅 메시지 작성");
         try {
             // 빈 메시지 또는 250자 초과 메시지 검사
@@ -49,13 +52,10 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 throw new IllegalArgumentException("채팅 메시지는 250자를 넘을 수 없습니다.");
             }
 
-            // roomId로 모임방 정보 가져오기
-            Room room = roomRepository.findById(roomId).orElse(null);
+            // chatId로 채팅방 정보 가져오기
+            Chat chat = chatRepository.findById(chatId).orElse(null);
 
-            if(room != null) {
-                // roomId로 채팅방 정보 가져와야함
-                Chat chat = chatRepository.findById(room.getChat().getId()).orElse(null);
-
+            if(chat != null) {
                 // memberId로 멤버 정보 가져오기
                 Member member = memberRepository.findById(responseMessage.getMemberId()).orElse(null);
 
@@ -66,11 +66,9 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                         .chatMessageContent(responseMessage.getContent())
                         .build();
 
-                // Room 엔티티의 chatMessages 리스트에 추가
-                if(chat != null) {
-                    chat.getChatMessages().add(chatMessage);
-                }
-                
+                // Chat 엔티티의 chatMessages 리스트에 추가
+                chat.getChatMessages().add(chatMessage);
+
                 chatMessageRepository.save(chatMessage);
                 logger.info("채팅 메시지 작성 완료");
             } else {
@@ -86,5 +84,16 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             logger.error("채팅 메시지 작성 실패 : " + e);
             throw e;
         }
+    }
+
+    @Transactional
+    public List<ChatMessage> readMessages(Long chatId, Long afterChatMessageId) {
+        if (afterChatMessageId == -1) {
+            // 특정 메시지 이후가 아닌 전체 메시지를 조회
+            return chatRepository.findById(chatId)
+                    .map(Chat::getChatMessages) // Optional로 안전하게 접근
+                    .orElse(Collections.emptyList()); // 엔티티가 없으면 빈 리스트 반환
+        }
+        return chatMessageRepository.findByChatIdAndIdAfter(chatId, afterChatMessageId);
     }
 }
