@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.group.room.entity;
 
+import com.ll.hfback.domain.festival.api.entity.KopisFesEntity;
 import com.ll.hfback.domain.festival.post.entity.Post;
 import com.ll.hfback.domain.group.chat.entity.Chat;
 import com.ll.hfback.domain.member.member.entity.Member;
@@ -29,7 +30,7 @@ import lombok.experimental.SuperBuilder;
 public class Room extends BaseEntity {
 
     @ManyToOne
-    private Post festival;
+    private KopisFesEntity festival;
 
     @ManyToOne
     private Member member;
