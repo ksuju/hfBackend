@@ -32,8 +32,12 @@ public class ApiV1AuthController {
         Member member = memberService.getMember(request.getEmail());
         String token = jwtProvider.genAccessToken(member);
 
-        response.addCookie(new Cookie("accessToken", token));
-
+        Cookie cookie = new Cookie("accessToken", token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(60 * 60);
+        response.addCookie(cookie);
 
         return new RsData<>("200", "로그인에 성공하였습니다.");
     }
