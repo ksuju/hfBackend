@@ -1,7 +1,8 @@
 package com.ll.hfback.domain.group.room.service;
 
+import com.ll.hfback.domain.festival.post.entity.FestivalPost;
 import com.ll.hfback.domain.festival.post.entity.Post;
-import com.ll.hfback.domain.festival.post.repository.PostRepository;
+import com.ll.hfback.domain.festival.post.repository.FestivalPostRepository;
 import com.ll.hfback.domain.group.room.entity.Room;
 import com.ll.hfback.domain.group.room.repository.RoomRepository;
 import com.ll.hfback.domain.group.room.response.ResponseRoom;

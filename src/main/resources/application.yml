@@ -37,8 +37,8 @@ custom:
     frontUrl: "http://${custom.dev.cookieDomain}:5173"
     backUrl: "http://${custom.dev.cookieDomain}:${server.port}"
   prod:
-    cookieDomain:
-    frontUrl:
+    cookieDomain: codingtori.site
+    frontUrl: "http://${custom.dev.cookieDomain}:5173"
     backUrl:
   site:
     name: "BLOG DEV"
