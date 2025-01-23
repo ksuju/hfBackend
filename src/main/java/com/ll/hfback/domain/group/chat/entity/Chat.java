@@ -40,7 +40,7 @@ public class Chat extends BaseEntity {
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
     private List<ChatMessage> chatMessages = new ArrayList<>(); // 빈 리스트로 초기화
 
-    @ManyToMany(mappedBy = "chatList", cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "chat_member", // 중간 테이블 이름
             joinColumns = @JoinColumn(name = "chat_id"), // `Chat` 쪽 외래키
