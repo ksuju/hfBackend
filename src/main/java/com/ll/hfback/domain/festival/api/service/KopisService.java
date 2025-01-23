@@ -2,8 +2,10 @@ package com.ll.hfback.domain.festival.api.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ll.hfback.domain.festival.api.entity.KopisFesEntity;
-import com.ll.hfback.domain.festival.api.repository.KopisRepository;
+//import com.ll.hfback.domain.festival.api.entity.KopisFesEntity;
+//import com.ll.hfback.domain.festival.api.repository.KopisRepository;
+import com.ll.hfback.domain.festival.post.entity.Post;
+import com.ll.hfback.domain.festival.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,16 +21,16 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class KopisService {
 
-    private final KopisRepository kopisRepository;
+    private final PostRepository postRepository;
 
-    public List<KopisFesEntity> selectList(String keyword) {
-       // return kopisRepository.findByFestivalNameContaining(keyword);
-        return kopisRepository.findByFestivalNameContaining(keyword);
-    }
+//    public List<Post> selectList(String keyword) {
+//       // return kopisRepository.findByFestivalNameContaining(keyword);
+//        return postRepository.findByFestivalName(keyword);
+//    }
 
     @Transactional
-    public void saveForKopis(List<KopisFesEntity> kopisFesEntity) {
-        kopisRepository.saveAll(kopisFesEntity);
+    public void saveForKopis(List<Post> post) {
+        postRepository.saveAll(post);
     }
 
     @Transactional
@@ -39,7 +41,7 @@ public class KopisService {
             JsonNode root = objectMapper.readTree(jsonResponse);
 
             JsonNode items = root.path("response").path("body").path("items").path("item");
-            List<KopisFesEntity> festivalList = new ArrayList<>();
+            List<Post> festivalList = new ArrayList<>();
 
             for (JsonNode item : items) {
 
@@ -48,7 +50,7 @@ public class KopisService {
                 //String contentId = item.path("contentid").asText();
                 //String formattedFestivalId = String.format("A-%s", contentId);
 
-                KopisFesEntity entity = KopisFesEntity.builder()
+                Post entity = Post.builder()
                         .festivalId(item.path("contentid").asText())
                         .festivalName(item.path("title").asText())
                         .festivalStartDate(item.path("eventstartdate").asText())
@@ -67,7 +69,7 @@ public class KopisService {
 
             //saveAll시, id기준으로 기데이터의 update가 발생하지 않는 이유 확인필요.
             //어쩌면 id를 formatting하는 과정에서 생겼을 가능성 존재.
-            kopisRepository.saveAll(festivalList);
+            postRepository.saveAll(festivalList);
             log.info(festivalList.toString());
 
         } catch (Exception e) {

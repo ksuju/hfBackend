@@ -1,6 +1,6 @@
 package com.ll.hfback.domain.group.room.entity;
 
-import com.ll.hfback.domain.festival.post.entity.FestivalPost;
+import com.ll.hfback.domain.festival.post.entity.Post;
 import com.ll.hfback.domain.group.chat.entity.ChatMessage;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.global.jpa.BaseEntity;
@@ -34,7 +34,7 @@ import java.util.List;
 public class Room extends BaseEntity {
 
     @ManyToOne
-    private FestivalPost festival;
+    private Post post;
 
     @ManyToOne
     private Member member;

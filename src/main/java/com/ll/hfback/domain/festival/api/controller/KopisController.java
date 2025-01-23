@@ -1,7 +1,8 @@
 package com.ll.hfback.domain.festival.api.controller;
 
-import com.ll.hfback.domain.festival.api.entity.KopisFesEntity;
+//import com.ll.hfback.domain.festival.api.entity.KopisFesEntity;
 import com.ll.hfback.domain.festival.api.service.KopisService;
+import com.ll.hfback.domain.festival.post.entity.Post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,16 +26,18 @@ public class KopisController {
     * 그렇다면, 일부데이터만 화면에 표시후, 더보기 같은 버튼을 사용해야 하나?
     * 아니면 카카오 지도에 검색하지 않으면 어떤 결과도 표시되지 않게 해야하나
     * */
-    @GetMapping("")
-    public List<KopisFesEntity> getSearchKeyWordList(@RequestParam(value = "keyword" ,required = false)String keyword){
-
-        //이건 festivalNameContaining이라, "공주"지역을 검색했는데, "팥쥐공주"처럼
-        //축제, 공연명의 결과값을 조회할 수 있다.
-
-        //근데 그렇다고 festivalHallNameContaining을 하자니,
-        //518기념관같은경우는 광주로 검색해도 표시되지 않는다.
-        List<KopisFesEntity> result =  kopisService.selectList(keyword);
-        return result;
-    }
+    
+//    게시글 조회 서비스는 PostController에서 진행
+//    @GetMapping("")
+//    public List<KopisFesEntity> getSearchKeyWordList(@RequestParam(value = "keyword" ,required = false)String keyword){
+//
+//        //이건 festivalNameContaining이라, "공주"지역을 검색했는데, "팥쥐공주"처럼
+//        //축제, 공연명의 결과값을 조회할 수 있다.
+//
+//        //근데 그렇다고 festivalHallNameContaining을 하자니,
+//        //518기념관같은경우는 광주로 검색해도 표시되지 않는다.
+//        List<Post> result =  kopisService.selectList(keyword);
+//        return result;
+//    }
 
 }
