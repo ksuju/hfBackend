@@ -1,7 +1,8 @@
 package com.ll.hfback.domain.group.room.service;
 
-import com.ll.hfback.domain.festival.post.entity.FestivalPost;
-import com.ll.hfback.domain.festival.post.repository.FestivalPostRepository;
+import com.ll.hfback.domain.festival.api.entity.KopisFesEntity;
+import com.ll.hfback.domain.festival.post.entity.Post;
+import com.ll.hfback.domain.festival.post.repository.PostRepository;
 import com.ll.hfback.domain.group.chat.entity.Chat;
 import com.ll.hfback.domain.group.chat.repository.ChatRepository;
 import com.ll.hfback.domain.group.room.entity.Room;
@@ -11,7 +12,6 @@ import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * packageName    : com.ll.hfback.domain.group.room.service
@@ -29,20 +29,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class RoomService {
     private final RoomRepository roomRepository;
     private final ChatRepository chatRepository;
-    private final FestivalPostRepository festivalPostRepository;
+    private final PostRepository postRepository;
     private final MemberRepository memberRepository;
 
     public void createRoom(Long fesId, ResponseRoom responseRoom) {
 
         // fesId에 해당하는 공연 가져옴 
-        FestivalPost festivalPost = festivalPostRepository.findById(fesId).get();
+        KopisFesEntity kopisFesEntity = postRepository.findById(fesId).get();
         
         // memberId에 해당하는 사용자(방장) 가져옴
         Member member = memberRepository.findById(responseRoom.getMemberId()).get();
 
         // Room 객체 만들기 (Room 엔티티)
         Room room = Room.builder()
-                .festival(festivalPost)
+                .festival(kopisFesEntity)
                 .member(member)
                 .roomTitle(responseRoom.getTitle())
                 .roomContent(responseRoom.getContent())
