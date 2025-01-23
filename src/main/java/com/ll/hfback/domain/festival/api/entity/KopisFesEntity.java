@@ -1,13 +1,16 @@
 package com.ll.hfback.domain.festival.api.entity;
 
+import com.ll.hfback.domain.group.room.entity.Room;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Setter
@@ -37,4 +40,7 @@ public class KopisFesEntity{
     @LastModifiedDate
     @Getter
     private LocalDateTime modifyDate;
+
+    @OneToMany
+    private List<Room> roomList;
 }
