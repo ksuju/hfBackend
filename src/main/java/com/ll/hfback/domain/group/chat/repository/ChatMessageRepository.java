@@ -17,5 +17,5 @@ import java.util.List;
  * 2025-01-22        kyd54       최초 생성
  */
 public interface ChatMessageRepository extends JpaRepository<ChatMessage,Long> {
-    List<ChatMessage> findByChatIdAndIdAfter(long roomId, long afterId);
+    List<ChatMessage> findByChatIdAndIdAfter(long chatId, long afterId);
 }
