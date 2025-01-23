@@ -1,8 +1,17 @@
 package com.ll.hfback.domain.group.room.entity;
 
+import com.ll.hfback.domain.festival.post.entity.Post;
+import com.ll.hfback.domain.group.chat.entity.ChatMessage;
+import com.ll.hfback.domain.member.member.entity.Member;
+import com.ll.hfback.global.jpa.BaseEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 /**
  * packageName    : com.ll.hfback.domain.group.room.entity
@@ -20,17 +29,28 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class Room {
-    @Id
-    private Long roomId;
+@SuperBuilder
+@ToString(callSuper = true)
+public class Room extends BaseEntity {
 
-    // FK
-    private Long festivalId;
-    private Long memberId;
-    //
+    @ManyToOne
+    private Post post;
 
-    private String roomContent;
-    private int roomMemberLimit;
-    private int roomState;
+    @ManyToOne
+    private Member member;
+
+    @Column(nullable = false)
+    private String   roomTitle;
+
+    @Column(nullable = false)
+    private String   roomContent;
+
+    @Column(nullable = false)
+    private int      roomMemberLimit;
+
+    @Column(nullable = false)
+    private int      roomState;
+
+    @OneToMany
+    private List<ChatMessage> chatMessages;
 }

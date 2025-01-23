@@ -1,8 +1,9 @@
-package com.ll.hfback.domain.festival;
+package com.ll.hfback.domain.festival.api;
 
 
-import com.ll.hfback.domain.festival.entity.KopisFesEntity;
-import com.ll.hfback.domain.festival.service.KopisService;
+//import com.ll.hfback.domain.festival.api.entity.KopisFesEntity;
+
+import com.ll.hfback.domain.festival.post.entity.Post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +36,7 @@ public class FetchApisScheduler {
     @Value("${apis.api.service-key}")
     private String serviceKeyForApis;
 
-    private final KopisService kopisService;
+    private final com.ll.hfback.domain.festival.service.KopisService kopisService;
 
     @Scheduled(cron = "${schedule.cron_for_apis}")
     public void getApisApiData() {
@@ -44,7 +45,7 @@ public class FetchApisScheduler {
 
             log.info("apis스케쥴러 실행~");
             //stdate = eventStartDate
-            List<KopisFesEntity> kopisFesEntity = new ArrayList<>();
+            List<Post> Post = new ArrayList<>();
 
             LocalDate now = LocalDate.now();
             YearMonth yearMonth = YearMonth.of(now.getYear(), now.getMonth());

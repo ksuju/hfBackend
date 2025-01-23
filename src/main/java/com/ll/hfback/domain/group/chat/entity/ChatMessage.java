@@ -1,8 +1,13 @@
 package com.ll.hfback.domain.group.chat.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import com.ll.hfback.domain.group.room.entity.Room;
+import com.ll.hfback.domain.member.member.entity.Member;
+import com.ll.hfback.global.jpa.BaseEntity;
+import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -22,16 +27,20 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class ChatMessage {
-    @Id
-    private Long chatMessageId;
-    // FK
-    private Long groupId;
-    private Long memberId;
-    //
+@SuperBuilder
+@ToString(callSuper = true)
+public class ChatMessage extends BaseEntity {
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_id", nullable = false)
+    private Chat chat;   // Chat 엔티티와 연결
+
+    @Column(nullable = false)
     private String chatMessageContent;
-    private LocalDateTime chatMessageCreateTime;
-    private int chatMessageStatus;
+
+    @Column(nullable = false)
+    private String nickname;
+
+    @Builder.Default
+    private int chatMessageStatus = 1; // 기본값 = 1 (안읽음 상태), 0 (읽음 상태)
 }

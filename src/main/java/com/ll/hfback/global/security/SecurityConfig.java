@@ -1,5 +1,6 @@
 package com.ll.hfback.global.security;
 
+import com.ll.hfback.global.app.AppConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,7 +29,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
+<<<<<<< HEAD
                 "http://localhost:5173", // React Local URL
+=======
+                AppConfig.getSiteFrontUrl(),
+                "http://localhost:3000", // 로컬 개발 환경
+>>>>>>> f8b429c2310318b452706d7ed92ef825540dd293
                 "https://open-api-and-front.vercel.app" // Vercel 배포 URL
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 허용할 HTTP 메서드
