@@ -1,8 +1,9 @@
 package com.ll.hfback.domain.festival.api;
 
 
-import com.ll.hfback.domain.festival.api.entity.KopisFesEntity;
+//import com.ll.hfback.domain.festival.api.entity.KopisFesEntity;
 import com.ll.hfback.domain.festival.api.service.KopisService;
+import com.ll.hfback.domain.festival.post.entity.Post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,7 +52,7 @@ public class FetchKopisScheduler {
                 log.info("Kopis스케쥴러 실행");
 
                 /*조회 후 Entity에 Insert */
-                List<KopisFesEntity> kopisFesEntity = new ArrayList<>();
+                List<Post> post = new ArrayList<>();
 
                 /*각 달의 첫날과 마지막날 추출*/
                 LocalDate now = LocalDate.now();
@@ -92,13 +93,13 @@ public class FetchKopisScheduler {
                     String xmlResponse = responseBuilder.toString();
 
                     // XML 응답에서 데이터를 파싱하고 리스트에 추가
-                    List<KopisFesEntity> parsedData = parseXmlToEntity(xmlResponse);
-                    kopisFesEntity.addAll(parsedData);
+                    List<Post> parsedData = parseXmlToEntity(xmlResponse);
+                    post.addAll(parsedData);
 
                     currentPage++;
                 }
                 try {
-                    kopisService.saveForKopis(kopisFesEntity);
+                    kopisService.saveForKopis(post);
                 } catch (Exception e) {
                     log.error("Kopis Scheduler save중에 에러가 발생했습니다", e);
                 }
@@ -109,8 +110,8 @@ public class FetchKopisScheduler {
         log.info("Kopis스케쥴러 종료");
     }
 
-    private List<KopisFesEntity> parseXmlToEntity(String xml) throws Exception {
-        List<KopisFesEntity> kopiseEntity = new ArrayList<>();
+    private List<Post> parseXmlToEntity(String xml) throws Exception {
+        List<Post> kopiseEntity = new ArrayList<>();
 
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -146,7 +147,7 @@ public class FetchKopisScheduler {
             /*String genrenm = getTagValue("genrenm", element);
             String openrun = getTagValue("openrun", element);*/
 
-            KopisFesEntity kopisFesEntity = KopisFesEntity.builder()
+            Post post = Post.builder()
                     .festivalId(festivalId)
                     .festivalName(festivalName)
                     .festivalStartDate(festivalStartDate)
@@ -160,7 +161,7 @@ public class FetchKopisScheduler {
                     .inputType("KOPIS")
                     .build();
 
-            kopiseEntity.add(kopisFesEntity);
+            kopiseEntity.add(post);
         }
 
         return kopiseEntity;
