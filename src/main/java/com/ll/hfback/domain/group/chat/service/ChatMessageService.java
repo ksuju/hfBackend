@@ -1,5 +1,7 @@
 package com.ll.hfback.domain.group.chat.service;
 
+import com.ll.hfback.domain.group.chat.dto.response.ResponseMessage;
+
 /**
  * packageName    : com.ll.hfback.domain.group.chat.service
  * fileName       : ChatMessageService
@@ -13,5 +15,5 @@ package com.ll.hfback.domain.group.chat.service;
  */
 public interface ChatMessageService {
     // 채팅 메시지 저장
-    void writeMessage(Long roomId, Long memberId, String content);
+    void writeMessage(Long roomId, ResponseMessage responseMessage);
 }
