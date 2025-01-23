@@ -62,6 +62,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 // 채팅 메시지 저장
                 ChatMessage chatMessage = ChatMessage.builder()
                         .chat(chat)
+                        .nickname(member.getNickname())
                         .chatMessageContent(responseMessage.getContent())
                         .build();
 
