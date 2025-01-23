@@ -13,5 +13,5 @@ package com.ll.hfback.domain.group.chat.service;
  */
 public interface ChatMessageService {
     // 채팅 메시지 저장
-    void writeMessage(Long roomId, String nickname, String content);
+    void writeMessage(Long roomId, Long memberId, String content);
 }

@@ -1,6 +1,7 @@
 package com.ll.hfback.domain.member.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ll.hfback.domain.group.chat.entity.ChatMessage;
 import com.ll.hfback.domain.member.alert.entity.Alert;
 import com.ll.hfback.domain.member.member.dto.MemberUpdateRequest;
 import com.ll.hfback.domain.member.report.entity.Report;
@@ -23,6 +24,10 @@ import static jakarta.persistence.CascadeType.ALL;
 @SuperBuilder
 public class Member extends BaseEntity {
 
+    @OneToMany
+    private List<ChatMessage> chatMessages;
+
+
     @Column(unique = true, nullable = false, length = 30)
     private String email;
 
@@ -39,9 +44,10 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(length = 1, nullable = false)
     private Gender gender;  // 성별
+
     @Getter
     public enum Gender {
-        M, W;
+        M, W
     }
 
     @Column(nullable = false, length = 20)
@@ -56,6 +62,7 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "ENUM('NORMAL', 'DELETED', 'BANNED') DEFAULT 'NORMAL'")
     private MemberState state;  // 회원 상태
+
     @Getter
     public enum MemberState {
         NORMAL,  // 정상
@@ -65,12 +72,11 @@ public class Member extends BaseEntity {
 
     @Column(nullable = false, columnDefinition = "ENUM('USER', 'ADMIN') DEFAULT 'USER'")
     private MemberRole role;  // 권한 (관리자, 사용자)
+
     @Getter
     public enum MemberRole {
-        USER,
-        ADMIN
+        USER, ADMIN
     }
-
 
 
     // 1대1 관계 설정
@@ -82,15 +88,8 @@ public class Member extends BaseEntity {
     @Builder.Default
     private List<Alert> alerts = new ArrayList<>();
 
-    public void addAlert(
-        String content, String url, String category
-    ) {
-        Alert alert = Alert.builder()
-            .member(this)
-            .content(content)
-            .url(url)
-            .category(category)
-            .build();
+    public void addAlert(String content, String url, String category) {
+        Alert alert = Alert.builder().member(this).content(content).url(url).category(category).build();
         alerts.add(alert);
     }
 
@@ -104,21 +103,14 @@ public class Member extends BaseEntity {
     @Builder.Default
     private List<Report> reports = new ArrayList<>();
 
-    public void addReport(
-        Member reported, String content
-    ) {
-        Report report = Report.builder()
-            .reporter(this)
-            .reported(reported)
-            .content(content)
-            .build();
+    public void addReport(Member reported, String content) {
+        Report report = Report.builder().reporter(this).reported(reported).content(content).build();
         reports.add(report);
     }
 
     public void removeReport(Report report) {
         reports.remove(report);
     }
-
 
 
     // Entity 메서드
