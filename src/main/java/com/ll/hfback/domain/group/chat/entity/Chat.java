@@ -35,6 +35,7 @@ public class Chat extends BaseEntity {
     private LocalDateTime roomExitTime; // 메시지 확인 여부 체크하기 위함
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
