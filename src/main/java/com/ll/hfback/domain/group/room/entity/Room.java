@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.group.room.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ll.hfback.domain.festival.post.entity.Post;
 import com.ll.hfback.domain.group.chat.entity.Chat;
 import com.ll.hfback.domain.group.chat.entity.ChatMessage;
@@ -50,6 +51,7 @@ public class Room extends BaseEntity {
     private int      roomState;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JsonManagedReference  // 순환 참조 방지
     private Chat chat;
 
 }

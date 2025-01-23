@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.group.chat.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ll.hfback.domain.group.room.entity.Room;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.global.jpa.BaseEntity;
@@ -33,6 +34,7 @@ public class ChatMessage extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_id", nullable = false)
+    @JsonBackReference  // 순환 참조 방지
     private Chat chat;   // Chat 엔티티와 연결
 
     @Column(nullable = false)
