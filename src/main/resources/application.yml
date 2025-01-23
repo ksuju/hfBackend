@@ -31,17 +31,17 @@ logging:
     org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.orm.jdbc.extract: TRACE
     org.springframework.transaction.interceptor: TRACE
-custom:
-  dev:
-    cookieDomain: localhost
-    frontUrl: "http://${custom.dev.cookieDomain}:5173"
-    backUrl: "http://${custom.dev.cookieDomain}:${server.port}"
-  prod:
-    cookieDomain:
-    frontUrl:
-    backUrl:
-  site:
-    name: "BLOG DEV"
-    cookieDomain: "${custom.dev.cookieDomain}"
-    frontUrl: "${custom.dev.frontUrl}"
-    backUrl: "${custom.dev.backUrl}"
+#custom:
+#  dev:
+#    cookieDomain: localhost
+#    frontUrl: "http://${custom.dev.cookieDomain}:5173"
+#    backUrl: "http://${custom.dev.cookieDomain}:${server.port}"
+#  prod:
+#    cookieDomain: codingtori.site
+#    frontUrl: "http://${custom.dev.cookieDomain}:5173"
+#    backUrl:
+#  site:
+#    name: "BLOG DEV"
+#    cookieDomain: "${custom.dev.cookieDomain}"
+#    frontUrl: "${custom.dev.frontUrl}"
+#    backUrl: "${custom.dev.backUrl}"
