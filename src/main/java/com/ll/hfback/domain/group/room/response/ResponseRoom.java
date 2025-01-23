@@ -1,11 +1,11 @@
-package com.ll.hfback.domain.group.chat.dto.response;
+package com.ll.hfback.domain.group.room.response;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * packageName    : com.ll.hfback.domain.group.chat.dto.response
- * fileName       : ResponseMessage
+ * packageName    : com.ll.hfback.domain.group.room.response
+ * fileName       : ResponseRoom
  * author         : sungjun
  * date           : 2025-01-22
  * description    : 자동 주석 생성
@@ -16,7 +16,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ResponseMessage {
+public class ResponseRoom {
     private Long memberId;
+    private String title;
     private String content;
+    private int memberLimit;
 }

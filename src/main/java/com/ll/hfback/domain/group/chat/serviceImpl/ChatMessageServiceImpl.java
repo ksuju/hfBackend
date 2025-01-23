@@ -5,6 +5,8 @@ import com.ll.hfback.domain.group.chat.repository.ChatMessageRepository;
 import com.ll.hfback.domain.group.chat.service.ChatMessageService;
 import com.ll.hfback.domain.group.room.entity.Room;
 import com.ll.hfback.domain.group.room.repository.RoomRepository;
+import com.ll.hfback.domain.member.member.entity.Member;
+import com.ll.hfback.domain.member.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,18 +28,22 @@ import org.springframework.stereotype.Service;
 public class ChatMessageServiceImpl implements ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final RoomRepository roomRepository;
+    private final MemberRepository memberRepository;
     private final Logger logger = LoggerFactory.getLogger(ChatMessageServiceImpl.class.getName());
 
-    public void writeMessage(Long roomId, String nickname, String content) {
+    public void writeMessage(Long roomId, Long memberId, String content) {
         logger.info("채팅 메시지 작성");
         try {
-            // roomId로 채팅방 정보 가져오기 > 채팅방의 모든 메시지 저장 시 사용
+            // roomId로 채팅방 정보 가져오기
             Room room = roomRepository.findById(roomId).get();
 
+            // memberId로 멤버 정보 가져오기
+            Member member = memberRepository.findById(memberId).get();
+            
             // 채팅 메시지 저장
             ChatMessage chatMessage = ChatMessage.builder()
                     .room(room)
-                    .nickname(nickname) // fix: 멤버 ID로 변경해야 함 (엔티티가 없어서 현재는 임시방편)
+                    .member(member)
                     .chatMessageContent(content)
                     .build();
             chatMessageRepository.save(chatMessage);
