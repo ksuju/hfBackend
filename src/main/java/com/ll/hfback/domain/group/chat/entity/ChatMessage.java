@@ -32,9 +32,14 @@ import java.time.LocalDateTime;
 public class ChatMessage extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_id", nullable = false)
     private Chat chat;   // Chat 엔티티와 연결
 
+    @Column(nullable = false)
     private String chatMessageContent;
+
+    @Column(nullable = false)
+    private String nickname;
 
     @Builder.Default
     private int chatMessageStatus = 1; // 기본값 = 1 (안읽음 상태), 0 (읽음 상태)
