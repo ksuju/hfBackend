@@ -31,17 +31,17 @@ public class RoomService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
 
-    public void createRoom(Long fesId, ResponseRoom responseRoom) {
+    public void createRoom(String fesId, ResponseRoom responseRoom) {
 
-        // fesId에 해당하는 공연 가져옴 
-        Post Post = postRepository.findById(fesId).get();
-        
+        // fesId에 해당하는 공연 가져옴
+        Post post = postRepository.findByFestivalId(fesId);
+
         // memberId에 해당하는 사용자(방장) 가져옴 fix: 하드코딩 수정 해야함
         Member member = memberRepository.findById(responseRoom.getMemberId()).get();
 
         // Room 객체 만들기 (Room 엔티티)
         Room room = Room.builder()
-                .post(Post)
+                .post(post)
                 .member(member)
                 .roomTitle(responseRoom.getTitle())
                 .roomContent(responseRoom.getContent())

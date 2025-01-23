@@ -12,7 +12,7 @@ public class RoomController {
     private final RoomService roomService;
 
     @PostMapping("/{fesId}/rooms")
-    public void createRoom(@PathVariable Long fesId,
+    public void createRoom(@PathVariable String fesId,
                            @RequestBody ResponseRoom responseRoom) {
         roomService.createRoom(fesId, responseRoom);
     }
