@@ -142,7 +142,7 @@ public class FetchKopisScheduler {
             String festivalUrl = getTagValue("poster", element);
             String festivalArea = getTagValue("area", element);
             String festivalState = getTagValue("prfstate", element);
-
+            String genrenm = getTagValue("genrenm", element);
             /*String genrenm = getTagValue("genrenm", element);
             String openrun = getTagValue("openrun", element);*/
 
@@ -155,6 +155,7 @@ public class FetchKopisScheduler {
                     .festivalUrl(festivalUrl)
                     .festivalArea(festivalArea)
                     .festivalState(festivalState)
+                    .genrenm(genrenm)
                     .createDate(LocalDateTime.now())
                     .modifyDate(LocalDateTime.now())
                     .inputType("KOPIS")

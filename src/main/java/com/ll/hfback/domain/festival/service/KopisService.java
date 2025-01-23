@@ -28,10 +28,6 @@ public class KopisService {
 
     public List<KopisFesEntity> selectListForSlide() {
 
-        //무작위 5건을 조회해오기를 바랬지만,
-        //쿼리결과를 캐싱할 수 있는 많은 경우의 수로 인해,
-        //같은 쿼리로 조회한 결과값 자체를 무작위로 만들기는 어려워보인다.
-        //캐싱설정을 없앨 방법이 있다고는 하는데.. 그걸 없애면서까지 하는게 의미가 있을지..
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         String todayString = today.format(formatter);
@@ -71,6 +67,7 @@ public class KopisService {
                         .festivalHallName(item.path("addr1").asText())
                         .festivalState(null) // API에서 값이 없음
                         .festivalUrl(item.path("firstimage").asText())
+                        .genrenm(null)//Apis는 장르명을 전달해주지 않음.
                         .createDate(LocalDateTime.now())
                         .modifyDate(LocalDateTime.now())
                         .inputType("APIS")
@@ -79,8 +76,7 @@ public class KopisService {
                 festivalList.add(entity);
             }
 
-            //saveAll시, id기준으로 기데이터의 update가 발생하지 않는 이유 확인필요.
-            //어쩌면 id를 formatting하는 과정에서 생겼을 가능성 존재.
+
             kopisRepository.saveAll(festivalList);
             log.info(festivalList.toString());
 
