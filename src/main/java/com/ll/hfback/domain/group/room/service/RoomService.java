@@ -2,6 +2,8 @@ package com.ll.hfback.domain.group.room.service;
 
 import com.ll.hfback.domain.festival.post.entity.FestivalPost;
 import com.ll.hfback.domain.festival.post.repository.FestivalPostRepository;
+import com.ll.hfback.domain.group.chat.entity.Chat;
+import com.ll.hfback.domain.group.chat.repository.ChatRepository;
 import com.ll.hfback.domain.group.room.entity.Room;
 import com.ll.hfback.domain.group.room.repository.RoomRepository;
 import com.ll.hfback.domain.group.room.response.ResponseRoom;
@@ -26,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class RoomService {
     private final RoomRepository roomRepository;
+    private final ChatRepository chatRepository;
     private final FestivalPostRepository festivalPostRepository;
     private final MemberRepository memberRepository;
 
@@ -45,8 +48,17 @@ public class RoomService {
                 .roomContent(responseRoom.getContent())
                 .roomMemberLimit(responseRoom.getMemberLimit())
                 .build();
-        
+
+        // 모임 생성 = 채팅방 생성 Chat에 Room 저장
+        Chat chat = Chat.builder()
+                .room(room)
+                .build();
+
+        room.setChat(chat); // Room에 Chat 저장
+
         // 저장
         roomRepository.save(room);
+        chatRepository.save(chat);
+
     }
 }
