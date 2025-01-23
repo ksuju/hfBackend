@@ -1,17 +1,12 @@
 package com.ll.hfback.domain.group.room.entity;
 
-import com.ll.hfback.domain.festival.post.entity.FestivalPost;
-import com.ll.hfback.domain.group.chat.entity.ChatMessage;
+import com.ll.hfback.domain.festival.post.entity.Post;
+import com.ll.hfback.domain.group.chat.entity.Chat;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.global.jpa.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
-import java.util.List;
 
 /**
  * packageName    : com.ll.hfback.domain.group.room.entity
@@ -34,7 +29,7 @@ import java.util.List;
 public class Room extends BaseEntity {
 
     @ManyToOne
-    private FestivalPost festival;
+    private Post festival;
 
     @ManyToOne
     private Member member;
@@ -51,6 +46,6 @@ public class Room extends BaseEntity {
     @Column(nullable = false)
     private int      roomState;
 
-    @OneToMany
-    private List<ChatMessage> chatMessages;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Chat chat;
 }

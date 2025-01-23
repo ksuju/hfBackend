@@ -1,7 +1,9 @@
 package com.ll.hfback.domain.member.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ll.hfback.domain.group.chat.entity.Chat;
 import com.ll.hfback.domain.group.chat.entity.ChatMessage;
+import com.ll.hfback.domain.group.room.entity.Room;
 import com.ll.hfback.domain.member.alert.entity.Alert;
 import com.ll.hfback.domain.member.member.dto.MemberUpdateRequest;
 import com.ll.hfback.domain.member.report.entity.Report;
@@ -23,10 +25,6 @@ import static jakarta.persistence.CascadeType.ALL;
 @NoArgsConstructor
 @SuperBuilder
 public class Member extends BaseEntity {
-
-    @OneToMany
-    private List<ChatMessage> chatMessages;
-
 
     @Column(unique = true, nullable = false, length = 30)
     private String email;
@@ -70,6 +68,7 @@ public class Member extends BaseEntity {
         BANNED  // 정지
     }
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "ENUM('USER', 'ADMIN') DEFAULT 'USER'")
     private MemberRole role;  // 권한 (관리자, 사용자)
 
@@ -134,4 +133,9 @@ public class Member extends BaseEntity {
         state = MemberState.NORMAL;
     }
 
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "memberList")
+    private List<Chat> chatList = new ArrayList<>();
+
+    @OneToMany
+    private List<Room> roomList;
 }

@@ -1,6 +1,7 @@
 package com.ll.hfback.domain.festival.post.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ll.hfback.domain.group.room.entity.Room;
 import com.ll.hfback.domain.festival.comment.entity.Comment;
 import com.ll.hfback.domain.member.member.entity.Member;
 import jakarta.persistence.*;
@@ -56,5 +57,9 @@ public class Post {
     public void removeComment(Comment comment) {
         comments.remove(comment);
     }
+
+
+    @OneToMany
+    private List<Room> roomList;
 
 }
