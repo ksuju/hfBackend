@@ -1,5 +1,10 @@
 package com.ll.hfback.domain.group.chat.service;
 
+import com.ll.hfback.domain.group.chat.dto.response.ResponseMessage;
+import com.ll.hfback.domain.group.chat.entity.ChatMessage;
+
+import java.util.List;
+
 /**
  * packageName    : com.ll.hfback.domain.group.chat.service
  * fileName       : ChatMessageService
@@ -13,5 +18,7 @@ package com.ll.hfback.domain.group.chat.service;
  */
 public interface ChatMessageService {
     // 채팅 메시지 저장
-    void writeMessage(Long roomId, String nickname, String content);
+    void writeMessage(Long chatId, ResponseMessage responseMessage);
+
+    List<ChatMessage> readMessages(Long chatId, Long afterChatMessageId);
 }

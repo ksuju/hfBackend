@@ -1,9 +1,12 @@
 package com.ll.hfback.domain.group.chat.controller;
 
 import com.ll.hfback.domain.group.chat.dto.response.ResponseMessage;
+import com.ll.hfback.domain.group.chat.entity.ChatMessage;
 import com.ll.hfback.domain.group.chat.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * packageName    : com.ll.hfback.domain.group.chat.controller
@@ -17,16 +20,22 @@ import org.springframework.web.bind.annotation.*;
  * 2025-01-21        kyd54       최초 생성
  */
 @RestController
-@RequestMapping("/api/v1/groups/{roomId}")
+@RequestMapping("/api/v1/groups/{chatId}")
 @RequiredArgsConstructor
 public class ChatMessageController {
     private final ChatMessageService chatMessageService;
-    
-    @PostMapping("/messages") // 채팅 메시지 저장
-    public void writeMessage(@PathVariable Long roomId,
+
+    @PostMapping("/messages") // 채팅 메시지 작성
+    public void writeMessage(@PathVariable Long chatId,
                              @RequestBody ResponseMessage responseMessage) {
-        chatMessageService.writeMessage(roomId,
-                responseMessage.getNickname(),  // fix: 멤버 ID로 변경할 것 (엔티티가 없어서 현재는 임시방편)
-                responseMessage.getContent());
+        chatMessageService.writeMessage(chatId,
+                responseMessage);
+    }
+
+    @GetMapping("/messages")
+    public List<ChatMessage> readMessages(@PathVariable Long chatId,
+            @RequestParam(defaultValue = "-1") Long afterChatMessageId) {
+
+        return chatMessageService.readMessages(chatId, afterChatMessageId);
     }
 }
