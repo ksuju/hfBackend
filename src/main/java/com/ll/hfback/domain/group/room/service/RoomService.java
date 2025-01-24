@@ -12,6 +12,8 @@ import com.ll.hfback.domain.member.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * packageName    : com.ll.hfback.domain.group.room.service
  * fileName       : RoomService
@@ -33,9 +35,9 @@ public class RoomService {
 
     public void createRoom(String fesId, ResponseRoom responseRoom) {
 
-        // fesId에 해당하는 공연 가져옴
+        // fesId에 해당하는 공연 가져옴 
         Post post = postRepository.findByFestivalId(fesId);
-
+        
         // memberId에 해당하는 사용자(방장) 가져옴 fix: 하드코딩 수정 해야함
         Member member = memberRepository.findById(responseRoom.getMemberId()).get();
 
@@ -57,5 +59,15 @@ public class RoomService {
         // 저장
         chatRepository.save(chat);
         roomRepository.save(room);
+    }
+
+    // 해당 게시글의 모든 모임 조회
+    public List<Room> searchByFestivalId(String festivalId) {
+        return roomRepository.findByPostFestivalId(festivalId);
+    }
+
+    // 해당 게시글의 모임 상세 조회
+    public Room searchById(Long id) {
+        return roomRepository.findById(id).orElse(null);
     }
 }

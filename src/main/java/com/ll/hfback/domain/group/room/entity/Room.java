@@ -39,19 +39,17 @@ public class Room extends BaseEntity {
     private Member member;
 
     @Column(nullable = false)
-    private String   roomTitle;
+    private String roomTitle;
 
     @Column(nullable = false)
-    private String   roomContent;
+    private String roomContent;
 
     @Column(nullable = false)
-    private int      roomMemberLimit;
+    private int roomMemberLimit;
 
     @Column(nullable = false)
-    private int      roomState;
+    private int roomState;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JsonManagedReference  // 순환 참조 방지
     private Chat chat;
-
 }
