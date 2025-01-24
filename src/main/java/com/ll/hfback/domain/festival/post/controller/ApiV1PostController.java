@@ -9,7 +9,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/v1/festivalPosts")
+@RequestMapping("/api/v1/Posts")
 @RequiredArgsConstructor
 public class ApiV1PostController {
     private final PostService postService;
