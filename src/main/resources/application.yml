@@ -43,5 +43,5 @@ custom:
   site:
     name: "SITE PROD"
     cookieDomain: "${custom.prod.cookieDomain}"
-    frontUrl: "${custom.dev.frontUrl}"
-    backUrl: "${custom.dev.backUrl}"
+    frontUrl: "${custom.prod.frontUrl}"
+    backUrl: "${custom.prod.backUrl}"
