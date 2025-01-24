@@ -10,10 +10,8 @@ public class CustomWebMvcConfig implements WebMvcConfigurer {
 
   @Override
   public void addCorsMappings(CorsRegistry registry) {
-    registry.addMapping("/api/**")
-        .allowedOrigins(
-            AppConfig.getSiteFrontUrl()
-        )
+    registry.addMapping("/**")
+        .allowedOrigins("*")
         .allowedMethods("*")
         .allowedHeaders("*")
         .allowCredentials(true);
