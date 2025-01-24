@@ -75,6 +75,7 @@ public class Member extends BaseEntity {
     }
 
     @JsonIgnore
+    @Column(columnDefinition = "TEXT")
     String refreshToken;
 
 

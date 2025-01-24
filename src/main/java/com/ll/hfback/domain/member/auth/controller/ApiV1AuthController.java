@@ -39,6 +39,14 @@ public class ApiV1AuthController {
         cookie.setMaxAge(60 * 60);
         response.addCookie(cookie);
 
+        String refreshToken = member.getRefreshToken();
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(60 * 60);
+        response.addCookie(refreshTokenCookie);
+
         return new RsData<>("200", "로그인에 성공하였습니다.");
     }
 
@@ -75,7 +83,20 @@ public class ApiV1AuthController {
 
     // MEM06_LOGOUT : 로그아웃
     @GetMapping("/logout")
-    public void logout(@RequestHeader("Authorization") String token) {
-        //authService.logout(token);
+    public RsData<Void> logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("accessToken", null);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        Cookie refreshTokenCookie = new Cookie("refreshToken", null);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(0);
+        response.addCookie(refreshTokenCookie);
+
+        return new RsData<>("200", "로그아웃에 성공하였습니다.");
     }
+
+
+
 }
