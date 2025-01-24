@@ -29,6 +29,7 @@ public class ApiSecurityConfig {
         corsConfig.addAllowedOrigin(AppConfig.getDevFrontUrl());
         corsConfig.addAllowedMethod("*");
         corsConfig.addAllowedHeader("*");
+
         corsConfig.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -48,7 +49,7 @@ public class ApiSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/api/*/members/*/verify-password").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/*/auth/login").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/*/auth/logout").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/*/Posts/*").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/Posts/*").permitAll()
                                 .anyRequest().permitAll()
                 )
                 .csrf(csrf -> csrf.disable())
