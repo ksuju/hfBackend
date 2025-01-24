@@ -1,6 +1,7 @@
 package com.ll.hfback.domain.group.chat.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -15,9 +16,10 @@ import lombok.Setter;
  * 2025-01-23        kyd54       최초 생성
  */
 @Setter
+@AllArgsConstructor
 public class RequestMessage {
     @JsonProperty("nickname")
     private String nickname;
-    @JsonProperty("content")
+    @JsonProperty("chatMessageContent")
     private String content;
 }
