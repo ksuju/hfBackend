@@ -48,7 +48,7 @@ public class ApiSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/api/*/members/*/verify-password").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/*/auth/login").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/*/auth/logout").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/*/Posts/*").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/Posts/*").permitAll()
                                 .anyRequest().permitAll()
                 )
                 .csrf(csrf -> csrf.disable())
