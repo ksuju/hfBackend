@@ -8,6 +8,7 @@ import com.ll.hfback.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import lombok.experimental.UtilityClass;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDate;
@@ -77,6 +78,16 @@ public class Member extends BaseEntity {
     @JsonIgnore
     @Column(columnDefinition = "TEXT")
     String refreshToken;
+
+    @Column(nullable = false, columnDefinition = "VARCHAR(50) DEFAULT 'SELF'")
+    private String loginType = LoginType.SELF;  // 최초 가입 방식
+    @UtilityClass
+    public class LoginType {
+        public static final String SELF = "SELF";
+        public static final String NAVER = "NAVER";
+        public static final String KAKAO = "KAKAO";
+        public static final String GOOGLE = "GOOGLE";
+    }
 
 
 
