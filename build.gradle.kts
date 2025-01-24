@@ -28,13 +28,23 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("com.mysql:mysql-connector-j")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.springframework.security:spring-security-test")
+
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	// WebSocket, STOMP
+	implementation("org.springframework.boot:spring-boot-starter-websocket:3.4.1")
+
+	// JWT & Spring Security
+	testImplementation("org.springframework.security:spring-security-test")
+	implementation ("io.jsonwebtoken:jjwt-api:0.11.5")
+	runtimeOnly ("io.jsonwebtoken:jjwt-impl:0.11.5")
+	runtimeOnly ("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
 }
 
 tasks.withType<Test> {

@@ -15,16 +15,18 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         default_batch_fetch_size: 100
+        show_sql: true
         format_sql: true
         highlight_sql: true
         use_sql_comments: true
+
 logging:
   level:
-    com.ll.blog: DEBUG
+    com.ll.hfback: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.orm.jdbc.extract: TRACE
@@ -35,11 +37,11 @@ custom:
     frontUrl: "http://${custom.dev.cookieDomain}:5173"
     backUrl: "http://${custom.dev.cookieDomain}:${server.port}"
   prod:
-    cookieDomain:
-    frontUrl:
-    backUrl:
+    cookieDomain: hf.codingtori.site
+    frontUrl: "https://www.${custom.prod.cookieDomain}"
+    backUrl: "https://api.${custom.prod.cookieDomain}"
   site:
-    name: "BLOG DEV"
-    cookieDomain: "${custom.dev.cookieDomain}"
-    frontUrl: "${custom.dev.frontUrl}"
-    backUrl: "${custom.dev.backUrl}"
+    name: "SITE PROD"
+    cookieDomain: "${custom.prod.cookieDomain}"
+    frontUrl: "${custom.prod.frontUrl}"
+    backUrl: "${custom.prod.backUrl}"

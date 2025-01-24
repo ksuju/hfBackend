@@ -1,24 +1,35 @@
 package com.ll.hfback.global.security;
 
+import com.ll.hfback.global.app.AppConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(authorize -> authorize
-                        // 특정 API 엔드포인트 허용
-                        .requestMatchers("/api/**").permitAll()  // API 엔드포인트는 인증 없이 허용
-                        .anyRequest().authenticated()
-                )
-                // CSRF 비활성화
-                .csrf(AbstractHttpConfigurer::disable);
+                .csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll() // 모든 요청 허용
+                );
+        return http.build();
+    }
 
-        return http.build(); // CSRF 비활성화
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
