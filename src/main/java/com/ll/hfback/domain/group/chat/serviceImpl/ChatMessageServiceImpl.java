@@ -1,13 +1,11 @@
 package com.ll.hfback.domain.group.chat.serviceImpl;
 
 import com.ll.hfback.domain.group.chat.dto.response.ResponseMessage;
-import com.ll.hfback.domain.group.chat.entity.Chat;
 import com.ll.hfback.domain.group.chat.entity.ChatMessage;
 import com.ll.hfback.domain.group.chat.repository.ChatMessageRepository;
-import com.ll.hfback.domain.group.chat.repository.ChatRepository;
 import com.ll.hfback.domain.group.chat.service.ChatMessageService;
-import com.ll.hfback.domain.group.room.entity.Room;
-import com.ll.hfback.domain.group.room.repository.RoomRepository;
+import com.ll.hfback.domain.group.chatRoom.entity.ChatRoom;
+import com.ll.hfback.domain.group.chatRoom.repository.ChatRoomRepository;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +33,9 @@ import java.util.List;
 @Transactional
 public class ChatMessageServiceImpl implements ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
-    private final RoomRepository roomRepository;
-    private final ChatRepository chatRepository;
     private final MemberRepository memberRepository;
     private final Logger logger = LoggerFactory.getLogger(ChatMessageServiceImpl.class.getName());
+    private final ChatRoomRepository chatRoomRepository;
 
     @Transactional
     public void writeMessage(Long chatId, ResponseMessage responseMessage) {
@@ -53,21 +50,18 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             }
 
             // chatId로 채팅방 정보 가져오기
-            Chat chat = chatRepository.findById(chatId).orElse(null);
+            ChatRoom chatRoom = chatRoomRepository.findById(chatId).orElse(null);
 
-            if(chat != null) {
+            if(chatRoom != null) {
                 // memberId로 멤버 정보 가져오기
                 Member member = memberRepository.findById(responseMessage.getMemberId()).orElse(null);
 
                 // 채팅 메시지 저장
                 ChatMessage chatMessage = ChatMessage.builder()
-                        .chat(chat)
+                        .chatRoom(chatRoom)
                         .nickname(member.getNickname())
                         .chatMessageContent(responseMessage.getContent())
                         .build();
-
-                // Chat 엔티티의 chatMessages 리스트에 추가
-                chat.getChatMessages().add(chatMessage);
 
                 chatMessageRepository.save(chatMessage);
                 logger.info("채팅 메시지 작성 완료");
@@ -86,14 +80,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         }
     }
 
-    @Transactional
-    public List<ChatMessage> readMessages(Long chatId, Long afterChatMessageId) {
-        if (afterChatMessageId == -1) {
-            // 특정 메시지 이후가 아닌 전체 메시지를 조회
-            return chatRepository.findById(chatId)
-                    .map(Chat::getChatMessages) // Optional로 안전하게 접근
-                    .orElse(Collections.emptyList()); // 엔티티가 없으면 빈 리스트 반환
-        }
-        return chatMessageRepository.findByChatIdAndIdAfter(chatId, afterChatMessageId);
+    @Transactional(readOnly = true)
+    public List<ChatMessage> readMessages(Long chatRoomId) {
+        return chatMessageRepository.findByChatRoomId(chatRoomId);
     }
 }

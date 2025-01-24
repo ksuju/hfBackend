@@ -56,21 +56,21 @@ public class NotProd {
                 commentForm2.setContent("이것은 member2가 작성한 테스트 댓글입니다.");
                 commentForm2.setMember(member2);
                 commentForm2.setSuperCommentId(null);
-                commentService.addComment("PF255966",commentForm2);
+                commentService.addComment("2938676",commentForm2);
 
                 // member3가 PF255966 공연에서 memeber1의 댓글에 작성한 테스트 답글
                 CommentForm commentForm3 = new CommentForm();
                 commentForm3.setContent("이것은 member3가 작성한 테스트 답글입니다.");
                 commentForm3.setMember(member3);
                 commentForm3.setSuperCommentId(1L);
-                commentService.addComment("PF255966",commentForm3);
+                commentService.addComment("2938676",commentForm3);
 
                 // member3가 PF255966 공연에 memeber2의 댓글에 작성한 테스트 댓글
                 CommentForm commentForm4 = new CommentForm();
                 commentForm4.setContent("이것은 member3가 작성한 테스트 답글입니다.");
                 commentForm4.setMember(member3);
                 commentForm4.setSuperCommentId(2L);
-                commentService.addComment("PF255966",commentForm4);
+                commentService.addComment("2938676",commentForm4);
             }
         };
     }

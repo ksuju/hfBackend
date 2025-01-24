@@ -11,6 +11,7 @@ public class SignupResponse {
     private final Member.Gender gender;
     private final String phoneNumber;
     private final boolean mkAlarm;
+    private final String loginType;
 
     public SignupResponse(Member member) {
         this.id = member.getId();
@@ -19,6 +20,7 @@ public class SignupResponse {
         this.gender = member.getGender();
         this.phoneNumber = member.getPhoneNumber();
         this.mkAlarm = member.isMkAlarm();
+        this.loginType = member.getLoginType();
     }
 
 }

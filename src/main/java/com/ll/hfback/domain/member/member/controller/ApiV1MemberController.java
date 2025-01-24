@@ -12,9 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,16 +30,6 @@ public class ApiV1MemberController {
         HttpServletRequest request
     ) {
         Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            // Log or print all headers to see what's coming in
-            Enumeration<String> headerNames = request.getHeaderNames();
-            while (headerNames.hasMoreElements()) {
-                String headerName = headerNames.nextElement();
-                System.out.println(headerName + ": " + request.getHeader(headerName));
-            }
-            return new RsData<>("400", "쿠키 없음", null);
-        }
-
         String accessToken = "";
         for (Cookie cookie : cookies) {
             if ("accessToken".equals(cookie.getName())) {
@@ -50,8 +38,7 @@ public class ApiV1MemberController {
             }
         }
 
-        Map<String, Object> claims = jwtProvider.getClaims(accessToken);
-        String email = (String) claims.get("email");
+        String email = (String) jwtProvider.getClaims(accessToken).get("email");
         Member member = memberService.getMember(email);
 
         return new RsData<>("200", "비밀번호 인증이 성공하였습니다.", new MemberDto(member));
