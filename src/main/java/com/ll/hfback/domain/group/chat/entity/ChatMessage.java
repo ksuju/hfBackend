@@ -1,15 +1,10 @@
 package com.ll.hfback.domain.group.chat.entity;
 
-import com.ll.hfback.domain.group.room.entity.Room;
-import com.ll.hfback.domain.member.member.entity.Member;
+import com.ll.hfback.domain.group.chatRoom.entity.ChatRoom;
 import com.ll.hfback.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 /**
  * packageName    : com.ll.hfback.domain.group.chat.entity
@@ -30,10 +25,9 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @ToString(callSuper = true)
 public class ChatMessage extends BaseEntity {
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chat_id", nullable = false)
-    private Chat chat;   // Chat 엔티티와 연결
+    @JoinColumn(name = "chat_room_id", nullable = false)
+    private ChatRoom chatRoom;
 
     @Column(nullable = false)
     private String chatMessageContent;
