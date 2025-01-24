@@ -37,11 +37,11 @@ custom:
     frontUrl: "http://${custom.dev.cookieDomain}:5173"
     backUrl: "http://${custom.dev.cookieDomain}:${server.port}"
   prod:
-    cookieDomain: codingtori.site
-    frontUrl: "http://${custom.dev.cookieDomain}:5173"
-    backUrl:
+    cookieDomain: hf.codingtori.site
+    frontUrl: "http://www.${custom.prod.cookieDomain}"
+    backUrl: "http://api.${custom.prod.cookieDomain}"
   site:
-    name: "BLOG DEV"
-    cookieDomain: "${custom.dev.cookieDomain}"
+    name: "SITE PROD"
+    cookieDomain: "${custom.prod.cookieDomain}"
     frontUrl: "${custom.dev.frontUrl}"
     backUrl: "${custom.dev.backUrl}"
