@@ -29,7 +29,6 @@ public class ApiSecurityConfig {
         corsConfig.addAllowedOrigin(AppConfig.getDevFrontUrl());
         corsConfig.addAllowedMethod("*");
         corsConfig.addAllowedHeader("*");
-        corsConfig.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", corsConfig);
