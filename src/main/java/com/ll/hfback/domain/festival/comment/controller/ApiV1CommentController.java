@@ -12,26 +12,26 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/Posts")
+@RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
 public class ApiV1CommentController {
     private final CommentService commentService;
 
     // 해당 게시글에 작성된 모든 댓글 조회
-    @GetMapping("/{festivalId}/comments")
-    public List<CommentDto> getComments(@PathVariable("festivalId") String festivalId) {
+    @GetMapping("/{festival-id}/comments")
+    public List<CommentDto> getComments(@PathVariable("festival-id") String festivalId) {
         return commentService.searchByFestivalId(festivalId);
     }
 
     // 해당 댓글에 작성된 모든 답글 조회
-    @GetMapping("/{super_comment_id}/replies")
-    public List<CommentDto> getReplies(@PathVariable("super_comment_id") Long superCommentId) {
+    @GetMapping("/{super-comment-id}/replies")
+    public List<CommentDto> getReplies(@PathVariable("super-comment-id") Long superCommentId) {
         return commentService.searchBySuperCommentId(superCommentId);
     }
 
     // 해당 게시글에 댓글 생성
-    @PostMapping("/{festivalId}/comments")
-    public ResponseEntity<String> addComment(@PathVariable("festivalId") String festivalId, @RequestBody @Valid CommentForm commentForm){
+    @PostMapping("/{festival-id}/comments")
+    public ResponseEntity<String> addComment(@PathVariable("festival-id") String festivalId, @RequestBody @Valid CommentForm commentForm){
         commentService.addComment(festivalId, commentForm);
         return ResponseEntity.status(HttpStatus.CREATED).body("댓글이 성공적으로 추가되었습니다.");
     }

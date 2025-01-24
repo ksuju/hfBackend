@@ -1,14 +1,5 @@
 package com.ll.hfback.domain.group.chat.service;
 
-import com.ll.hfback.domain.group.chat.entity.ChatMessage;
-import com.ll.hfback.domain.group.chat.repository.ChatMessageRepository;
-import com.ll.hfback.domain.group.room.entity.Room;
-import com.ll.hfback.domain.group.room.repository.RoomRepository;
-import com.ll.hfback.domain.member.member.entity.Member;
-import com.ll.hfback.domain.member.member.repository.MemberRepository;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;

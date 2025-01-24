@@ -18,8 +18,9 @@ import java.util.List;
  * 2025-01-22        kyd54       최초 생성
  */
 public interface ChatMessageService {
-    // 채팅 메시지 저장
-    void writeMessage(Long chatId, ResponseMessage responseMessage);
+    // 해당 채팅방에 채팅 메시지 저장
+    void writeMessage(Long chatRoomId, ResponseMessage responseMessage);
 
-    List<RequestMessage> readMessages(Long chatId, Long afterChatMessageId);
+    // 해당 채팅방의 모든 메시지 불러오기
+    List<ChatMessage> readMessages(Long chatRoomId);
 }

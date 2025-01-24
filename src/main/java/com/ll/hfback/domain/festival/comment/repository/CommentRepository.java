@@ -16,5 +16,4 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     // 해당 댓글에 작성된 모든 답글 조회
     List<Comment> findBySuperCommentId(Long superCommentId);
 
-
 }
