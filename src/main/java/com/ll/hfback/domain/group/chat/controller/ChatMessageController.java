@@ -34,7 +34,7 @@ public class ChatMessageController {
     }
 
     @GetMapping("/messages")
-    public List<ChatMessage> readMessages(@PathVariable("chat-room-id") Long chatRoomId) {
+    public List<RequestMessage> readMessages(@PathVariable("chat-room-id") Long chatRoomId) {
 
         return chatMessageService.readMessages(chatRoomId);
     }

@@ -22,5 +22,5 @@ public interface ChatMessageService {
     void writeMessage(Long chatRoomId, ResponseMessage responseMessage);
 
     // 해당 채팅방의 모든 메시지 불러오기
-    List<ChatMessage> readMessages(Long chatRoomId);
+    List<RequestMessage> readMessages(Long chatRoomId);
 }
