@@ -27,7 +27,6 @@ public class ApiSecurityConfig {
         CorsConfiguration corsConfig = new CorsConfiguration();
         corsConfig.addAllowedOrigin(AppConfig.getSiteFrontUrl());
         corsConfig.addAllowedOrigin(AppConfig.getDevFrontUrl());
-        corsConfig.addAllowedOrigin("https://www.hf.codingtori.site/");
         corsConfig.addAllowedMethod("*");
         corsConfig.addAllowedHeader("*");
 
