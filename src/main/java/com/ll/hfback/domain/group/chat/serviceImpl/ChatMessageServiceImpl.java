@@ -7,16 +7,15 @@ import com.ll.hfback.domain.group.chat.entity.ChatMessage;
 import com.ll.hfback.domain.group.chat.repository.ChatMessageRepository;
 import com.ll.hfback.domain.group.chat.repository.ChatRepository;
 import com.ll.hfback.domain.group.chat.service.ChatMessageService;
-import com.ll.hfback.domain.group.room.repository.RoomRepository;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,9 +35,9 @@ import java.util.stream.Collectors;
 @Transactional
 public class ChatMessageServiceImpl implements ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
-    private final RoomRepository roomRepository;
     private final ChatRepository chatRepository;
     private final MemberRepository memberRepository;
+    private final SimpMessagingTemplate simpMessagingTemplate;
     private final Logger logger = LoggerFactory.getLogger(ChatMessageServiceImpl.class.getName());
 
     @Transactional
@@ -71,6 +70,10 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 chat.getChatMessages().add(chatMessage);
 
                 chatMessageRepository.save(chatMessage);
+
+                // 지정된 채팅방으로 메시지 전송
+                simpMessagingTemplate.convertAndSend("/topic/chat/room/" + chatId, chatMessage);
+
                 logger.info("채팅 메시지 작성 완료");
             } else {
                 logger.error("채팅 메시지 작성 실패, Room or Chat is null");
@@ -89,6 +92,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Transactional
     public List<RequestMessage> readMessages(Long chatId, Long afterChatMessageId) {
+        logger.info("채팅 메시지 조회");
         List<ChatMessage> chatMessages = chatMessageRepository.findByChatIdAndIdAfter(chatId, afterChatMessageId);
 
         // ChatMessage 엔티티를 RequestMessage DTO로 변환
