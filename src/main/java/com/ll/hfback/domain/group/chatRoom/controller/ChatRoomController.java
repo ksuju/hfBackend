@@ -15,7 +15,7 @@ public class ChatRoomController {
     private final ChatRoomService roomService;
 
     // 해당 게시글의 모든 모임 조회
-    @GetMapping("/{festival-id}/chatRooms")
+    @GetMapping("/{festival-id}/chat-rooms")
     public List<ChatRoom> getRooms(@PathVariable("festival-id") String festivalId) {
         List<ChatRoom> chatRooms = roomService.searchByFestivalId(festivalId);
 
