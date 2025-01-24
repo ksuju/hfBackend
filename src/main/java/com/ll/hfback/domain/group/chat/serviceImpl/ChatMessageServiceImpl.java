@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.group.chat.serviceImpl;
 
+import com.ll.hfback.domain.group.chat.request.RequestMessage;
 import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.entity.ChatMessage;
 import com.ll.hfback.domain.group.chat.repository.ChatMessageRepository;
@@ -68,11 +69,11 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 chatMessageRepository.save(chatMessage);
 
                 // 지정된 채팅방으로 메시지 전송
-                simpMessagingTemplate.convertAndSend("/topic/chat/room/" + chatId, chatMessage);
+                simpMessagingTemplate.convertAndSend("/topic/chat/" + chatId, chatMessage);
 
                 logger.info("채팅 메시지 작성 완료");
             } else {
-                logger.error("채팅 메시지 작성 실패, Room or Chat is null");
+                logger.error("채팅 메시지 작성 실패, ChatRoom is null");
             }
             // fix: 어떤 에러가 발생 할 수 있는지, 에러 유형별 처리 방법 생각 (던지기 x)
             // 예외를 발생시켜 클라이언트에 알림, 필요하면 400 Bad Request와 같은 HTTP 응답 코드 설정
@@ -101,7 +102,12 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 //                })
 //                .collect(Collectors.toList());
     @Transactional(readOnly = true)
-    public List<ChatMessage> readMessages(Long chatRoomId) {
-        return chatMessageRepository.findByChatRoomId(chatRoomId);
+    public List<RequestMessage> readMessages(Long chatRoomId) {
+        List<ChatMessage> chatMessages = chatMessageRepository.findByChatRoomId(chatRoomId);
+
+        // ChatMessage -> RequestMessage 변환
+        return chatMessages.stream()
+                .map(chatMessage -> new RequestMessage(chatMessage.getNickname(), chatMessage.getChatMessageContent()))
+                .collect(Collectors.toList());
     }
 }
