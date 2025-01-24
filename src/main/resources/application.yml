@@ -38,8 +38,8 @@ custom:
     backUrl: "http://${custom.dev.cookieDomain}:${server.port}"
   prod:
     cookieDomain: hf.codingtori.site
-    frontUrl: "http://www.${custom.prod.cookieDomain}"
-    backUrl: "http://api.${custom.prod.cookieDomain}"
+    frontUrl: "https://www.${custom.prod.cookieDomain}"
+    backUrl: "https://api.${custom.prod.cookieDomain}"
   site:
     name: "SITE PROD"
     cookieDomain: "${custom.prod.cookieDomain}"
