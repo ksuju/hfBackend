@@ -66,6 +66,4 @@ public class ApiSecurityConfig {
         http.addFilterBefore(new CorsFilter(corsConfigurationSource()), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
-
 }
