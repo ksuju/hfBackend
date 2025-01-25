@@ -1,6 +1,5 @@
 package com.ll.hfback.domain.festival.post.service;
 
-import com.ll.hfback.domain.festival.comment.entity.Comment;
 import com.ll.hfback.domain.festival.post.entity.Post;
 import com.ll.hfback.domain.festival.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +14,6 @@ import java.util.List;
 @Service
 public class PostService {
     private final PostRepository postRepository;
-
-    @Transactional
-    public void modifyComment(Comment comment, String content) {
-        comment.setContent(content);
-    }
 
     // 모든 게시글 조회
     public List<Post> findAll() {
