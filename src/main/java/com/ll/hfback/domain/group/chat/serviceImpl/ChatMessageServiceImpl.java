@@ -87,20 +87,6 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         }
     }
 
-//    @Transactional
-//    public List<RequestMessage> readMessages(Long chatId, Long afterChatMessageId) {
-//        logger.info("채팅 메시지 조회");
-//        List<ChatMessage> chatMessages = chatMessageRepository.findByChatIdAndIdAfter(chatId, afterChatMessageId);
-//
-//        // ChatMessage 엔티티를 RequestMessage DTO로 변환
-//        return chatMessages.stream()
-//                .map(chatMessage -> {
-//                    RequestMessage requestMessage = new RequestMessage();
-//                    requestMessage.setNickname(chatMessage.getNickname());
-//                    requestMessage.setContent(chatMessage.getChatMessageContent());
-//                    return requestMessage;
-//                })
-//                .collect(Collectors.toList());
     @Transactional(readOnly = true)
     public List<RequestMessage> readMessages(Long chatRoomId) {
         List<ChatMessage> chatMessages = chatMessageRepository.findByChatRoomId(chatRoomId);
