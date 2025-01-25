@@ -1,6 +1,7 @@
 package com.ll.hfback.domain.group.chat.serviceImpl;
 
-import com.ll.hfback.domain.group.chat.dto.response.ResponseMessage;
+import com.ll.hfback.domain.group.chat.request.RequestMessage;
+import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.entity.ChatMessage;
 import com.ll.hfback.domain.group.chat.repository.ChatMessageRepository;
 import com.ll.hfback.domain.group.chat.service.ChatMessageService;
@@ -11,11 +12,12 @@ import com.ll.hfback.domain.member.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * packageName    : com.ll.hfback.domain.group.chat.service
@@ -34,6 +36,7 @@ import java.util.List;
 public class ChatMessageServiceImpl implements ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final MemberRepository memberRepository;
+    private final SimpMessagingTemplate simpMessagingTemplate;
     private final Logger logger = LoggerFactory.getLogger(ChatMessageServiceImpl.class.getName());
     private final ChatRoomRepository chatRoomRepository;
 
@@ -64,9 +67,13 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                         .build();
 
                 chatMessageRepository.save(chatMessage);
+
+                // 지정된 채팅방으로 메시지 전송
+                simpMessagingTemplate.convertAndSend("/topic/chat/" + chatId, chatMessage);
+
                 logger.info("채팅 메시지 작성 완료");
             } else {
-                logger.error("채팅 메시지 작성 실패, Room or Chat is null");
+                logger.error("채팅 메시지 작성 실패, ChatRoom is null");
             }
             // fix: 어떤 에러가 발생 할 수 있는지, 에러 유형별 처리 방법 생각 (던지기 x)
             // 예외를 발생시켜 클라이언트에 알림, 필요하면 400 Bad Request와 같은 HTTP 응답 코드 설정
@@ -80,8 +87,27 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         }
     }
 
+//    @Transactional
+//    public List<RequestMessage> readMessages(Long chatId, Long afterChatMessageId) {
+//        logger.info("채팅 메시지 조회");
+//        List<ChatMessage> chatMessages = chatMessageRepository.findByChatIdAndIdAfter(chatId, afterChatMessageId);
+//
+//        // ChatMessage 엔티티를 RequestMessage DTO로 변환
+//        return chatMessages.stream()
+//                .map(chatMessage -> {
+//                    RequestMessage requestMessage = new RequestMessage();
+//                    requestMessage.setNickname(chatMessage.getNickname());
+//                    requestMessage.setContent(chatMessage.getChatMessageContent());
+//                    return requestMessage;
+//                })
+//                .collect(Collectors.toList());
     @Transactional(readOnly = true)
-    public List<ChatMessage> readMessages(Long chatRoomId) {
-        return chatMessageRepository.findByChatRoomId(chatRoomId);
+    public List<RequestMessage> readMessages(Long chatRoomId) {
+        List<ChatMessage> chatMessages = chatMessageRepository.findByChatRoomId(chatRoomId);
+
+        // ChatMessage -> RequestMessage 변환
+        return chatMessages.stream()
+                .map(chatMessage -> new RequestMessage(chatMessage.getNickname(), chatMessage.getChatMessageContent()))
+                .collect(Collectors.toList());
     }
 }
