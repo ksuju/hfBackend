@@ -2,7 +2,7 @@ package com.ll.hfback.domain.festival.comment.service;
 
 import com.ll.hfback.domain.festival.comment.dto.CommentDto;
 import com.ll.hfback.domain.festival.comment.entity.Comment;
-import com.ll.hfback.domain.festival.comment.form.CommentForm;
+import com.ll.hfback.domain.festival.comment.form.AddCommentForm;
 import com.ll.hfback.domain.festival.comment.repository.CommentRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,16 +14,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
-    final CommentRepository commentRepository;
-
-    // 해당 사용자가 작성한 모든 댓글 조회
-    @Transactional(readOnly = true)
-    public List<CommentDto> searchByMemberId(Long id) {
-        List<Comment> comments = commentRepository.findByMemberId(id);
-        return comments.stream()
-                .map(this::convertToDto)
-                .toList();
-    }
+    private final CommentRepository commentRepository;
 
     // 해당 게시글에 작성된 모든 댓글 조회
     @Transactional(readOnly = true)
@@ -45,13 +36,13 @@ public class CommentService {
 
     // 해당 게시글에 댓글 생성
     @Transactional
-    public void addComment(String festivalId, @Valid CommentForm commentForm) {
+    public void addComment(String festivalId, @Valid AddCommentForm addCommentForm) {
         Comment comment = Comment.builder()
                 .festivalId(festivalId)
-                .member(commentForm.getMember())
-                .content(commentForm.getContent())
+                .member(addCommentForm.getMember())
+                .content(addCommentForm.getContent())
                 .commentState(true)
-                .superCommentId(commentForm.getSuperCommentId())
+                .superCommentId(addCommentForm.getSuperCommentId())
                 .build();
 
         commentRepository.save(comment);
