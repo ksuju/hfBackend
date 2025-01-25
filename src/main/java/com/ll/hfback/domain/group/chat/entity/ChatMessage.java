@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.group.chat.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ll.hfback.domain.group.chatRoom.entity.ChatRoom;
 import com.ll.hfback.global.jpa.BaseEntity;
 import jakarta.persistence.*;
@@ -27,6 +28,7 @@ import lombok.experimental.SuperBuilder;
 public class ChatMessage extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_room_id", nullable = false)
+    @JsonIgnore
     private ChatRoom chatRoom;
 
     @Column(nullable = false)

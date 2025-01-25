@@ -1,4 +1,4 @@
-package com.ll.hfback.domain.group.chat.dto.response;
+package com.ll.hfback.domain.group.chat.response;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,6 +1,7 @@
 package com.ll.hfback.domain.group.chat.service;
 
-import com.ll.hfback.domain.group.chat.dto.response.ResponseMessage;
+import com.ll.hfback.domain.group.chat.request.RequestMessage;
+import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.entity.ChatMessage;
 
 import java.util.List;
@@ -21,5 +22,5 @@ public interface ChatMessageService {
     void writeMessage(Long chatRoomId, ResponseMessage responseMessage);
 
     // 해당 채팅방의 모든 메시지 불러오기
-    List<ChatMessage> readMessages(Long chatRoomId);
+    List<RequestMessage> readMessages(Long chatRoomId);
 }
