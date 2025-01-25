@@ -9,7 +9,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/v1/Posts")
+@RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
 public class ApiV1PostController {
     private final PostService postService;
@@ -31,8 +31,8 @@ public class ApiV1PostController {
     }
 
     // 게시글ID로 상세 조회
-    @GetMapping("/{festivalId}")
-    public Post getPost(@PathVariable("festivalId") String festivalId) {
+    @GetMapping("/{festival-id}")
+    public Post getPost(@PathVariable("festival-id") String festivalId) {
         Post post = postService.searchByFestivalId(festivalId);
 
         return post;

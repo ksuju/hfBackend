@@ -26,8 +26,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
   @SneakyThrows
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain filterChain) {
-    if (request.getRequestURI().equals("/api/v1/auth/login") || request.getRequestURI()
-        .equals("/api/v1/auth/logout") || request.getRequestURI().equals("/api/v1/Posts/**")) {
+    if (request.getRequestURI().equals("/api/v1/auth/login") ||
+            request.getRequestURI().equals("/api/v1/auth/logout") ||
+            request.getRequestURI().equals("/api/v1/Posts/**") ||
+            request.getRequestURI().equals("/ws/chat") || // 웹소켓 구독 경로
+            request.getRequestURI().startsWith("/api/v1/groups/") // 채팅 관련 요청 URI 인증 제외 처리
+    ) {
       filterChain.doFilter(request, response);
       return;
     }
