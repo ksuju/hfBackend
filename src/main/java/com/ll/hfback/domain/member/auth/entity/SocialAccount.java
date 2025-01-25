@@ -30,6 +30,10 @@ public class SocialAccount extends BaseEntity {
 
   @JsonIgnore
   @Column(columnDefinition = "TEXT")
+  private String accessToken;
+
+  @JsonIgnore
+  @Column(columnDefinition = "TEXT")
   private String refreshToken;
 
 
