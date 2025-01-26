@@ -8,4 +8,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class PostDto {
+    private String festivalId;
+    private String festivalName;
+    private String festivalStartDate;
+    private String festivalEndDate;
+    private String festivalUrl;
 }

@@ -28,6 +28,7 @@ public class Post {
     private String festivalState;
     private String festivalUrl;
     private String inputType;
+    private String genrenm;
 
     @CreatedDate
     @Getter//Setter는?

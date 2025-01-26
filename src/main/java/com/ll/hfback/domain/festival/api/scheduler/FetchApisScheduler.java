@@ -1,8 +1,7 @@
-package com.ll.hfback.domain.festival.api;
+package com.ll.hfback.domain.festival.api.scheduler;
 
 
-//import com.ll.hfback.domain.festival.api.entity.KopisFesEntity;
-import com.ll.hfback.domain.festival.api.service.KopisService;
+import com.ll.hfback.domain.festival.api.service.ApiService;
 import com.ll.hfback.domain.festival.post.entity.Post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,14 +35,14 @@ public class FetchApisScheduler {
     @Value("${apis.api.service-key}")
     private String serviceKeyForApis;
 
-    private final KopisService kopisService;
+    private final ApiService apiService;
 
     @Scheduled(cron = "${schedule.cron_for_apis}")
     public void getApisApiData() {
 
         if(useSchedule == true) {
 
-            log.info("apis스케쥴러 실행~");
+            log.info("Apis스케쥴러 실행");
             //stdate = eventStartDate
             List<Post> Post = new ArrayList<>();
 
@@ -84,7 +83,7 @@ public class FetchApisScheduler {
                 reader.close();
                 String jsonResponse = responseBuilder.toString();
                 try {
-                    kopisService.saveForApis(jsonResponse);
+                    apiService.saveForApis(jsonResponse);
                 }catch (Exception e){
                     log.error("Apis Scheduler save중에 에러가 발생했습니다", e);
                 }
@@ -92,7 +91,7 @@ public class FetchApisScheduler {
                 log.error("Apis Scheduler Api 호출시 에러가 발생했습니다", e);
             }
 
-            log.info("apis스케쥴러 종료~");
+            log.info("Apis스케쥴러 종료");
         }
     }
 }
