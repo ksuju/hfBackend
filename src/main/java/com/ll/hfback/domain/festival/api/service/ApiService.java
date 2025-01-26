@@ -4,6 +4,7 @@ import com.ll.hfback.domain.festival.post.entity.Post;
 
 import java.util.List;
 
+
 public interface ApiService {
     // Apis의 데이터를 Post에 저장
     void saveForApis(String jsonResponse);

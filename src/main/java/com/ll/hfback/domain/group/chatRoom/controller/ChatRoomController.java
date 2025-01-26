@@ -37,5 +37,4 @@ public class ChatRoomController {
         chatRoomService.createChatRoom(festivalId, createChatRoomForm);
         return ResponseEntity.status(HttpStatus.CREATED).body("모임이 성공적으로 만들어졌습니다.");
     }
-
 }

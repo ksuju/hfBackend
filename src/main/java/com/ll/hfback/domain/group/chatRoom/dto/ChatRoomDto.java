@@ -1,10 +1,8 @@
 package com.ll.hfback.domain.group.chatRoom.dto;
 
-import com.ll.hfback.domain.group.chatRoom.entity.ChatRoom;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-
 
 @Getter
 @Setter

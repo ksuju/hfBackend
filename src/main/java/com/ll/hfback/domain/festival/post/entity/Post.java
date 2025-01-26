@@ -8,7 +8,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
-
 @Entity
 @Setter
 @Getter
@@ -31,11 +30,8 @@ public class Post {
     private String genrenm;
 
     @CreatedDate
-    @Getter//Setter는?
     private LocalDateTime createDate;
 
     @LastModifiedDate
-    @Getter
     private LocalDateTime modifyDate;
-
 }

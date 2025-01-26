@@ -1,7 +1,6 @@
 package com.ll.hfback.domain.group.chatRoom.dto;
 
 import com.ll.hfback.domain.group.chatRoom.converter.StringListConverter;
-import com.ll.hfback.domain.group.chatRoom.entity.ChatRoom;
 import jakarta.persistence.Convert;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
