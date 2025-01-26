@@ -5,6 +5,7 @@ import com.ll.hfback.domain.group.chatRoom.dto.DetailChatRoomDto;
 import com.ll.hfback.domain.group.chatRoom.form.CreateChatRoomForm;
 import com.ll.hfback.domain.group.chatRoom.form.UpdateChatRoomForm;
 import com.ll.hfback.domain.group.chatRoom.service.ChatRoomService;
+import com.ll.hfback.domain.member.member.entity.Member;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,9 +28,9 @@ public class ChatRoomController {
     }
 
     // 해당 게시글의 모임채팅방 상세 조회
-    @GetMapping("/chat-room/{chat-room-id}")
-    public Optional<DetailChatRoomDto> getRoom(@PathVariable("chat-room-id") Long chatRoomId) {
-        return chatRoomService.searchById(chatRoomId);
+    @GetMapping("/chat-room/{chat-room-id}/{member-id}")
+    public Optional<DetailChatRoomDto> getRoom(@PathVariable("chat-room-id") Long chatRoomId, @PathVariable("member-id") String memberId) {
+        return chatRoomService.searchById(chatRoomId, memberId);
     }
 
     // 해당 게시글에 모임채팅방 생성
@@ -52,4 +53,17 @@ public class ChatRoomController {
         chatRoomService.deleteChatRoom(chatRoomId);
         return ResponseEntity.status(HttpStatus.CREATED).body("모임이 성공적으로 삭제되었습니다.");
     }
+
+    // 해당 모임채팅방에 참여신청
+    @GetMapping("/apply-chat-room/{chat-room-id}/{member-id}")
+    public ResponseEntity<String> applyChatRoom(@PathVariable("chat-room-id") Long chatRoomId, @PathVariable("member-id") String memberId) {
+        chatRoomService.applyChatRoom(chatRoomId, memberId);
+        return ResponseEntity.status(HttpStatus.CREATED).body("성공적으로 모임에 참여 신청을 했습니다.");
+    }
+
+    // 해당 모임채팅방에 참여신청 취소
+
+    // 해당 모임채팅방 참여신청 승인
+
+    // 해당 모임채팅방 참여신청 거절
 }
