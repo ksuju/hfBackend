@@ -5,6 +5,7 @@ import com.ll.hfback.domain.group.chatRoom.dto.ChatRoomDto;
 import com.ll.hfback.domain.group.chatRoom.dto.DetailChatRoomDto;
 import com.ll.hfback.domain.group.chatRoom.entity.ChatRoom;
 import com.ll.hfback.domain.group.chatRoom.form.CreateChatRoomForm;
+import com.ll.hfback.domain.group.chatRoom.form.UpdateChatRoomForm;
 import com.ll.hfback.domain.group.chatRoom.repository.ChatRoomRepository;
 import com.ll.hfback.domain.group.chatRoom.service.ChatRoomService;
 import jakarta.validation.Valid;
@@ -51,6 +52,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         // Create ChatRoomDto
         ChatRoomDto chatRoomDto = new ChatRoomDto(
+                chatRoom.getMember().getId(),
                 chatRoom.getId(),
                 chatRoom.getRoomTitle(),
                 chatRoom.getRoomContent(),
@@ -79,6 +81,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         // Create DetailChatRoomDto
         DetailChatRoomDto detailChatRoomDto = new DetailChatRoomDto(
+                chatRoom.getMember().getId(),
                 chatRoom.getId(),
                 chatRoom.getMember().getNickname(),
                 chatRoom.getRoomTitle(),
@@ -125,5 +128,26 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .build();
 
         chatRoomRepository.save(chatRoom);
+    }
+
+    // 해당 모임채팅방 수정
+    @Override
+    @Transactional
+    public void updateChatRoom(Long chatRoomId, @Valid UpdateChatRoomForm updateChatRoomForm) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
+        chatRoom.setRoomTitle(updateChatRoomForm.getRoomTitle());
+        chatRoom.setRoomContent(updateChatRoomForm.getRoomContent());
+        chatRoom.setRoomMemberLimit(updateChatRoomForm.getRoomMemberLimit());
+        chatRoomRepository.save(chatRoom);
+    }
+
+    // 해당 모임채팅방 삭제
+    @Override
+    @Transactional
+    public void deleteChatRoom(Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
+        chatRoomRepository.delete(chatRoom);
     }
 }

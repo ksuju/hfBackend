@@ -4,6 +4,7 @@ import com.ll.hfback.domain.group.chatRoom.dto.ChatRoomDto;
 import com.ll.hfback.domain.group.chatRoom.dto.DetailChatRoomDto;
 import com.ll.hfback.domain.group.chatRoom.entity.ChatRoom;
 import com.ll.hfback.domain.group.chatRoom.form.CreateChatRoomForm;
+import com.ll.hfback.domain.group.chatRoom.form.UpdateChatRoomForm;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -25,4 +26,10 @@ public interface ChatRoomService {
 
     // 해당 게시글에 모임 생성
     void createChatRoom(String festivalId, @Valid CreateChatRoomForm createChatRoomForm);
+
+    // 해당 모임채팅방 수정
+    void updateChatRoom(Long chatRoomId, @Valid UpdateChatRoomForm updateChatRoomForm);
+
+    // 해당 모임채팅방 삭제
+    void deleteChatRoom(Long chatRoomId);
 }

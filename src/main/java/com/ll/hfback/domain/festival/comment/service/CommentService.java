@@ -18,10 +18,10 @@ public interface CommentService {
     void addComment(String festivalId, @Valid AddCommentForm addCommentForm);
 
     // 해당 댓글 수정
-    void updateComment(String commentId, @Valid UpdateCommentForm updateCommentForm);
+    void updateComment(Long commentId, @Valid UpdateCommentForm updateCommentForm);
 
     // 해당 댓글 삭제
-    void deleteComment(String commentId);
+    void deleteComment(Long commentId);
 
     // Comment -> CommentDto 변환
     CommentDto convertToDto(Comment comment);

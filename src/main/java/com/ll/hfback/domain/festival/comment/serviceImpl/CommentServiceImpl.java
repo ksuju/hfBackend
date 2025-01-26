@@ -55,8 +55,8 @@ public class CommentServiceImpl implements CommentService {
     // 해당 댓글 수정
     @Override
     @Transactional
-    public void updateComment(String commentId, @Valid UpdateCommentForm updateCommentForm) {
-        Comment comment = commentRepository.findById(Long.valueOf(commentId))
+    public void updateComment(Long commentId, @Valid UpdateCommentForm updateCommentForm) {
+        Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
         comment.setContent(updateCommentForm.getContent());
         commentRepository.save(comment);
@@ -65,8 +65,8 @@ public class CommentServiceImpl implements CommentService {
     // 해당 댓글 삭제
     @Override
     @Transactional
-    public void deleteComment(String commentId) {
-        Comment comment = commentRepository.findById(Long.valueOf(commentId))
+    public void deleteComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
         commentRepository.delete(comment);
     }

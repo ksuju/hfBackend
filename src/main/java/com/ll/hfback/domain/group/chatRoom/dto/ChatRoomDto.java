@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ChatRoomDto {
+    private Long memberId;
     private Long chatRoomId;
     private String roomTitle;
     private String roomContent;
