@@ -2,7 +2,6 @@ package com.ll.hfback.domain.festival.post.controller;
 
 import com.ll.hfback.domain.festival.post.dto.DetailPostDto;
 import com.ll.hfback.domain.festival.post.dto.PostDto;
-import com.ll.hfback.domain.festival.post.entity.Post;
 import com.ll.hfback.domain.festival.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
