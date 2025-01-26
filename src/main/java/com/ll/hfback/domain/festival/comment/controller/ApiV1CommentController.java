@@ -2,6 +2,7 @@ package com.ll.hfback.domain.festival.comment.controller;
 
 import com.ll.hfback.domain.festival.comment.dto.CommentDto;
 import com.ll.hfback.domain.festival.comment.form.AddCommentForm;
+import com.ll.hfback.domain.festival.comment.form.UpdateCommentForm;
 import com.ll.hfback.domain.festival.comment.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,17 +37,17 @@ public class ApiV1CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body("댓글이 성공적으로 추가되었습니다.");
     }
 
-//    // 해당 게시글의 댓글 수정
-//    @PostMapping("/{festivalId}/comments/{id}")
-//    public Comment updateComment(@PathVariable String festivalId, @RequestBody Comment comment){
-//
-//
-//    }
-//
-//    // 해당 게시글의 댓글 삭제
-//    @DeleteMapping("/{festivalId}/comments/{id}")
-//    public Comment deleteComment(@PathVariable String festivalId, @PathVariable String id){
-//
-//
-//    }
+    // 해당 댓글 수정
+    @PostMapping("/update-comment/{comment-id}")
+    public ResponseEntity<String> updateComment(@PathVariable("comment-id") String commentId, @RequestBody @Valid UpdateCommentForm updateCommentForm){
+        commentService.updateComment(commentId, updateCommentForm);
+        return ResponseEntity.status(HttpStatus.CREATED).body("댓글이 성공적으로 수정되었습니다.");
+    }
+
+    // 해당 댓글 삭제
+    @GetMapping("/delete-comment/{comment-id}")
+    public ResponseEntity<String> deleteComment(@PathVariable("comment-id") String commentId){
+        commentService.deleteComment(commentId);
+        return ResponseEntity.status(HttpStatus.CREATED).body("댓글이 성공적으로 삭제되었습니다.");
+    }
 }

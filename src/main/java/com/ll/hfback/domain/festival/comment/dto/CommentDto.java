@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 public class CommentDto {
+    private Long memberId;
     private String memberNickname;
+    private Long commentId;
     private String content;
     private LocalDateTime createTime;
     private Long superCommentId;

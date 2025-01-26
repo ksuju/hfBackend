@@ -2,7 +2,6 @@ package com.ll.hfback.domain.group.chatRoom.controller;
 
 import com.ll.hfback.domain.group.chatRoom.dto.ChatRoomDto;
 import com.ll.hfback.domain.group.chatRoom.dto.DetailChatRoomDto;
-import com.ll.hfback.domain.group.chatRoom.entity.ChatRoom;
 import com.ll.hfback.domain.group.chatRoom.form.CreateChatRoomForm;
 import com.ll.hfback.domain.group.chatRoom.service.ChatRoomService;
 import jakarta.validation.Valid;
@@ -38,5 +37,4 @@ public class ChatRoomController {
         chatRoomService.createChatRoom(festivalId, createChatRoomForm);
         return ResponseEntity.status(HttpStatus.CREATED).body("모임이 성공적으로 만들어졌습니다.");
     }
-
 }

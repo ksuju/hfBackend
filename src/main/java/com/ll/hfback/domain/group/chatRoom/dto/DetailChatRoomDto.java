@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class DetailChatRoomDto {
+    private Long chatRoomId;
     private String memberNickName;
     private String roomTitle;
     private String roomContent;

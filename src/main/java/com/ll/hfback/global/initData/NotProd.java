@@ -1,6 +1,7 @@
 package com.ll.hfback.global.initData;
 
 import com.ll.hfback.domain.festival.comment.form.AddCommentForm;
+import com.ll.hfback.domain.festival.comment.form.UpdateCommentForm;
 import com.ll.hfback.domain.festival.comment.service.CommentService;
 import com.ll.hfback.domain.group.chatRoom.form.CreateChatRoomForm;
 import com.ll.hfback.domain.group.chatRoom.service.ChatRoomService;
@@ -82,6 +83,16 @@ public class NotProd {
 
 
 
+                // 테스트 댓글 수정
+                //
+                //
+                // member1이 수정한 테스트 댓글(comment-id=1)
+                UpdateCommentForm updateCommentForm = new UpdateCommentForm();
+                updateCommentForm.setContent("이것은 member1이 다시 수정한 테스트 댓글입니다.");
+                commentService.updateComment("1", updateCommentForm);
+                
+
+                
                 // 테스트 모임채팅방 생성
                 //
                 //

@@ -28,7 +28,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public List<ChatRoomDto> searchByFestivalId(String festivalId) {
         List<ChatRoom> chatRooms = chatRoomRepository.findByFestivalId(festivalId);
         return chatRooms.stream()
-                .map(this::convertToDto)  // convert ChatRoom to ChatRoomDto
+                .map(this::convertToChatRoomDto)  // convert ChatRoom to ChatRoomDto
                 .collect(Collectors.toList());
     }
 
@@ -37,13 +37,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Transactional(readOnly = true)
     public Optional<DetailChatRoomDto> searchById(Long id) {
         Optional<ChatRoom> chatRoom = chatRoomRepository.findById(id);
-        return chatRoom.map(this::convertToDetailDto);  // convert ChatRoom to ChatRoomDto
+        return chatRoom.map(this::convertToDetailChatRoomDto);  // convert ChatRoom to ChatRoomDto
     }
 
     // DB에서 받아온 참여자명단을 List<String>으로 변환하고, ChatRoom을 ChatRoomDto로 변환하는 메서드
     @Override
     @Transactional
-    public ChatRoomDto convertToDto(ChatRoom chatRoom) {
+    public ChatRoomDto convertToChatRoomDto(ChatRoom chatRoom) {
         StringListConverter converter = new StringListConverter();
 
         // joinMemberList는 null이 아님
@@ -51,6 +51,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         // Create ChatRoomDto
         ChatRoomDto chatRoomDto = new ChatRoomDto(
+                chatRoom.getId(),
                 chatRoom.getRoomTitle(),
                 chatRoom.getRoomContent(),
                 chatRoom.getRoomMemberLimit(),
@@ -63,7 +64,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     // DB에서 받아온 참여자명단과 대기자명단을 List<String>으로 변환하고, ChatRoom을 DetailChatRoomDto로 변환하는 메서드
     @Override
     @Transactional
-    public DetailChatRoomDto convertToDetailDto(ChatRoom chatRoom) {
+    public DetailChatRoomDto convertToDetailChatRoomDto(ChatRoom chatRoom) {
         StringListConverter converter = new StringListConverter();
 
         // joinMemberList는 null이 아님
@@ -76,8 +77,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             chatRoom.setWaitingMemberList(List.of());
         }
 
-        // Create ChatRoomDto
+        // Create DetailChatRoomDto
         DetailChatRoomDto detailChatRoomDto = new DetailChatRoomDto(
+                chatRoom.getId(),
                 chatRoom.getMember().getNickname(),
                 chatRoom.getRoomTitle(),
                 chatRoom.getRoomContent(),
