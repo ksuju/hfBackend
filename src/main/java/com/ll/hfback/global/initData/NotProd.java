@@ -1,7 +1,11 @@
 package com.ll.hfback.global.initData;
 
-import com.ll.hfback.domain.festival.comment.form.CommentForm;
+import com.ll.hfback.domain.festival.comment.form.AddCommentForm;
+import com.ll.hfback.domain.festival.comment.form.UpdateCommentForm;
 import com.ll.hfback.domain.festival.comment.service.CommentService;
+import com.ll.hfback.domain.group.chatRoom.form.CreateChatRoomForm;
+import com.ll.hfback.domain.group.chatRoom.form.UpdateChatRoomForm;
+import com.ll.hfback.domain.group.chatRoom.service.ChatRoomService;
 import com.ll.hfback.domain.member.auth.dto.SignupRequest;
 import com.ll.hfback.domain.member.auth.service.AuthService;
 import com.ll.hfback.domain.member.member.entity.Member;
@@ -19,7 +23,8 @@ public class NotProd {
     @Bean
     public ApplicationRunner applicationRunner(
             AuthService authService,
-            CommentService commentService
+            CommentService commentService,
+            ChatRoomService chatroomservice
     ) {
         return new ApplicationRunner() {
             @Transactional
@@ -44,33 +49,89 @@ public class NotProd {
                     )
                 );
 
-                // member1이 PF255966 공연에 작성한 테스트 댓글
-                CommentForm commentForm1 = new CommentForm();
-                commentForm1.setContent("이것은 member1이 작성한 테스트 댓글입니다.");
-                commentForm1.setMember(member1);
-                commentForm1.setSuperCommentId(null);
-                commentService.addComment("PF255966",commentForm1);
 
-                // member2가 PF255966 공연에 작성한 테스트 댓글
-                CommentForm commentForm2 = new CommentForm();
-                commentForm2.setContent("이것은 member2가 작성한 테스트 댓글입니다.");
-                commentForm2.setMember(member2);
-                commentForm2.setSuperCommentId(null);
-                commentService.addComment("2938676",commentForm2);
 
-                // member3가 PF255966 공연에서 memeber1의 댓글에 작성한 테스트 답글
-                CommentForm commentForm3 = new CommentForm();
-                commentForm3.setContent("이것은 member3가 작성한 테스트 답글입니다.");
-                commentForm3.setMember(member3);
-                commentForm3.setSuperCommentId(1L);
-                commentService.addComment("2938676",commentForm3);
+                // 테스트 댓글&답글 생성
+                //
+                //
+                // member1이 PF256158 공연게시글에 작성한 테스트 댓글
+                AddCommentForm addCommentForm1 = new AddCommentForm();
+                addCommentForm1.setContent("이것은 member1이 작성한 테스트 댓글입니다.");
+                addCommentForm1.setMember(member1);
+                addCommentForm1.setSuperCommentId(null);
+                commentService.addComment("PF256158", addCommentForm1);
 
-                // member3가 PF255966 공연에 memeber2의 댓글에 작성한 테스트 댓글
-                CommentForm commentForm4 = new CommentForm();
-                commentForm4.setContent("이것은 member3가 작성한 테스트 답글입니다.");
-                commentForm4.setMember(member3);
-                commentForm4.setSuperCommentId(2L);
-                commentService.addComment("2938676",commentForm4);
+                // member2가 PF256158 공연게시글에 작성한 테스트 댓글
+                AddCommentForm addCommentForm2 = new AddCommentForm();
+                addCommentForm2.setContent("이것은 member2가 작성한 테스트 댓글입니다.");
+                addCommentForm2.setMember(member2);
+                addCommentForm2.setSuperCommentId(null);
+                commentService.addComment("PF256158", addCommentForm2);
+
+                // member3가 PF256158 공연게시글에서 memeber1의 댓글에 작성한 테스트 답글
+                AddCommentForm addCommentForm3 = new AddCommentForm();
+                addCommentForm3.setContent("이것은 member3이 작성한 테스트 답글입니다.");
+                addCommentForm3.setMember(member3);
+                addCommentForm3.setSuperCommentId(1L);
+                commentService.addComment("PF256158", addCommentForm3);
+
+                // member3가 PF256158 공연게시글에서 memeber2의 댓글에 작성한 테스트 답글
+                AddCommentForm addCommentForm4 = new AddCommentForm();
+                addCommentForm4.setContent("이것은 member3이 작성한 테스트 답글입니다.");
+                addCommentForm4.setMember(member3);
+                addCommentForm4.setSuperCommentId(2L);
+                commentService.addComment("PF256158", addCommentForm4);
+
+
+
+                // 테스트 댓글 수정
+                //
+                //
+                // member1이 수정한 테스트 댓글(comment-id=1)
+                UpdateCommentForm updateCommentForm = new UpdateCommentForm();
+                updateCommentForm.setContent("이것은 member1이 다시 수정한 테스트 댓글입니다.");
+                commentService.updateComment(1L, updateCommentForm);
+                
+
+                
+                // 테스트 모임채팅방 생성
+                //
+                //
+                // member1이 PF256158 공연게시글에서 만든 모임채팅방
+                CreateChatRoomForm createChatRoomForm1 = new CreateChatRoomForm();
+                createChatRoomForm1.setMember(member1);
+                createChatRoomForm1.setRoomTitle("이것은 member1이 작성한 테스트 제목입니다.");
+                createChatRoomForm1.setRoomContent("이것은 member1이 작성한 테스트 본문입니다.");
+                createChatRoomForm1.setRoomMemberLimit(10L);
+                chatroomservice.createChatRoom("PF256158", createChatRoomForm1);
+
+                // member2가 PF256158 공연게시글에서 만든 모임채팅방
+                CreateChatRoomForm createChatRoomForm2 = new CreateChatRoomForm();
+                createChatRoomForm2.setMember(member2);
+                createChatRoomForm2.setRoomTitle("이것은 member2가 작성한 테스트 제목입니다.");
+                createChatRoomForm2.setRoomContent("이것은 member2가 작성한 테스트 본문입니다.");
+                createChatRoomForm2.setRoomMemberLimit(20L);
+                chatroomservice.createChatRoom("PF256158", createChatRoomForm2);
+
+                // member3가 PF256158 공연게시글에서 만든 모임채팅방
+                CreateChatRoomForm createChatRoomForm3 = new CreateChatRoomForm();
+                createChatRoomForm3.setMember(member3);
+                createChatRoomForm3.setRoomTitle("이것은 member3이 작성한 테스트 제목입니다.");
+                createChatRoomForm3.setRoomContent("이것은 member3이 작성한 테스트 본문입니다.");
+                createChatRoomForm3.setRoomMemberLimit(30L);
+                chatroomservice.createChatRoom("PF256158", createChatRoomForm3);
+
+
+
+                // 테스트 모임채팅방 수정
+                //
+                //
+                // member1이 수정한 테스트 모임채팅방(chat-room-id=1)
+                UpdateChatRoomForm updateChatRoomForm = new UpdateChatRoomForm();
+                updateChatRoomForm.setRoomTitle("이것은 member1이 다시 수정한 테스트 제목입니다.");
+                updateChatRoomForm.setRoomContent("이것은 member1이 다시 수정한 테스트 본문입니다.");
+                updateChatRoomForm.setRoomMemberLimit(100L);
+                chatroomservice.updateChatRoom(1L, updateChatRoomForm);
             }
         };
     }
