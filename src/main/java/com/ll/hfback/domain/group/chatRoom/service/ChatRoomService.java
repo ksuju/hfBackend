@@ -17,7 +17,7 @@ public interface ChatRoomService {
     List<ChatRoomDto> searchByFestivalId(String festivalId);
 
     // 해당 게시글의 모임 상세 조회
-    Optional<DetailChatRoomDto> searchById(Long id, String memberId);
+    Optional<DetailChatRoomDto> searchById(Long id);
 
     // DB에서 받아온 참여자명단과 대기자명단을 List<String>으로 변환하고, ChatRoom을 ChatRoomDto로 변환하는 메서드
     ChatRoomDto convertToChatRoomDto(ChatRoom chatRoom);
@@ -35,5 +35,5 @@ public interface ChatRoomService {
     void deleteChatRoom(Long chatRoomId);
 
     // 해당 모임채팅방에 참여신청
-    void applyChatRoom(Long chatRoomId, String memberId);
+    void applyChatRoom(Long chatRoomId);
 }

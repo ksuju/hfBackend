@@ -1,6 +1,5 @@
 package com.ll.hfback.domain.group.chatRoom.form;
 
-import com.ll.hfback.domain.member.member.entity.Member;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -15,6 +14,5 @@ public class CreateChatRoomForm {
     @NotEmpty
     @Size(max = 500)
     private String roomContent;
-    private Member member;
     private Long roomMemberLimit; // 최소 10명 ~ 최대 100명 (스크롤 형식)
 }

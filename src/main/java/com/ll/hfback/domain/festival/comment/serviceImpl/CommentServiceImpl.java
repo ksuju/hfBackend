@@ -6,6 +6,8 @@ import com.ll.hfback.domain.festival.comment.form.AddCommentForm;
 import com.ll.hfback.domain.festival.comment.form.UpdateCommentForm;
 import com.ll.hfback.domain.festival.comment.repository.CommentRepository;
 import com.ll.hfback.domain.festival.comment.service.CommentService;
+import com.ll.hfback.domain.group.chatRoom.auth.AuService;
+import com.ll.hfback.domain.member.member.entity.Member;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
+    private final AuService auService;
 
     // 해당 게시글에 작성된 모든 댓글 조회
     @Override
@@ -42,9 +45,12 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void addComment(String festivalId, @Valid AddCommentForm addCommentForm) {
+        // 현재 로그인한 사용자의 member 객체를 가져오는 메서드
+        Member member = auService.getCurrentMember();
+
         Comment comment = Comment.builder()
                 .festivalId(festivalId)
-                .member(addCommentForm.getMember())
+                .member(member)
                 .content(addCommentForm.getContent())
                 .commentState(true)
                 .superCommentId(addCommentForm.getSuperCommentId())
@@ -58,6 +64,13 @@ public class CommentServiceImpl implements CommentService {
     public void updateComment(Long commentId, @Valid UpdateCommentForm updateCommentForm) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
+
+        // 사용자 검증 - 현재 로그인한 사용자의 ID를 가져오는 메서드
+        Long currentUserId = auService.getCurrentUserId();
+        if (!comment.getMember().getId().equals(currentUserId)) {
+            throw new IllegalStateException("댓글 수정 권한이 없습니다.");
+        }
+
         comment.setContent(updateCommentForm.getContent());
         commentRepository.save(comment);
     }
@@ -68,6 +81,13 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
+
+        // 사용자 검증 - 현재 로그인한 사용자의 ID를 가져오는 메서드
+        Long currentUserId = auService.getCurrentUserId();
+        if (!comment.getMember().getId().equals(currentUserId)) {
+            throw new IllegalStateException("댓글 삭제 권한이 없습니다.");
+        }
+
         commentRepository.delete(comment);
     }
 
