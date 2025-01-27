@@ -37,6 +37,6 @@ public class ChatMessage extends BaseEntity {
     @Column(nullable = false)
     private String nickname;
 
-    @Builder.Default
-    private int chatMessageStatus = 1; // 기본값 = 1 (안읽음 상태), 0 (읽음 상태)
+//    @Builder.Default
+//    private int chatMessageStatus = 1; // 기본값 = 1 (안읽음 상태), 0 (읽음 상태)
 }
