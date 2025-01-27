@@ -1,6 +1,8 @@
 package com.ll.hfback.domain.group.chat.serviceImpl;
 
+import com.ll.hfback.domain.group.chat.entity.QChatMessage;
 import com.ll.hfback.domain.group.chat.request.RequestMessage;
+import com.ll.hfback.domain.group.chat.response.MessageSearchKeywordsResponse;
 import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.entity.ChatMessage;
 import com.ll.hfback.domain.group.chat.repository.ChatMessageRepository;
@@ -9,6 +11,7 @@ import com.ll.hfback.domain.group.chatRoom.entity.ChatRoom;
 import com.ll.hfback.domain.group.chatRoom.repository.ChatRoomRepository;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
+import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +22,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * packageName    : com.ll.hfback.domain.group.chat.service
@@ -44,7 +50,6 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     // 채팅 메시지 작성
     @Transactional
     public void writeMessage(Long chatId, ResponseMessage responseMessage) {
-        logger.info("채팅 메시지 작성");
         try {
             // 빈 메시지 또는 250자 초과 메시지 검사
             if (responseMessage.getContent() == null || responseMessage.getContent().trim().isEmpty()) {
@@ -73,7 +78,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 // 지정된 채팅방으로 메시지 전송
                 simpMessagingTemplate.convertAndSend("/topic/chat/" + chatId, chatMessage);
 
-                logger.info("채팅 메시지 작성 완료");
+                logger.info("채팅 메시지 작성 성공");
             } else {
                 logger.error("채팅 메시지 작성 실패, ChatRoom is null");
             }
@@ -92,20 +97,91 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     // 채팅 메시지 가져오기
     @Transactional(readOnly = true)
     public Page<RequestMessage> readMessages(Long chatRoomId, int page) {
-
-        Page<ChatMessage> chatMessagesPage = chatMessageRepository.findByChatRoomId(chatRoomId, customPaging(page));
-
-        // ChatMessage -> RequestMessage 변환
-        return chatMessagesPage.map(chatMessage ->
-                new RequestMessage(chatMessage.getNickname(), chatMessage.getChatMessageContent()));
+        try {
+            Page<ChatMessage> chatMessagesPage = chatMessageRepository.findByChatRoomId(chatRoomId, customPaging(page));
+            logger.info("채팅 메시지 가져오기 성공");
+            // ChatMessage -> RequestMessage 변환
+            return chatMessagesPage.map(chatMessage ->
+                    new RequestMessage(chatMessage.getNickname(), chatMessage.getChatMessageContent()));
+        } catch (Exception e) {
+            logger.info("채팅 메시지 가져오기 실패");
+            throw e;
+        }
     }
 
     // 고정된 페이지 크기 10으로 Pageable 객체를 생성 (메시지 불러올 때 사용할 커스텀 페이징)
     public Pageable customPaging(int page) {
-        // 내림차순 정렬 (createdAt 기준)
-        Sort sort = Sort.by(Sort.Order.desc("createDate"));
+        try {
+            // 내림차순 정렬 (createdAt 기준)
+            Sort sort = Sort.by(Sort.Order.desc("createDate"));
+            logger.info("커스텀 페이징 성공");
+            
+            // 페이지 번호와 크기, 정렬을 포함하여 Pageable 객체 생성
+            return PageRequest.of(page, 10, sort);
+        } catch (Exception e) {
+            logger.info("커스텀 페이징 실패");
+            throw e;
+        }
+    }
 
-        // 페이지 번호와 크기, 정렬을 포함하여 Pageable 객체 생성
-        return PageRequest.of(page, 10, sort);
+    // 조건에 따른 채팅 메시지 검색 기능
+    public Page<RequestMessage> searchMessages(Long chatRoomId,
+                                               int page,
+                                               MessageSearchKeywordsResponse messageSearchKeywordsResponse) {
+        try {
+            QChatMessage qChatMessage = QChatMessage.chatMessage; // QueryDSL 메타 모델 객체
+
+            BooleanBuilder builder = new BooleanBuilder();
+
+            // 검색어(keyword)가 있으면 해당 조건 추가
+            if (messageSearchKeywordsResponse != null && messageSearchKeywordsResponse.getKeyword() != null) {
+                String keyword = messageSearchKeywordsResponse.getKeyword();
+                builder.and(qChatMessage.chatMessageContent.containsIgnoreCase(keyword)); // 대소문자 구분 없이 검색
+            }
+
+            // 닉네임(nickname)이 있으면 해당 조건 추가
+            if (messageSearchKeywordsResponse.getNickname() != null) {
+                String nickname = messageSearchKeywordsResponse.getNickname();
+                builder.and(qChatMessage.nickname.containsIgnoreCase(nickname)); // 대소문자 구분 없이 검색
+            }
+
+            // 날짜 처리: 날짜를 LocalDateTime으로 변환하여 비교
+            // startDate만 있을 경우
+            if (messageSearchKeywordsResponse.getStartDate() != null) {
+                LocalDate startDate = messageSearchKeywordsResponse.getStartDate();
+                LocalDateTime startDateTime = startDate.atStartOfDay(); // startDate를 00:00:00로 변환
+                builder.and(qChatMessage.createDate.goe(startDateTime)); // startDate부터 최근까지 메시지 검색
+            }
+
+            // endDate만 있을 경우
+            if (messageSearchKeywordsResponse.getEndDate() != null) {
+                LocalDate endDate = messageSearchKeywordsResponse.getEndDate();
+                LocalDateTime endDateTime = endDate.atTime(23, 59, 59, 999999999); // endDate를 23:59:59로 변환
+                builder.and(qChatMessage.createDate.loe(endDateTime)); // 처음부터 endDate까지 메시지 검색
+            }
+
+            // startDate와 endDate 모두 있을 경우
+            if (messageSearchKeywordsResponse.getStartDate() != null && messageSearchKeywordsResponse.getEndDate() != null) {
+                LocalDate startDate = messageSearchKeywordsResponse.getStartDate();
+                LocalDate endDate = messageSearchKeywordsResponse.getEndDate();
+                LocalDateTime startDateTime = startDate.atStartOfDay(); // startDate를 00:00:00로 변환
+                LocalDateTime endDateTime = endDate.atTime(23, 59, 59, 999999999); // endDate를 23:59:59로 변환
+                builder.and(qChatMessage.createDate.between(startDateTime, endDateTime)); // 두 날짜 사이의 메시지 검색
+            }
+
+            // chatRoomId에 맞는 메시지 필터링
+            builder.and(qChatMessage.chatRoom.id.eq(chatRoomId));
+
+            // 페이지 처리와 함께 검색된 메시지 조회
+            Page<ChatMessage> searchMessages = chatMessageRepository.findAll(builder, customPaging(page));
+
+            logger.info("조건에 따른 채팅 메시지 검색 성공");
+            // ChatMessage -> RequestMessage 변환
+            return searchMessages.map(chatMessage ->
+                    new RequestMessage(chatMessage.getNickname(), chatMessage.getChatMessageContent()));
+        } catch (Exception e) {
+            logger.info("조건에 따른 채팅 메시지 검색 실패");
+            throw e;
+        }
     }
 }
