@@ -26,8 +26,7 @@ public class ChatRoom extends BaseEntity {
     private Long roomMemberLimit;
     private Long roomState;
     @Convert(converter = StringListConverter.class)
-    private List<String> joinMemberList;
+    private List<String> joinMemberIdList;
     @Convert(converter = StringListConverter.class)
-    private List<String> waitingMemberList;
+    private List<String> waitingMemberIdList;
 }
-

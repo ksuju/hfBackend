@@ -39,14 +39,14 @@ public class ApiV1CommentController {
 
     // 해당 댓글 수정
     @PostMapping("/update-comment/{comment-id}")
-    public ResponseEntity<String> updateComment(@PathVariable("comment-id") String commentId, @RequestBody @Valid UpdateCommentForm updateCommentForm){
+    public ResponseEntity<String> updateComment(@PathVariable("comment-id") Long commentId, @RequestBody @Valid UpdateCommentForm updateCommentForm){
         commentService.updateComment(commentId, updateCommentForm);
         return ResponseEntity.status(HttpStatus.CREATED).body("댓글이 성공적으로 수정되었습니다.");
     }
 
     // 해당 댓글 삭제
     @GetMapping("/delete-comment/{comment-id}")
-    public ResponseEntity<String> deleteComment(@PathVariable("comment-id") String commentId){
+    public ResponseEntity<String> deleteComment(@PathVariable("comment-id") Long commentId){
         commentService.deleteComment(commentId);
         return ResponseEntity.status(HttpStatus.CREATED).body("댓글이 성공적으로 삭제되었습니다.");
     }

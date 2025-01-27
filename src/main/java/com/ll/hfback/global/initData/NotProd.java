@@ -4,6 +4,7 @@ import com.ll.hfback.domain.festival.comment.form.AddCommentForm;
 import com.ll.hfback.domain.festival.comment.form.UpdateCommentForm;
 import com.ll.hfback.domain.festival.comment.service.CommentService;
 import com.ll.hfback.domain.group.chatRoom.form.CreateChatRoomForm;
+import com.ll.hfback.domain.group.chatRoom.form.UpdateChatRoomForm;
 import com.ll.hfback.domain.group.chatRoom.service.ChatRoomService;
 import com.ll.hfback.domain.member.auth.dto.SignupRequest;
 import com.ll.hfback.domain.member.auth.service.AuthService;
@@ -89,7 +90,7 @@ public class NotProd {
                 // member1이 수정한 테스트 댓글(comment-id=1)
                 UpdateCommentForm updateCommentForm = new UpdateCommentForm();
                 updateCommentForm.setContent("이것은 member1이 다시 수정한 테스트 댓글입니다.");
-                commentService.updateComment("1", updateCommentForm);
+                commentService.updateComment(1L, updateCommentForm);
                 
 
                 
@@ -119,6 +120,18 @@ public class NotProd {
                 createChatRoomForm3.setRoomContent("이것은 member3이 작성한 테스트 본문입니다.");
                 createChatRoomForm3.setRoomMemberLimit(30L);
                 chatroomservice.createChatRoom("PF256158", createChatRoomForm3);
+
+
+
+                // 테스트 모임채팅방 수정
+                //
+                //
+                // member1이 수정한 테스트 모임채팅방(chat-room-id=1)
+                UpdateChatRoomForm updateChatRoomForm = new UpdateChatRoomForm();
+                updateChatRoomForm.setRoomTitle("이것은 member1이 다시 수정한 테스트 제목입니다.");
+                updateChatRoomForm.setRoomContent("이것은 member1이 다시 수정한 테스트 본문입니다.");
+                updateChatRoomForm.setRoomMemberLimit(100L);
+                chatroomservice.updateChatRoom(1L, updateChatRoomForm);
             }
         };
     }
