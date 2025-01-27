@@ -1,7 +1,8 @@
 package com.ll.hfback.domain.festival.comment.controller;
 
 import com.ll.hfback.domain.festival.comment.dto.CommentDto;
-import com.ll.hfback.domain.festival.comment.form.CommentForm;
+import com.ll.hfback.domain.festival.comment.form.AddCommentForm;
+import com.ll.hfback.domain.festival.comment.form.UpdateCommentForm;
 import com.ll.hfback.domain.festival.comment.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,29 +25,29 @@ public class ApiV1CommentController {
     }
 
     // 해당 댓글에 작성된 모든 답글 조회
-    @GetMapping("/{super-comment-id}/replies")
+    @GetMapping("/replies/{super-comment-id}")
     public List<CommentDto> getReplies(@PathVariable("super-comment-id") Long superCommentId) {
         return commentService.searchBySuperCommentId(superCommentId);
     }
 
     // 해당 게시글에 댓글 생성
     @PostMapping("/{festival-id}/comments")
-    public ResponseEntity<String> addComment(@PathVariable("festival-id") String festivalId, @RequestBody @Valid CommentForm commentForm){
-        commentService.addComment(festivalId, commentForm);
+    public ResponseEntity<String> addComment(@PathVariable("festival-id") String festivalId, @RequestBody @Valid AddCommentForm addCommentForm){
+        commentService.addComment(festivalId, addCommentForm);
         return ResponseEntity.status(HttpStatus.CREATED).body("댓글이 성공적으로 추가되었습니다.");
     }
 
-//    // 해당 게시글의 댓글 수정
-//    @PostMapping("/{festivalId}/comments/{id}")
-//    public Comment updateComment(@PathVariable String festivalId, @RequestBody Comment comment){
-//
-//
-//    }
-//
-//    // 해당 게시글의 댓글 삭제
-//    @DeleteMapping("/{festivalId}/comments/{id}")
-//    public Comment deleteComment(@PathVariable String festivalId, @PathVariable String id){
-//
-//
-//    }
+    // 해당 댓글 수정
+    @PostMapping("/update-comment/{comment-id}")
+    public ResponseEntity<String> updateComment(@PathVariable("comment-id") Long commentId, @RequestBody @Valid UpdateCommentForm updateCommentForm){
+        commentService.updateComment(commentId, updateCommentForm);
+        return ResponseEntity.status(HttpStatus.CREATED).body("댓글이 성공적으로 수정되었습니다.");
+    }
+
+    // 해당 댓글 삭제
+    @GetMapping("/delete-comment/{comment-id}")
+    public ResponseEntity<String> deleteComment(@PathVariable("comment-id") Long commentId){
+        commentService.deleteComment(commentId);
+        return ResponseEntity.status(HttpStatus.CREATED).body("댓글이 성공적으로 삭제되었습니다.");
+    }
 }

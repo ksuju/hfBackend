@@ -1,8 +1,6 @@
-package com.ll.hfback.domain.festival.api;
+package com.ll.hfback.domain.festival.api.scheduler;
 
-
-//import com.ll.hfback.domain.festival.api.entity.KopisFesEntity;
-import com.ll.hfback.domain.festival.api.service.KopisService;
+import com.ll.hfback.domain.festival.api.service.ApiService;
 import com.ll.hfback.domain.festival.post.entity.Post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,22 +9,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Component
 @Slf4j
@@ -42,7 +35,7 @@ public class FetchKopisScheduler {
     @Value("${kopis.api.service-key}")
     private String serviceKeyForKopis;
 
-    private final KopisService kopisService;
+    private final ApiService apiService;
 
     @Scheduled(cron = "${schedule.cron_for_kopis}")
     public void getKopisApiData() {
@@ -93,13 +86,13 @@ public class FetchKopisScheduler {
                     String xmlResponse = responseBuilder.toString();
 
                     // XML 응답에서 데이터를 파싱하고 리스트에 추가
-                    List<Post> parsedData = parseXmlToEntity(xmlResponse);
+                    List<Post> parsedData = apiService.parseXmlToEntity(xmlResponse);
                     post.addAll(parsedData);
 
                     currentPage++;
                 }
                 try {
-                    kopisService.saveForKopis(post);
+                    apiService.saveForKopis(post);
                 } catch (Exception e) {
                     log.error("Kopis Scheduler save중에 에러가 발생했습니다", e);
                 }
@@ -108,70 +101,5 @@ public class FetchKopisScheduler {
             }
         }
         log.info("Kopis스케쥴러 종료");
-    }
-
-    private List<Post> parseXmlToEntity(String xml) throws Exception {
-        List<Post> kopiseEntity = new ArrayList<>();
-
-
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.parse(new java.io.ByteArrayInputStream(xml.getBytes()));
-
-        // xml로 받아온 데이터의 <db> 태그 Get
-        NodeList dbElements = document.getElementsByTagName("db");
-
-        // 각 <db> 태그의 데이터 추출
-        for (int i = 0; i < dbElements.getLength(); i++) {
-            Element element = (Element) dbElements.item(i);
-
-            /*
-             * 공연Id(mt20id)        - festivalId
-            * 공연명(prfnm)          - festivalName
-            * 공연 시작일(prfpdfrom) - festivalStartDate
-            * 공연 종료일(prfpdto)   - festivalEndDate
-            * 공연 지역(area)        - festivalArea
-            * 공연 시설 명(fcltynm)  - festivalHallName
-            * 공연 상태(prfstate)     -festivalState
-            * 공연 URL ( 아마.. 포스터인가?,  poster)-festivalUrl
-            * */
-            String festivalId = getTagValue("mt20id", element);
-            String festivalName = getTagValue("prfnm", element);
-            String festivalStartDate = getTagValue("prfpdfrom", element);
-            String festivalEndDate = getTagValue("prfpdto", element);
-            String festivalHallName = getTagValue("fcltynm", element);
-            String festivalUrl = getTagValue("poster", element);
-            String festivalArea = getTagValue("area", element);
-            String festivalState = getTagValue("prfstate", element);
-
-            /*String genrenm = getTagValue("genrenm", element);
-            String openrun = getTagValue("openrun", element);*/
-
-            Post post = Post.builder()
-                    .festivalId(festivalId)
-                    .festivalName(festivalName)
-                    .festivalStartDate(festivalStartDate)
-                    .festivalEndDate(festivalEndDate)
-                    .festivalHallName(festivalHallName)
-                    .festivalUrl(festivalUrl)
-                    .festivalArea(festivalArea)
-                    .festivalState(festivalState)
-                    .createDate(LocalDateTime.now())
-                    .modifyDate(LocalDateTime.now())
-                    .inputType("KOPIS")
-                    .build();
-
-            kopiseEntity.add(post);
-        }
-
-        return kopiseEntity;
-    }
-
-    private String getTagValue(String tag, Element element) {
-        NodeList nodeList = element.getElementsByTagName(tag);
-        if (nodeList.getLength() > 0) {
-            return nodeList.item(0).getTextContent();
-        }
-        return "없음";
     }
 }
