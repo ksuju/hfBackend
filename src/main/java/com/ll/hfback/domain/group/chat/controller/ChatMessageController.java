@@ -21,20 +21,20 @@ import java.util.List;
  * 2025-01-21        kyd54       최초 생성
  */
 @RestController
-@RequestMapping("/api/v1/groups/{chat-room-id}")
+@RequestMapping("/api/v1/groups/{chatRoom-id}")
 @RequiredArgsConstructor
 public class ChatMessageController {
     private final ChatMessageService chatMessageService;
 
     @PostMapping("/messages") // 채팅 메시지 작성
-    public void writeMessage(@PathVariable("chat-room-id") Long chatRoomId,
+    public void writeMessage(@PathVariable("chatRoom-id") Long chatRoomId,
                              @RequestBody ResponseMessage responseMessage) {
         chatMessageService.writeMessage(chatRoomId,
                 responseMessage);
     }
 
     @GetMapping("/messages")
-    public Page<RequestMessage> readMessages(@PathVariable("chat-room-id") Long chatRoomId,
+    public Page<RequestMessage> readMessages(@PathVariable("chatRoom-id") Long chatRoomId,
                                              @RequestParam(value = "page", defaultValue = "0") int page) {
 
         return chatMessageService.readMessages(chatRoomId, page);
