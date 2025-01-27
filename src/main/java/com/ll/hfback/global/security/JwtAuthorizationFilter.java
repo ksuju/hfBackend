@@ -30,7 +30,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             request.getRequestURI().equals("/api/v1/auth/logout") ||
             request.getRequestURI().equals("/api/v1/Posts/**") ||
             request.getRequestURI().equals("/ws/chat") || // 웹소켓 구독 경로
-            request.getRequestURI().startsWith("/api/v1/groups/") // 채팅 관련 요청 URI 인증 제외 처리
+            request.getRequestURI().startsWith("/api/v1/chatRooms/") // 채팅 관련 요청 URI 인증 제외 처리
     ) {
       filterChain.doFilter(request, response);
       return;
