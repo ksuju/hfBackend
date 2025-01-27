@@ -1,7 +1,9 @@
 package com.ll.hfback.domain.festival.api.serviceImpl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.ll.hfback.domain.festival.api.service.ApiService;
 import com.ll.hfback.domain.festival.post.entity.Post;
 import com.ll.hfback.domain.festival.post.repository.PostRepository;
@@ -9,18 +11,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Slf4j
 @Service
@@ -93,64 +89,27 @@ public class ApiServiceImpl implements ApiService {
     @Override
     @Transactional
     public List<Post> parseXmlToEntity(String xml) throws Exception {
-        List<Post> kopisEntity = new ArrayList<>();
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.parse(new java.io.ByteArrayInputStream(xml.getBytes()));
+        // XML을 Java 객체로 파싱하기 위한 XmlMapper 인스턴스를 생성
+        XmlMapper xmlMapper = new XmlMapper();
 
-        // 오늘 날짜를 LocalDate로 가져옴
+        // XML 문자열을 Post 객체의 리스트로 파싱
+        List<Post> kopisEntity = xmlMapper.readValue(xml, new TypeReference<List<Post>>() {});
+
+        // 오늘 날짜를 기준으로 과거의 이벤트 필터링
         LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
-        NodeList dbElements = document.getElementsByTagName("db");
-        for (int i = 0; i < dbElements.getLength(); i++) {
-            Element element = (Element) dbElements.item(i);
+        // festivalEndDate가 오늘을 지난 포스트는 필터링
+        kopisEntity.removeIf(post -> {
+            LocalDate endDate = LocalDate.parse(post.getFestivalEndDate(), formatter);
+            return endDate.isBefore(today);
+        });
 
-            String festivalId = getTagValue("mt20id", element);
-            String festivalName = getTagValue("prfnm", element);
-            String festivalStartDate = getTagValue("prfpdfrom", element);
-            String festivalEndDate = getTagValue("prfpdto", element);
-            String festivalHallName = getTagValue("fcltynm", element);
-            String festivalUrl = getTagValue("poster", element);
-            String festivalArea = getTagValue("area", element);
-            String festivalState = getTagValue("prfstate", element);
-            String genrenm = getTagValue("genrenm", element);
-
-            // festivalEndDate를 LocalDate로 변환
-            LocalDate endDate = LocalDate.parse(festivalEndDate, DateTimeFormatter.ofPattern("yyyy.MM.dd"));
-
-            // 오늘 날짜를 기준으로 지난 데이터는 건너뜀
-            if (endDate.isBefore(today)) {
-                continue;
-            }
-
-            Post post = Post.builder()
-                    .festivalId(festivalId)
-                    .festivalName(festivalName)
-                    .festivalStartDate(festivalStartDate)
-                    .festivalEndDate(festivalEndDate)
-                    .festivalHallName(festivalHallName)
-                    .festivalUrl(festivalUrl)
-                    .festivalArea(festivalArea)
-                    .festivalState(festivalState)
-                    .createDate(LocalDateTime.now())
-                    .modifyDate(LocalDateTime.now())
-                    .genrenm(genrenm)
-                    .inputType("KOPIS")
-                    .build();
-
-            kopisEntity.add(post);
-        }
+        kopisEntity.forEach(post -> {
+            post.setCreateDate(LocalDateTime.now());
+            post.setModifyDate(LocalDateTime.now());
+            post.setInputType("KOPIS");
+        });
         return kopisEntity;
-    }
-
-    // xml의 <db>태그와 매칭되는 데이터 추출 메서드
-    @Override
-    @Transactional
-    public String getTagValue(String tag, Element element) {
-        NodeList nodeList = element.getElementsByTagName(tag);
-        if (nodeList.getLength() > 0) {
-            return nodeList.item(0).getTextContent();
-        }
-        return "없음";
     }
 }

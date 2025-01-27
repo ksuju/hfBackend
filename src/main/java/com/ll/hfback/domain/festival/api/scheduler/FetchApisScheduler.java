@@ -20,7 +20,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -47,9 +46,10 @@ public class FetchApisScheduler {
             List<Post> Post = new ArrayList<>();
 
             LocalDate now = LocalDate.now();
+            LocalDate sixMonthsLater = now.plusMonths(6);
             YearMonth yearMonth = YearMonth.of(now.getYear(), now.getMonth());
             String stdate = yearMonth.atDay(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-            String eddate = yearMonth.atEndOfMonth().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+            String eddate = sixMonthsLater.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
             String MobileOS = "ETC";   //OS구분
             String MobileApp = "LOCAL";//서비스명
@@ -81,11 +81,22 @@ public class FetchApisScheduler {
                     responseBuilder.append(line);
                 }
                 reader.close();
-                String jsonResponse = responseBuilder.toString();
-                try {
-                    apiService.saveForApis(jsonResponse);
-                }catch (Exception e){
-                    log.error("Apis Scheduler save중에 에러가 발생했습니다", e);
+                String response = responseBuilder.toString();
+
+                // XML 선언을 제외한 JSON 부분만 추출
+                if (response.trim().startsWith("<?xml")) {
+                    response = response.replaceAll("<\\?xml[^>]*>", "").trim();
+                }
+
+                // 변환된 JSON을 문자열로 저장
+                if (response.startsWith("{")) {
+                    try {
+                        apiService.saveForApis(response);
+                    } catch (Exception e){
+                        log.error("Apis Scheduler save중에 에러가 발생했습니다", e);
+                    }
+                } else {
+                    log.error("Unexpected response format: " + response);
                 }
             } catch (Exception e) {
                 log.error("Apis Scheduler Api 호출시 에러가 발생했습니다", e);
