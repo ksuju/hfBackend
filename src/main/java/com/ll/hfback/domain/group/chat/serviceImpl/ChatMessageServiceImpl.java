@@ -40,6 +40,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private final Logger logger = LoggerFactory.getLogger(ChatMessageServiceImpl.class.getName());
     private final ChatRoomRepository chatRoomRepository;
 
+    // 채팅 메시지 작성
     @Transactional
     public void writeMessage(Long chatId, ResponseMessage responseMessage) {
         logger.info("채팅 메시지 작성");
@@ -87,6 +88,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         }
     }
 
+    // 채팅 메시지 가져오기
     @Transactional(readOnly = true)
     public List<RequestMessage> readMessages(Long chatRoomId) {
         List<ChatMessage> chatMessages = chatMessageRepository.findByChatRoomId(chatRoomId);
