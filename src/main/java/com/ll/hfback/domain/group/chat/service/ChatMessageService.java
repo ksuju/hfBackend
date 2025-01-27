@@ -1,10 +1,10 @@
 package com.ll.hfback.domain.group.chat.service;
 
 import com.ll.hfback.domain.group.chat.request.RequestMessage;
+import com.ll.hfback.domain.group.chat.response.MessageSearchKeywordsResponse;
 import com.ll.hfback.domain.group.chat.response.ResponseMessage;
-import com.ll.hfback.domain.group.chat.entity.ChatMessage;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * packageName    : com.ll.hfback.domain.group.chat.service
@@ -22,5 +22,13 @@ public interface ChatMessageService {
     void writeMessage(Long chatRoomId, ResponseMessage responseMessage);
 
     // 해당 채팅방의 모든 메시지 불러오기
-    List<RequestMessage> readMessages(Long chatRoomId);
+    Page<RequestMessage> readMessages(Long chatRoomId, int page);
+
+    // 메시지 불러올 때 사용할 커스텀 페이징
+    Pageable customPaging(int page);
+
+    // 조건에 따른 채팅 메시지 검색 기능
+    Page<RequestMessage> searchMessages(Long chatRoomId,
+                                        int page,
+                                        MessageSearchKeywordsResponse messageSearchKeywordsResponse);
 }
