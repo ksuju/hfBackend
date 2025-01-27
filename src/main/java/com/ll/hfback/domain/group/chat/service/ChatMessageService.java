@@ -3,6 +3,8 @@ package com.ll.hfback.domain.group.chat.service;
 import com.ll.hfback.domain.group.chat.request.RequestMessage;
 import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.entity.ChatMessage;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -22,5 +24,8 @@ public interface ChatMessageService {
     void writeMessage(Long chatRoomId, ResponseMessage responseMessage);
 
     // 해당 채팅방의 모든 메시지 불러오기
-    List<RequestMessage> readMessages(Long chatRoomId);
+    Page<RequestMessage> readMessages(Long chatRoomId, int page);
+
+    // 메시지 불러올 때 사용할 커스텀 페이징
+    Pageable customPaging(int page);
 }

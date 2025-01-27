@@ -2,9 +2,9 @@ package com.ll.hfback.domain.group.chat.controller;
 
 import com.ll.hfback.domain.group.chat.request.RequestMessage;
 import com.ll.hfback.domain.group.chat.response.ResponseMessage;
-import com.ll.hfback.domain.group.chat.entity.ChatMessage;
 import com.ll.hfback.domain.group.chat.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,8 +34,9 @@ public class ChatMessageController {
     }
 
     @GetMapping("/messages")
-    public List<RequestMessage> readMessages(@PathVariable("chat-room-id") Long chatRoomId) {
+    public Page<RequestMessage> readMessages(@PathVariable("chat-room-id") Long chatRoomId,
+                                             @RequestParam(value = "page", defaultValue = "0") int page) {
 
-        return chatMessageService.readMessages(chatRoomId);
+        return chatMessageService.readMessages(chatRoomId, page);
     }
 }

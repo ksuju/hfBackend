@@ -12,12 +12,13 @@ import com.ll.hfback.domain.member.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * packageName    : com.ll.hfback.domain.group.chat.service
@@ -90,12 +91,21 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     // 채팅 메시지 가져오기
     @Transactional(readOnly = true)
-    public List<RequestMessage> readMessages(Long chatRoomId) {
-        List<ChatMessage> chatMessages = chatMessageRepository.findByChatRoomId(chatRoomId);
+    public Page<RequestMessage> readMessages(Long chatRoomId, int page) {
+
+        Page<ChatMessage> chatMessagesPage = chatMessageRepository.findByChatRoomId(chatRoomId, customPaging(page));
 
         // ChatMessage -> RequestMessage 변환
-        return chatMessages.stream()
-                .map(chatMessage -> new RequestMessage(chatMessage.getNickname(), chatMessage.getChatMessageContent()))
-                .collect(Collectors.toList());
+        return chatMessagesPage.map(chatMessage ->
+                new RequestMessage(chatMessage.getNickname(), chatMessage.getChatMessageContent()));
+    }
+
+    // 고정된 페이지 크기 10으로 Pageable 객체를 생성 (메시지 불러올 때 사용할 커스텀 페이징)
+    public Pageable customPaging(int page) {
+        // 내림차순 정렬 (createdAt 기준)
+        Sort sort = Sort.by(Sort.Order.desc("createDate"));
+
+        // 페이지 번호와 크기, 정렬을 포함하여 Pageable 객체 생성
+        return PageRequest.of(page, 10, sort);
     }
 }
