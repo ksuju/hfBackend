@@ -64,3 +64,23 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+val querydslDir = "src/main/generated"
+
+sourceSets {
+	main {
+		java {
+			srcDir(querydslDir)
+		}
+	}
+}
+
+tasks.withType<JavaCompile> {
+	options.generatedSourceOutputDirectory.set(file(querydslDir))
+}
+
+tasks.named("clean") {
+	doLast {
+		file(querydslDir).deleteRecursively()
+	}
+}
