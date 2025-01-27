@@ -98,11 +98,14 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Transactional(readOnly = true)
     public Page<RequestMessage> readMessages(Long chatRoomId, int page) {
         try {
-            Page<ChatMessage> chatMessagesPage = chatMessageRepository.findByChatRoomId(chatRoomId, customPaging(page));
+            Page<ChatMessage> chatMessages = chatMessageRepository.findByChatRoomId(chatRoomId, customPaging(page));
             logger.info("채팅 메시지 가져오기 성공");
             // ChatMessage -> RequestMessage 변환
-            return chatMessagesPage.map(chatMessage ->
-                    new RequestMessage(chatMessage.getNickname(), chatMessage.getChatMessageContent()));
+            return chatMessages.map(chatMessage ->
+                    new RequestMessage(chatMessage.getNickname(),
+                            chatMessage.getChatMessageContent(),
+                            chatMessage.getCreateDate()
+                    ));
         } catch (Exception e) {
             logger.info("채팅 메시지 가져오기 실패");
             throw e;
@@ -178,7 +181,9 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             logger.info("조건에 따른 채팅 메시지 검색 성공");
             // ChatMessage -> RequestMessage 변환
             return searchMessages.map(chatMessage ->
-                    new RequestMessage(chatMessage.getNickname(), chatMessage.getChatMessageContent()));
+                    new RequestMessage(chatMessage.getNickname(),
+                            chatMessage.getChatMessageContent(),
+                            chatMessage.getCreateDate()));
         } catch (Exception e) {
             logger.info("조건에 따른 채팅 메시지 검색 실패");
             throw e;
