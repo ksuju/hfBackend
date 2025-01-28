@@ -26,4 +26,6 @@ public class RequestMessage {
     private String content;
     @JsonProperty("messageTimestamp")
     private LocalDateTime messageTimestamp;
+    @JsonProperty("messageId")
+    private Long messageId;
 }
