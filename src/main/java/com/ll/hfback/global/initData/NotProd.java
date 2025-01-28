@@ -60,32 +60,32 @@ public class NotProd {
                 //
                 //
                 // member1이 PF256158 공연게시글에 작성한 테스트 댓글
-                AddCommentForm addCommentForm1 = new AddCommentForm();
-                addCommentForm1.setContent("이것은 member1이 작성한 테스트 댓글입니다.");
-                addCommentForm1.setMember(member1);
-                addCommentForm1.setSuperCommentId(null);
-                commentService.addComment("PF256158", addCommentForm1);
+                // member1 로그인 로직 필요
+//                AddCommentForm addCommentForm1 = new AddCommentForm();
+//                addCommentForm1.setContent("이것은 member1이 작성한 테스트 댓글입니다.");
+//                addCommentForm1.setSuperCommentId(null);
+//                commentService.addComment("PF256158", addCommentForm1);
 
                 // member2가 PF256158 공연게시글에 작성한 테스트 댓글
-                AddCommentForm addCommentForm2 = new AddCommentForm();
-                addCommentForm2.setContent("이것은 member2가 작성한 테스트 댓글입니다.");
-                addCommentForm2.setMember(member2);
-                addCommentForm2.setSuperCommentId(null);
-                commentService.addComment("PF256158", addCommentForm2);
+                // member2 로그인 로직 필요
+//                AddCommentForm addCommentForm2 = new AddCommentForm();
+//                addCommentForm2.setContent("이것은 member2가 작성한 테스트 댓글입니다.");
+//                addCommentForm2.setSuperCommentId(null);
+//                commentService.addComment("PF256158", addCommentForm2);
 
                 // member3가 PF256158 공연게시글에서 memeber1의 댓글에 작성한 테스트 답글
-                AddCommentForm addCommentForm3 = new AddCommentForm();
-                addCommentForm3.setContent("이것은 member3이 작성한 테스트 답글입니다.");
-                addCommentForm3.setMember(member3);
-                addCommentForm3.setSuperCommentId(1L);
-                commentService.addComment("PF256158", addCommentForm3);
+                // member3 로그인 로직 필요
+//                AddCommentForm addCommentForm3 = new AddCommentForm();
+//                addCommentForm3.setContent("이것은 member3이 작성한 테스트 답글입니다.");
+//                addCommentForm3.setSuperCommentId(1L);
+//                commentService.addComment("PF256158", addCommentForm3);
 
                 // member3가 PF256158 공연게시글에서 memeber2의 댓글에 작성한 테스트 답글
-                AddCommentForm addCommentForm4 = new AddCommentForm();
-                addCommentForm4.setContent("이것은 member3이 작성한 테스트 답글입니다.");
-                addCommentForm4.setMember(member3);
-                addCommentForm4.setSuperCommentId(2L);
-                commentService.addComment("PF256158", addCommentForm4);
+                // member3 로그인 로직 필요
+//                AddCommentForm addCommentForm4 = new AddCommentForm();
+//                addCommentForm4.setContent("이것은 member3이 작성한 테스트 답글입니다.");
+//                addCommentForm4.setSuperCommentId(2L);
+//                commentService.addComment("PF256158", addCommentForm4);
 
 
 
@@ -93,38 +93,39 @@ public class NotProd {
                 //
                 //
                 // member1이 수정한 테스트 댓글(comment-id=1)
-                UpdateCommentForm updateCommentForm = new UpdateCommentForm();
-                updateCommentForm.setContent("이것은 member1이 다시 수정한 테스트 댓글입니다.");
-                commentService.updateComment(1L, updateCommentForm);
-
+                // member1 로그인 로직 필요
+//                UpdateCommentForm updateCommentForm = new UpdateCommentForm();
+//                updateCommentForm.setContent("이것은 member1이 다시 수정한 테스트 댓글입니다.");
+//                commentService.updateComment(1L, updateCommentForm);
+                
 
 
                 // 테스트 모임채팅방 생성
                 //
                 //
                 // member1이 PF256158 공연게시글에서 만든 모임채팅방
-                CreateChatRoomForm createChatRoomForm1 = new CreateChatRoomForm();
-                createChatRoomForm1.setMember(member1);
-                createChatRoomForm1.setRoomTitle("이것은 member1이 작성한 테스트 제목입니다.");
-                createChatRoomForm1.setRoomContent("이것은 member1이 작성한 테스트 본문입니다.");
-                createChatRoomForm1.setRoomMemberLimit(10L);
-                chatroomservice.createChatRoom("PF256158", createChatRoomForm1);
+                // member1 로그인 로직 필요
+//                CreateChatRoomForm createChatRoomForm1 = new CreateChatRoomForm();
+//                createChatRoomForm1.setRoomTitle("이것은 member1이 작성한 테스트 제목입니다.");
+//                createChatRoomForm1.setRoomContent("이것은 member1이 작성한 테스트 본문입니다.");
+//                createChatRoomForm1.setRoomMemberLimit(10L);
+//                chatroomservice.createChatRoom("PF256158", createChatRoomForm1);
 
                 // member2가 PF256158 공연게시글에서 만든 모임채팅방
-                CreateChatRoomForm createChatRoomForm2 = new CreateChatRoomForm();
-                createChatRoomForm2.setMember(member2);
-                createChatRoomForm2.setRoomTitle("이것은 member2가 작성한 테스트 제목입니다.");
-                createChatRoomForm2.setRoomContent("이것은 member2가 작성한 테스트 본문입니다.");
-                createChatRoomForm2.setRoomMemberLimit(20L);
-                chatroomservice.createChatRoom("PF256158", createChatRoomForm2);
+                // member2 로그인 로직 필요
+//                CreateChatRoomForm createChatRoomForm2 = new CreateChatRoomForm();
+//                createChatRoomForm2.setRoomTitle("이것은 member2가 작성한 테스트 제목입니다.");
+//                createChatRoomForm2.setRoomContent("이것은 member2가 작성한 테스트 본문입니다.");
+//                createChatRoomForm2.setRoomMemberLimit(20L);
+//                chatroomservice.createChatRoom("PF256158", createChatRoomForm2);
 
                 // member3가 PF256158 공연게시글에서 만든 모임채팅방
-                CreateChatRoomForm createChatRoomForm3 = new CreateChatRoomForm();
-                createChatRoomForm3.setMember(member3);
-                createChatRoomForm3.setRoomTitle("이것은 member3이 작성한 테스트 제목입니다.");
-                createChatRoomForm3.setRoomContent("이것은 member3이 작성한 테스트 본문입니다.");
-                createChatRoomForm3.setRoomMemberLimit(30L);
-                chatroomservice.createChatRoom("PF256158", createChatRoomForm3);
+                // member3 로그인 로직 필요
+//                CreateChatRoomForm createChatRoomForm3 = new CreateChatRoomForm();
+//                createChatRoomForm3.setRoomTitle("이것은 member3이 작성한 테스트 제목입니다.");
+//                createChatRoomForm3.setRoomContent("이것은 member3이 작성한 테스트 본문입니다.");
+//                createChatRoomForm3.setRoomMemberLimit(30L);
+//                chatroomservice.createChatRoom("PF256158", createChatRoomForm3);
 
 
 
@@ -132,11 +133,32 @@ public class NotProd {
                 //
                 //
                 // member1이 수정한 테스트 모임채팅방(chat-room-id=1)
-                UpdateChatRoomForm updateChatRoomForm = new UpdateChatRoomForm();
-                updateChatRoomForm.setRoomTitle("이것은 member1이 다시 수정한 테스트 제목입니다.");
-                updateChatRoomForm.setRoomContent("이것은 member1이 다시 수정한 테스트 본문입니다.");
-                updateChatRoomForm.setRoomMemberLimit(100L);
-                chatroomservice.updateChatRoom(1L, updateChatRoomForm);
+                // member1 로그인 로직 필요
+//                UpdateChatRoomForm updateChatRoomForm = new UpdateChatRoomForm();
+//                updateChatRoomForm.setRoomTitle("이것은 member1이 다시 수정한 테스트 제목입니다.");
+//                updateChatRoomForm.setRoomContent("이것은 member1이 다시 수정한 테스트 본문입니다.");
+//                updateChatRoomForm.setRoomMemberLimit(100L);
+//                chatroomservice.updateChatRoom(1L, updateChatRoomForm);
+
+
+
+                // 테스트 모임채팅방 참여신청
+                //
+                //
+                // member1이 chat-room-id=2,3에 참여신청
+                // member1 로그인 로직 필요
+//                chatroomservice.applyChatRoom(2L);
+//                chatroomservice.applyChatRoom(3L);
+
+                // member2가 chat-room-id=1,3에 참여신청
+                // member2 로그인 로직 필요
+//                chatroomservice.applyChatRoom(1L);
+//                chatroomservice.applyChatRoom(3L);
+
+                // member3이 chat-room-id=1,2에 참여신청
+                // member3 로그인 로직 필요
+//                chatroomservice.applyChatRoom(1L);
+//                chatroomservice.applyChatRoom(2L);
 
 
 
@@ -191,6 +213,7 @@ public class NotProd {
                     chatMessageService.writeMessage(1L, responseMessage
                     );
                 }
+
             }
         };
     }

@@ -46,13 +46,19 @@ dependencies {
 	runtimeOnly ("io.jsonwebtoken:jjwt-impl:0.11.5")
 	runtimeOnly ("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
-
 	// QueryDSL
 	implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
 	implementation("com.querydsl:querydsl-apt:5.0.0:jakarta")
 	annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jakarta")
 	annotationProcessor("jakarta.annotation:jakarta.annotation-api")
 	annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+
+	// ApiScheduler: Xml -> Json
+	dependencies {
+		implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.2")
+		implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
+		implementation("com.fasterxml.jackson.core:jackson-annotations:2.18.2")
+	}
 }
 
 tasks.withType<Test> {
