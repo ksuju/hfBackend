@@ -46,13 +46,6 @@ public class ChatRoomController {
         return ResponseEntity.status(HttpStatus.CREATED).body("모임이 성공적으로 수정되었습니다.");
     }
 
-    // 해당 모임채팅방 삭제(방장만 가능)
-    @GetMapping("/delete-chat-room/{chat-room-id}")
-    public ResponseEntity<String> deleteRoom(@PathVariable("chat-room-id") Long chatRoomId) {
-        chatRoomService.deleteChatRoom(chatRoomId);
-        return ResponseEntity.status(HttpStatus.CREATED).body("모임이 성공적으로 삭제되었습니다.");
-    }
-
     // 해당 모임채팅방에 참여신청
     @GetMapping("/apply-chat-room/{chat-room-id}")
     public ResponseEntity<String> applyChatRoom(@PathVariable("chat-room-id") Long chatRoomId) {
@@ -79,5 +72,26 @@ public class ChatRoomController {
     public ResponseEntity<String> refuseApplyChatRoom(@PathVariable("chat-room-id") Long chatRoomId, @PathVariable("apply-member-id") String applyMemberId) {
         chatRoomService.refuseApplyChatRoom(chatRoomId, applyMemberId);
         return ResponseEntity.status(HttpStatus.CREATED).body("성공적으로 참여신청을 거절했습니다.");
+    }
+
+    // 해당 모임채팅방의 참여자 강퇴
+    @GetMapping("/unqualify-chat-room/{chat-room-id}/{member-id}")
+    public ResponseEntity<String> unqualifyChatRoom(@PathVariable("chat-room-id") Long chatRoomId, @PathVariable("member-id") String memberId) {
+        chatRoomService.unqualifyChatRoom(chatRoomId, memberId);
+        return ResponseEntity.status(HttpStatus.CREATED).body("성공적으로 사용자를 강퇴했습니다.");
+    }
+
+    // 해당 모임채팅방 나가기(방장이 나가는 경우 해당 모임채팅방 삭제)
+    @GetMapping("/leave-chat-room/{chat-room-id}")
+    public ResponseEntity<String> leaveChatRoom(@PathVariable("chat-room-id") Long chatRoomId) {
+        chatRoomService.leaveChatRoom(chatRoomId);
+        return ResponseEntity.status(HttpStatus.CREATED).body("성공적으로 모임채팅방을 나갔습니다.");
+    }
+
+    // 해당 모임채팅방에서 참여자에게 방장권한 위임
+    @GetMapping("/delegate-chat-room/{chat-room-id}/{member-id}")
+    public ResponseEntity<String> delegateChatRoom(@PathVariable("chat-room-id") Long chatRoomId, @PathVariable("member-id") Long memberId) {
+        chatRoomService.delegateChatRoom(chatRoomId, memberId);
+        return ResponseEntity.status(HttpStatus.CREATED).body("성공적으로 방장권한을 위임했습니다.");
     }
 }

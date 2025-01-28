@@ -127,6 +127,14 @@ public class NotProd {
 //                createChatRoomForm3.setRoomMemberLimit(30L);
 //                chatroomservice.createChatRoom("PF256158", createChatRoomForm3);
 
+                // member3가 PF256158 공연게시글에서 만든 모임채팅방
+                // member3 로그인 로직 필요
+//                CreateChatRoomForm createChatRoomForm4 = new CreateChatRoomForm();
+//                createChatRoomForm4.setRoomTitle("이것은 member4이 작성한 테스트 제목입니다.");
+//                createChatRoomForm4.setRoomContent("이것은 member3이 작성한 테스트 본문입니다.");
+//                createChatRoomForm4.setRoomMemberLimit(40L);
+//                chatroomservice.createChatRoom("PF256158", createChatRoomForm4);
+
 
 
                 // 테스트 모임채팅방 수정
@@ -159,6 +167,75 @@ public class NotProd {
                 // member3 로그인 로직 필요
 //                chatroomservice.applyChatRoom(1L);
 //                chatroomservice.applyChatRoom(2L);
+
+
+
+                // 테스트 모임채팅방 참여신청 승인
+                //
+                //
+                // member1이 chat-room-id=1의 모든 참여신청 승인
+                // member1 로그인 로직 필요
+//                chatroomservice.approveApplyChatRoom(1L, "2");
+//                chatroomservice.approveApplyChatRoom(1L, "3");
+
+                // member2가 chat-room-id=2의 모든 참여신청 승인
+                // member2 로그인 로직 필요
+//                chatroomservice.approveApplyChatRoom(2L, "1");
+//                chatroomservice.approveApplyChatRoom(2L, "3");
+
+
+
+                // 테스트 모임채팅방 참여신청 취소
+                //
+                //
+                // member1이 chat-room-id=3에 참여신청 취소
+                // member1 로그인 로직 필요
+//                chatroomservice.cancelApplyChatRoom(3L);
+
+
+
+                // 테스트 모임채팅방 참여신청 거절
+                //
+                //
+                // member3이 chat-room-id=3에 member2의 참여신청 거절
+                // member3 로그인 로직 필요
+//                chatroomservice.refuseApplyChatRoom(3L, "2");
+
+
+
+                // 테스트 모임채팅방 나가기
+                //
+                //
+                // member1가 chat-room-id=2에서 나가기
+                // member1 로그인 로직 필요
+//                chatroomservice.leaveChatRoom(2L);
+
+
+
+                // 테스트 모임채팅방 강퇴
+                //
+                //
+                // member2이 chat-room-id=2에서 member3 강퇴
+                // member2 로그인 로직 필요
+//                chatroomservice.unqualifyChatRoom(2L, "3");
+
+
+
+                // 테스트 모임채팅방 나가기(방장이 나가면 해당 모임채팅방 삭제)
+                //
+                //
+                // member3이 chat-room-id=4에서 나가기
+                // member3 로그인 로직 필요
+//                chatroomservice.leaveChatRoom(4L);
+
+
+
+                // 테스트 모임채팅방 방장권한 위임
+                //
+                //
+                // member1이 chat-room-id=1에서 member3에게 방장권한 위임
+                // member1 로그인 로직 필요
+//                chatroomservice.delegateChatRoom(1L, 3L);
 
 
 
