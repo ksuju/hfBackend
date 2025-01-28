@@ -2,10 +2,8 @@ package com.ll.hfback.global.initData;
 
 import com.ll.hfback.domain.festival.comment.form.CommentForm;
 import com.ll.hfback.domain.festival.comment.service.CommentService;
-import com.ll.hfback.domain.member.auth.dto.SignupRequest;
 import com.ll.hfback.domain.member.auth.service.AuthService;
 import com.ll.hfback.domain.member.member.entity.Member;
-import com.ll.hfback.domain.member.member.entity.Member.Gender;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
@@ -26,22 +24,16 @@ public class NotProd {
             @Override
             public void run(ApplicationArguments args) throws Exception {
                 Member member1 = authService.signup(
-                    new SignupRequest(
-                        "test1@test.com", "1234", "강남",
-                        Gender.M, true, "010-1111-1111"
-                    )
+                    "test1@test.com", "1234", "강남",
+                    Member.LoginType.SELF, null, null
                 );
                 Member member2 = authService.signup(
-                    new SignupRequest(
-                        "test2@test.com", "1234", "남영동",
-                        Gender.M, false, "010-2222-2222"
-                    )
+                    "test2@test.com", "1234", "홍길동",
+                    Member.LoginType.SELF, null, null
                 );
                 Member member3 = authService.signup(
-                    new SignupRequest(
-                        "test3@test.com", "1234", "역삼",
-                        Gender.W, true, "010-3333-3333"
-                    )
+                    "test3@test.com", "1234", "제펫토",
+                    Member.LoginType.SELF, null, null
                 );
 
                 // member1이 PF255966 공연에 작성한 테스트 댓글

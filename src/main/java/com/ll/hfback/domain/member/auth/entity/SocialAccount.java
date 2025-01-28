@@ -1,40 +1,35 @@
 package com.ll.hfback.domain.member.auth.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ll.hfback.domain.member.member.entity.Member;
-import com.ll.hfback.global.jpa.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
-public class SocialAccount extends BaseEntity {
+@Builder
+@EntityListeners(AuditingEntityListener.class)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public class SocialAccount{
+
+  @Id
+  @Column(length = 50)
+  @EqualsAndHashCode.Include
+  private String providerId;  // 소셜제공자__소셜자체ID
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id", nullable = false)
   private Member member;
 
-  @Column(nullable = false, length = 50)
-  private String provider;  // 소셜 로그인 제공자
-
-  @Column(length = 100)
-  private String providerId;  // 소셜 자체 ID
-
-  @JsonIgnore
-  @Column(columnDefinition = "TEXT")
-  private String accessToken;
-
-  @JsonIgnore
-  @Column(columnDefinition = "TEXT")
-  private String refreshToken;
+  @CreatedDate
+  @Setter(AccessLevel.PRIVATE)
+  private LocalDateTime createDate;
 
 
   // 관련 메서드

@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.member.member.service;
 
+import com.ll.hfback.domain.member.auth.repository.AuthRepository;
 import com.ll.hfback.domain.member.member.dto.MemberUpdateRequest;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
@@ -18,6 +19,8 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final AuthRepository authRepository;
+
 
     public List<Member> findAll() {
         return memberRepository.findAll();
@@ -26,6 +29,13 @@ public class MemberService {
     public Optional<Member> findById(Long id) {
         return memberRepository.findById(id);
     }
+
+
+
+    public Member getMember(String email) {
+        return authRepository.findByEmail(email);
+    }
+
 
     @Transactional
     public Member modify(Member member, MemberUpdateRequest memberUpdateRequest) {
@@ -45,9 +55,5 @@ public class MemberService {
         memberRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(id + "번 사용자가 존재하지 않습니다."))
             .restore();
-    }
-
-    public Member getMember(String email) {
-        return memberRepository.findByEmail(email);
     }
 }

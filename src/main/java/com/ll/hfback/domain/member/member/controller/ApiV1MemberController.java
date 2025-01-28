@@ -4,9 +4,7 @@ import com.ll.hfback.domain.member.member.dto.MemberDto;
 import com.ll.hfback.domain.member.member.dto.MemberUpdateRequest;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.service.MemberService;
-import com.ll.hfback.global.jwt.JwtProvider;
 import com.ll.hfback.global.rsData.RsData;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,28 +18,16 @@ import java.util.List;
 public class ApiV1MemberController {
 
     private final MemberService memberService;
-    private final JwtProvider jwtProvider;
 
 
     // MEM03_MODIFY01 : 회원정보 수정 전 비밀번호 인증
     @PostMapping("/{memberId}/verify-password")
-    public RsData<MemberDto> verifyPassword(
+    public RsData<Void> verifyPassword(
         @PathVariable("memberId") Long memberId,
         HttpServletRequest request
     ) {
-        Cookie[] cookies = request.getCookies();
-        String accessToken = "";
-        for (Cookie cookie : cookies) {
-            if ("accessToken".equals(cookie.getName())) {
-                accessToken = cookie.getValue();
-                break;
-            }
-        }
 
-        String email = (String) jwtProvider.getClaims(accessToken).get("email");
-        Member member = memberService.getMember(email);
-
-        return new RsData<>("200", "비밀번호 인증이 성공하였습니다.", new MemberDto(member));
+        return new RsData<>("200", "비밀번호 인증이 성공하였습니다.");
     }
 
 
