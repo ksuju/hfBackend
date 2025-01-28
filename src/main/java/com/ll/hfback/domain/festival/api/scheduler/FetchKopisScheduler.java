@@ -20,7 +20,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -59,7 +58,7 @@ public class FetchKopisScheduler {
                  * */
                 int rows = 100;
                 int currentPage = 1;
-                int maxPage = 5;
+                int maxPage = 15;
 
                 while (currentPage <= maxPage) {
 
@@ -68,12 +67,10 @@ public class FetchKopisScheduler {
                             serviceKeyForKopis, stdate, eddate, rows, currentPage
                     );
 
-
                     URL url = new URL(apiUrl);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
                     connection.setRequestProperty("Content-Type", "application/xml");
-
 
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
                     StringBuilder responseBuilder = new StringBuilder();
