@@ -54,9 +54,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     // DB에서 받아온 참여자명단을 List<String>으로 변환하고, ChatRoom을 ChatRoomDto로 변환하는 메서드
-    @Override
-    @Transactional
-    public ChatRoomDto convertToChatRoomDto(ChatRoom chatRoom) {
+    private ChatRoomDto convertToChatRoomDto(ChatRoom chatRoom) {
         // Create ChatRoomDto
         ChatRoomDto chatRoomDto = new ChatRoomDto(
                 chatRoom.getMember().getId(),
@@ -71,9 +69,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     // DB에서 받아온 참여자명단과 대기자명단을 List<String>으로 변환하고, ChatRoom을 DetailChatRoomDto로 변환하는 메서드
-    @Override
-    @Transactional
-    public DetailChatRoomDto convertToDetailChatRoomDto(ChatRoom chatRoom) {
+    private DetailChatRoomDto convertToDetailChatRoomDto(ChatRoom chatRoom) {
         // 기존 참여자/대기자 ID 리스트를 가져옴
         List<String> joinMemberIdList = chatRoom.getJoinMemberIdList();
         List<String> waitingMemberIdList = chatRoom.getWaitingMemberIdList();
