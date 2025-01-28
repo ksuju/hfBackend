@@ -1,7 +1,10 @@
 package com.ll.hfback.domain.group.chat.serviceImpl;
 
+import com.ll.hfback.domain.group.chat.entity.MessageReadStatus;
 import com.ll.hfback.domain.group.chat.entity.QChatMessage;
+import com.ll.hfback.domain.group.chat.repository.MessageReadStatusRepository;
 import com.ll.hfback.domain.group.chat.request.RequestMessage;
+import com.ll.hfback.domain.group.chat.response.MessageReadStatusResponse;
 import com.ll.hfback.domain.group.chat.response.MessageSearchKeywordsResponse;
 import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.entity.ChatMessage;
@@ -46,6 +49,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final Logger logger = LoggerFactory.getLogger(ChatMessageServiceImpl.class.getName());
     private final ChatRoomRepository chatRoomRepository;
+    private final MessageReadStatusRepository messageReadStatusRepository;
 
     // 채팅 메시지 작성
     @Transactional
@@ -104,7 +108,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             return chatMessages.map(chatMessage ->
                     new RequestMessage(chatMessage.getNickname(),
                             chatMessage.getChatMessageContent(),
-                            chatMessage.getCreateDate()
+                            chatMessage.getCreateDate(),
+                            chatMessage.getId()
                     ));
         } catch (Exception e) {
             logger.info("채팅 메시지 가져오기 실패");
@@ -183,10 +188,36 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             return searchMessages.map(chatMessage ->
                     new RequestMessage(chatMessage.getNickname(),
                             chatMessage.getChatMessageContent(),
-                            chatMessage.getCreateDate()));
+                            chatMessage.getCreateDate(),
+                            chatMessage.getId()));
         } catch (Exception e) {
             logger.info("조건에 따른 채팅 메시지 검색 실패");
             throw e;
         }
+    }
+
+    // 메시지 읽음/안읽음 상태 확인
+    @Transactional
+    public void messageReadStatus(Long chatRoomId, MessageReadStatusResponse messageReadStatusResponse) {
+        try {
+            MessageReadStatus readStatus = messageReadStatusRepository
+                    .findByChatRoomIdAndMemberId(chatRoomId, messageReadStatusResponse.getMemberId())
+                    .orElse(MessageReadStatus.builder()
+                            .chatRoom(chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new RuntimeException("ChatRoom not found")))
+                            .member(memberRepository.findById(messageReadStatusResponse.getMemberId()).orElseThrow(() -> new RuntimeException("Member not found")))
+                            .lastReadMessageId(messageReadStatusResponse.getMessageId())
+                            .build());
+
+            readStatus.setLastReadMessageId(messageReadStatusResponse.getMessageId());
+            messageReadStatusRepository.save(readStatus);
+
+            logger.info("ChatRoom ID: {}, Member ID: {} - 마지막 읽은 메시지 ID가 성공적으로 업데이트되었습니다.",
+                    chatRoomId,
+                    messageReadStatusResponse.getMemberId());
+        } catch (Exception e) {
+            logger.error("마지막 읽은 메시지 업데이트 실패");
+            throw e;
+        }
+
     }
 }
