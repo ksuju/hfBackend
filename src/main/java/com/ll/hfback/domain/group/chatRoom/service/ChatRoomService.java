@@ -36,4 +36,13 @@ public interface ChatRoomService {
 
     // 해당 모임채팅방에 참여신청
     void applyChatRoom(Long chatRoomId);
+
+    // 해당 모임채팅방에 참여신청 취소
+    void cancelApplyChatRoom(Long chatRoomId);
+
+    // 해당 모임채팅방 참여신청 승인
+    void approveApplyChatRoom(Long chatRoomId, String applyMemberId);
+
+    // 해당 모임채팅방 참여신청 거절
+    void refuseApplyChatRoom(Long chatRoomId, String applyMemberId);
 }

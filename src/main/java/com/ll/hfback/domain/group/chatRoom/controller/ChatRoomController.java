@@ -57,12 +57,27 @@ public class ChatRoomController {
     @GetMapping("/apply-chat-room/{chat-room-id}")
     public ResponseEntity<String> applyChatRoom(@PathVariable("chat-room-id") Long chatRoomId) {
         chatRoomService.applyChatRoom(chatRoomId);
-        return ResponseEntity.status(HttpStatus.CREATED).body("성공적으로 모임에 참여 신청을 했습니다.");
+        return ResponseEntity.status(HttpStatus.CREATED).body("성공적으로 모임에 참여신청을 했습니다.");
     }
 
     // 해당 모임채팅방에 참여신청 취소
+    @GetMapping("/cancel-apply-chat-room/{chat-room-id}")
+    public ResponseEntity<String> cancelApplyChatRoom(@PathVariable("chat-room-id") Long chatRoomId) {
+        chatRoomService.cancelApplyChatRoom(chatRoomId);
+        return ResponseEntity.status(HttpStatus.CREATED).body("성공적으로 모임 참여신청을 취소했습니다.");
+    }
 
     // 해당 모임채팅방 참여신청 승인
+    @GetMapping("/approve-apply-chat-room/{chat-room-id}/{apply-member-id}")
+    public ResponseEntity<String> approveApplyChatRoom(@PathVariable("chat-room-id") Long chatRoomId, @PathVariable("apply-member-id") String applyMemberId) {
+        chatRoomService.approveApplyChatRoom(chatRoomId, applyMemberId);
+        return ResponseEntity.status(HttpStatus.CREATED).body("성공적으로 참여신청을 승인했습니다.");
+    }
 
     // 해당 모임채팅방 참여신청 거절
+    @GetMapping("/refuse-apply-chat-room/{chat-room-id}/{apply-member-id}")
+    public ResponseEntity<String> refuseApplyChatRoom(@PathVariable("chat-room-id") Long chatRoomId, @PathVariable("apply-member-id") String applyMemberId) {
+        chatRoomService.refuseApplyChatRoom(chatRoomId, applyMemberId);
+        return ResponseEntity.status(HttpStatus.CREATED).body("성공적으로 참여신청을 거절했습니다.");
+    }
 }

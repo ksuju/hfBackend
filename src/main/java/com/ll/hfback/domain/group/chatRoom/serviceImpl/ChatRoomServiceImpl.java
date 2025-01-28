@@ -95,10 +95,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 chatRoom.getMember().getNickname(),
                 chatRoom.getRoomTitle(),
                 chatRoom.getRoomContent(),
+                chatRoom.getJoinMemberIdList(),
                 joinMemberNicknames,  // 닉네임 리스트 전달
+                chatRoom.getWaitingMemberIdList(),
                 waitingMemberNicknames,
                 chatRoom.getRoomMemberLimit(),
-                joinMemberNicknames.size()  // 참여자 수 전달
+                joinMemberNicknames.size(),  // 참여자 수 전달
+                waitingMemberNicknames.size()  // 대기자 수 전달
         );
 
         return detailChatRoomDto;
@@ -181,12 +184,12 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     @Transactional
     public void applyChatRoom(Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
+
         // 사용자 검증 - 현재 로그인한 사용자의 ID를 가져오는 메서드
         Long currentUserId = auService.getCurrentUserId();
         String memberId = String.valueOf(currentUserId);
-
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
 
         // 기존 참여자/대기자 명단을 변환하여 불러옴
         List<String> joinMemberIdList = chatRoom.getJoinMemberIdList();
@@ -196,7 +199,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         if (joinMemberIdList.contains(memberId)) {
             throw new IllegalStateException("이미 참여자 명단에 등록된 사용자입니다.");
         } else {
-            // 대기자 명단에 사용자 이름 추가
             if (!waitingMemberIdList.contains(memberId)) {
                 waitingMemberIdList.add(memberId);
             } else {
@@ -207,5 +209,95 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         // 변경된 대기자 명단을 다시 저장
         chatRoom.setWaitingMemberIdList(waitingMemberIdList);
         chatRoomRepository.save(chatRoom); // 트랜잭션 종료 시 자동 저장
+    }
+
+    // 해당 모임채팅방에 참여신청 취소
+    @Override
+    @Transactional
+    public void cancelApplyChatRoom(Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
+
+        // 사용자 검증 - 현재 로그인한 사용자의 ID를 가져오는 메서드
+        Long currentUserId = auService.getCurrentUserId();
+        String memberId = String.valueOf(currentUserId);
+
+        // 기존 참여자/대기자 명단을 변환하여 불러옴
+        List<String> joinMemberIdList = chatRoom.getJoinMemberIdList();
+        List<String> waitingMemberIdList = chatRoom.getWaitingMemberIdList();
+
+        // 참여자/대기자 명단 등록 여부 확인 및 사용자 ID 제거
+        if (joinMemberIdList.contains(memberId)) {
+            throw new IllegalStateException("이미 참여자 명단에 등록된 사용자입니다.");
+        } else {
+            if (waitingMemberIdList.contains(memberId)) {
+                waitingMemberIdList.remove(memberId);
+            } else {
+                throw new IllegalStateException("대기자 명단에 등록되지 않은 사용자입니다.");
+            }
+        }
+
+        // 변경된 대기자 명단을 다시 저장
+        chatRoom.setWaitingMemberIdList(waitingMemberIdList);
+        chatRoomRepository.save(chatRoom); // 트랜잭션 종료 시 자동 저장
+    }
+
+    // 해당 모임채팅방 참여신청 승인
+    @Override
+    @Transactional
+    public void approveApplyChatRoom(Long chatRoomId, String applyMemberId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
+
+        // 사용자 검증 - 현재 로그인한 사용자의 ID를 가져오는 메서드
+        Long currentUserId = auService.getCurrentUserId();
+        if (!chatRoom.getMember().getId().equals(currentUserId)) {
+            throw new IllegalStateException("모임 참여신청 승인 권한이 없습니다.");
+        }
+
+        // 기존 참여자/대기자 명단을 변환하여 불러옴
+        List<String> joinMemberIdList = chatRoom.getJoinMemberIdList();
+        List<String> waitingMemberIdList = chatRoom.getWaitingMemberIdList();
+
+        // 참여자/대기자 명단 등록 여부 확인 및 사용자 ID 추가/제거
+        if (joinMemberIdList.contains(applyMemberId)) {
+            throw new IllegalStateException("이미 참여자 명단에 등록된 사용자입니다.");
+        } else {
+            if (waitingMemberIdList.contains(applyMemberId)) {
+                waitingMemberIdList.remove(applyMemberId);
+                joinMemberIdList.add(applyMemberId);
+            } else {
+                throw new IllegalStateException("대기자 명단에 등록되지 않은 사용자입니다.");
+            }
+        }
+    }
+
+    // 해당 모임채팅방 참여신청 거절
+    @Override
+    @Transactional
+    public void refuseApplyChatRoom(Long chatRoomId, String applyMemberId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
+
+        // 사용자 검증 - 현재 로그인한 사용자의 ID를 가져오는 메서드
+        Long currentUserId = auService.getCurrentUserId();
+        if (!chatRoom.getMember().getId().equals(currentUserId)) {
+            throw new IllegalStateException("모임 참여신청 거절 권한이 없습니다.");
+        }
+
+        // 기존 참여자/대기자 명단을 변환하여 불러옴
+        List<String> joinMemberIdList = chatRoom.getJoinMemberIdList();
+        List<String> waitingMemberIdList = chatRoom.getWaitingMemberIdList();
+
+        // 참여자/대기자 명단 등록 여부 확인 및 사용자 ID 추가/제거
+        if (joinMemberIdList.contains(applyMemberId)) {
+            throw new IllegalStateException("이미 참여자 명단에 등록된 사용자입니다.");
+        } else {
+            if (waitingMemberIdList.contains(applyMemberId)) {
+                waitingMemberIdList.remove(applyMemberId);
+            } else {
+                throw new IllegalStateException("대기자 명단에 등록되지 않은 사용자입니다.");
+            }
+        }
     }
 }
