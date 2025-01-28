@@ -103,7 +103,7 @@ public class NotProd {
                 // 테스트 모임채팅방 생성
                 //
                 //
-                // member1이 PF256158 공연게시글에서 만든 모임채팅방
+                // member1이 PF256158 공연게시글에서 만든 모임채팅방1
                 // member1 로그인 로직 필요
 //                CreateChatRoomForm createChatRoomForm1 = new CreateChatRoomForm();
 //                createChatRoomForm1.setRoomTitle("이것은 member1이 작성한 테스트 제목입니다.");
@@ -111,7 +111,7 @@ public class NotProd {
 //                createChatRoomForm1.setRoomMemberLimit(10L);
 //                chatroomservice.createChatRoom("PF256158", createChatRoomForm1);
 
-                // member2가 PF256158 공연게시글에서 만든 모임채팅방
+                // member2가 PF256158 공연게시글에서 만든 모임채팅방2
                 // member2 로그인 로직 필요
 //                CreateChatRoomForm createChatRoomForm2 = new CreateChatRoomForm();
 //                createChatRoomForm2.setRoomTitle("이것은 member2가 작성한 테스트 제목입니다.");
@@ -119,7 +119,7 @@ public class NotProd {
 //                createChatRoomForm2.setRoomMemberLimit(20L);
 //                chatroomservice.createChatRoom("PF256158", createChatRoomForm2);
 
-                // member3가 PF256158 공연게시글에서 만든 모임채팅방
+                // member3가 PF256158 공연게시글에서 만든 모임채팅방3
                 // member3 로그인 로직 필요
 //                CreateChatRoomForm createChatRoomForm3 = new CreateChatRoomForm();
 //                createChatRoomForm3.setRoomTitle("이것은 member3이 작성한 테스트 제목입니다.");
@@ -127,7 +127,7 @@ public class NotProd {
 //                createChatRoomForm3.setRoomMemberLimit(30L);
 //                chatroomservice.createChatRoom("PF256158", createChatRoomForm3);
 
-                // member3가 PF256158 공연게시글에서 만든 모임채팅방
+                // member3가 PF256158 공연게시글에서 만든 모임채팅방4
                 // member3 로그인 로직 필요
 //                CreateChatRoomForm createChatRoomForm4 = new CreateChatRoomForm();
 //                createChatRoomForm4.setRoomTitle("이것은 member4이 작성한 테스트 제목입니다.");
@@ -236,6 +236,16 @@ public class NotProd {
                 // member1이 chat-room-id=1에서 member3에게 방장권한 위임
                 // member1 로그인 로직 필요
 //                chatroomservice.delegateChatRoom(1L, 3L);
+
+
+
+                // 위 모임채팅방 테스트 결과 예측
+                //
+                //
+                //  chat-room-id=1의 참여자는 member1,2,3이고 방장은 member3으로 변경
+                //  chat-room-id=2는 방장(member2)만 남음 (member1은 나감, member3은 강퇴당함)
+                //  chat-room-id=3은 방장(member3)만 남음 (member1은 참여신청 취소, member2는 참여신청 거절당함)
+                //  chat-room-id=4는 삭제됨
 
 
 
