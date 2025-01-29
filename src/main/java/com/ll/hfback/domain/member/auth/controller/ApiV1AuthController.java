@@ -8,6 +8,7 @@ import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.global.exceptions.ServiceException;
 import com.ll.hfback.global.rq.Rq;
 import com.ll.hfback.global.rsData.RsData;
+import com.ll.hfback.global.webMvc.LoginUser;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -113,5 +114,11 @@ public class ApiV1AuthController {
         rq.deleteCookie("apiKey");
 
         return new RsData<>("200-1", "로그아웃 되었습니다.");
+    }
+
+
+    @GetMapping("/me")
+    public RsData<MemberDto> me(@LoginUser Member loginUser) {
+        return new RsData("200", "회원정보 조회 성공", new MemberDto(loginUser));
     }
 }
