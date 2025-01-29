@@ -39,6 +39,8 @@ public class ApiSecurityConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", corsConfig);
+        source.registerCorsConfiguration("/oauth2/**", corsConfig);
+        source.registerCorsConfiguration("/login/oauth2/**", corsConfig);
 
         return source;
     }
@@ -53,6 +55,7 @@ public class ApiSecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/*/members").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/*/auth/login").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/*/auth/logout").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/*/auth/signup").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/Posts/*").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/session").permitAll()
                                 .requestMatchers("/oauth2/**").permitAll()

@@ -28,8 +28,8 @@ public class AuthService {
             String email, String password, String nickname,
             String loginType, String providerId, String profilePath
         ) {
-        Member CheckedSignUpMember = authRepository.findByEmail(email);
-        if (CheckedSignUpMember != null) {
+        Optional<Member> existingMember = memberRepository.findByEmail(email);
+        if (existingMember.isPresent()) {
             throw new ServiceException("이메일 중복", "이미 사용 중인 이메일입니다.");
         }
 
@@ -46,7 +46,7 @@ public class AuthService {
             member.addSocialAccount(providerId);
         }
 
-        return authRepository.save(member);
+        return memberRepository.save(member);
     }
 
     public Optional<Member> findByEmail(String email) {
