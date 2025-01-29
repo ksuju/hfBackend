@@ -171,16 +171,11 @@ public class Member extends BaseEntity {
     @Builder.Default
     private List<Report> reports = new ArrayList<>();
 
-    public void addReport(
-        Member reported, String content
-    ) {
-        Report report = Report.builder()
-            .reporter(this)
-            .reported(reported)
-            .content(content)
-            .build();
-        reports.add(report);
+    public List<Report> getReports() {
+        return Collections.unmodifiableList(reports);  // 수정 불가능 리스트 반환
     }
+
+    public void addReport(Report report) { reports.add(report); }
 
     public void removeReport(Report report) {
         reports.remove(report);

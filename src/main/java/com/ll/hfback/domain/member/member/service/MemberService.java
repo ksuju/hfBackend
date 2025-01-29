@@ -4,6 +4,7 @@ import com.ll.hfback.domain.member.auth.repository.AuthRepository;
 import com.ll.hfback.domain.member.member.dto.MemberUpdateRequest;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
+import com.ll.hfback.global.exceptions.ServiceException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,8 +31,6 @@ public class MemberService {
         return memberRepository.findById(id);
     }
 
-
-
     public Member getMember(String email) {
         return authRepository.findByEmail(email);
     }
@@ -43,12 +42,23 @@ public class MemberService {
         return member;
     }
 
+
+    @Transactional
+    public void banMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new ServiceException("banMember()", "회원을 찾을 수 없습니다."));
+
+        member.setState(Member.MemberState.BANNED);
+    }
+
+
     @Transactional
     public void deactivateMember(Long id) {
         memberRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(id + "번 사용자가 존재하지 않습니다."))
             .deactivate();
     }
+
 
     @Transactional
     public void restoreMember(Long id) {

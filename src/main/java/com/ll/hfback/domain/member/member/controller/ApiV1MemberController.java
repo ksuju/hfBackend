@@ -5,9 +5,11 @@ import com.ll.hfback.domain.member.member.dto.MemberUpdateRequest;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.service.MemberService;
 import com.ll.hfback.global.rsData.RsData;
+import com.ll.hfback.standard.base.Empty;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,7 +58,7 @@ public class ApiV1MemberController {
     }
 
 
-    // MEM07_CONTROL1 : 회원 목록 (관리자)
+    // MEMCTL01_CONTROL1 : 회원 목록 (관리자)
     @GetMapping
     public List<MemberDto> getMembers() {
         List<Member> members = memberService.findAll();
@@ -64,7 +66,7 @@ public class ApiV1MemberController {
     }
 
 
-    // MEM07_CONTROL2 : 회원 상세 조회 (관리자)
+    // MEMCTL01_CONTROL2 : 회원 상세 조회 (관리자)
     @GetMapping("/{memberId}")
     public MemberDto getMember(@PathVariable Long memberId) {
         Member member = memberService.findById(memberId).orElse(null);
@@ -72,10 +74,20 @@ public class ApiV1MemberController {
     }
 
 
-    // MEM07_CONTROL3 : 회원 복구 (관리자)
+    // MEMCTL01_CONTROL3 : 회원 복구 (관리자)
     @PatchMapping("/{memberId}/restore")
     public RsData<Void> restoreMember(@PathVariable Long memberId) {
         memberService.restoreMember(memberId);
         return new RsData<>("200", "회원 복구가 성공하였습니다.");
     }
+
+
+    // MEMCTL01_CONTROL4 : 회원 차단 처리 (관리자)
+    @PatchMapping("/{memberId}/block")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public RsData<Empty> banMember(@PathVariable Long memberId) {
+        memberService.banMember(memberId);
+        return new RsData("200-1", "%d번 회원을 차단했습니다.".formatted(memberId));
+    }
+
 }

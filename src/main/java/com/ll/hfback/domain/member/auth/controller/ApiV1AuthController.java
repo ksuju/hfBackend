@@ -72,16 +72,19 @@ public class ApiV1AuthController {
     }
 
 
-    // MEM01_LOGIN03 : 아이디 저장 (이메일)
-    //@PostMapping("/save-id")
-
-
     // MEM01_LOGIN04 : 아이디 찾기 (이메일)
     //@PostMapping("/find-id")
 
 
     // MEM01_LOGIN05 : 비밀번호 재설정
     //@PostMapping("/reset-password")
+
+
+    // MEM01_LOGIN06 : 로그인 사용자 정보
+    @GetMapping("/me")
+    public RsData<MemberDto> me(@LoginUser Member loginUser) {
+        return new RsData("200", "회원정보 조회 성공", new MemberDto(loginUser));
+    }
 
 
     // MEM02_SIGNUP01 : 회원가입
@@ -114,11 +117,5 @@ public class ApiV1AuthController {
         rq.deleteCookie("apiKey");
 
         return new RsData<>("200-1", "로그아웃 되었습니다.");
-    }
-
-
-    @GetMapping("/me")
-    public RsData<MemberDto> me(@LoginUser Member loginUser) {
-        return new RsData("200", "회원정보 조회 성공", new MemberDto(loginUser));
     }
 }
