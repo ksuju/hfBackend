@@ -5,6 +5,7 @@ import com.ll.hfback.domain.group.chat.request.MessageReadStatusRequest;
 import com.ll.hfback.domain.group.chat.request.MessageSearchKeywordsRequest;
 import com.ll.hfback.domain.group.chat.request.RequestMessage;
 import com.ll.hfback.domain.group.chat.service.ChatMessageService;
+import com.ll.hfback.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -28,34 +29,49 @@ public class ApiV1ChatMessageController {
 
     // 채팅 메시지 작성
     @PostMapping("/messages")
-    public void writeMessage(@PathVariable("chatRoom-id") Long chatRoomId,
-                             @RequestBody RequestMessage requestMessage) {
-        chatMessageService.writeMessage(chatRoomId,
-                requestMessage);
+    public RsData<Void> writeMessage(@PathVariable("chatRoom-id") Long chatRoomId,
+                      @RequestBody RequestMessage requestMessage) {
+        try {
+            chatMessageService.writeMessage(chatRoomId, requestMessage);
+            return new RsData<>("200", "채팅 메시지 작성에 성공했습니다.");
+        } catch (Exception e) {
+            return new RsData<>("500", "채팅 메시지 작성 중 오류가 발생했습니다: " + e.getMessage());
+        }
     }
 
     // 채팅 메시지 조회
     @GetMapping("/messages")
-    public Page<ResponseMessage> readMessages(@PathVariable("chatRoom-id") Long chatRoomId,
-                                              @RequestParam(value = "page", defaultValue = "0") int page) {
-
-        return chatMessageService.readMessages(chatRoomId, page);
+    public RsData<Page<ResponseMessage>> readMessages(@PathVariable("chatRoom-id") Long chatRoomId,
+                                                @RequestParam(value = "page", defaultValue = "0") int page) {
+        try {
+            return new RsData<Page<ResponseMessage>>("200","채팅 메시지 조회가 성공했습니다.", chatMessageService.readMessages(chatRoomId, page));
+        } catch (Exception e) {
+            return new RsData<>("500", "채팅 메시지 조회 중 오류가 발생했습니다: " + e.getMessage());
+        }
     }
 
     // 조건에 따른 채팅 메시지 검색 기능
     @GetMapping("/messages/search")
-    public Page<ResponseMessage> searchMessages(@PathVariable("chatRoom-id") Long chatRoomId,
+    public RsData<Page<ResponseMessage>> searchMessages(@PathVariable("chatRoom-id") Long chatRoomId,
                                                 @RequestParam(value = "page", defaultValue = "0") int page,
                                                 @RequestBody MessageSearchKeywordsRequest messageSearchKeywordsRequest) {
-
-        return chatMessageService.searchMessages(chatRoomId, page, messageSearchKeywordsRequest);
+        try {
+            return new RsData<Page<ResponseMessage>>("200", "검색 조건에 따른 채팅 메시지 조회에 성공했습니다.", chatMessageService.searchMessages(chatRoomId, page, messageSearchKeywordsRequest));
+        } catch (Exception e) {
+            return new RsData<>("500", "검색 조건에 따른 채팅 메시지 조회 중 오류가 발생했습니다: " + e.getMessage());
+        }
     }
 
 
     // 메시지 읽음/안읽음 상태 확인용 필드 수정
     @PutMapping("/messages/readStatus")
-    public void messageReadStatus(@PathVariable("chatRoom-id") Long chatRoomId,
+    public RsData<Void> messageReadStatus(@PathVariable("chatRoom-id") Long chatRoomId,
                                   @RequestBody MessageReadStatusRequest messageReadStatusRequest) {
-        chatMessageService.messageReadStatus(chatRoomId, messageReadStatusRequest);
+        try {
+            chatMessageService.messageReadStatus(chatRoomId, messageReadStatusRequest);
+            return new RsData<>("200", "메시지 수신 상태 변경 완료");
+        } catch (Exception e) {
+            return new RsData<>("500", "메시지 수신 상태 변경 실패" + e.getMessage());
+        }
     }
 }
