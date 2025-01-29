@@ -53,7 +53,7 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList());
     }
 
-    // 사용자 위치순으로 게시글 조회
+    // 사용자 위치 기준으로 게시글 조회
     @Override
     public List<PostDto> searchByFestivalArea(String area) {
         List<Post> posts = postRepository.findByFestivalAreaContaining(area);

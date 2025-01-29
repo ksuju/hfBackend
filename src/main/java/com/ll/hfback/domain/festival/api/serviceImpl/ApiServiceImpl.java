@@ -87,7 +87,6 @@ public class ApiServiceImpl implements ApiService {
 
     // KOPIS에서 받아온 xml데이터를 Post객체로 변환
     @Override
-    @Transactional
     public List<Post> parseXmlToEntity(String xml) throws Exception {
         // XML을 Java 객체로 파싱하기 위한 XmlMapper 인스턴스를 생성
         XmlMapper xmlMapper = new XmlMapper();

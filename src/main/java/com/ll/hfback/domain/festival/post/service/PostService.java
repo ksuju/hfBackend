@@ -19,6 +19,6 @@ public interface PostService {
     // 한국음악(국악), 대중음악, 복합, 서커스/마술, 뮤지컬)
     List<PostDto> searchByGenrenm(String genre);
 
-    // 사용자 위치순으로 게시글 조회
+    // 사용자 위치 기준으로 게시글 조회
     List<PostDto> searchByFestivalArea(String area);
 }
