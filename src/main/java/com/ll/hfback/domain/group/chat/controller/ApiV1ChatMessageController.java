@@ -1,9 +1,9 @@
 package com.ll.hfback.domain.group.chat.controller;
 
-import com.ll.hfback.domain.group.chat.request.RequestMessage;
-import com.ll.hfback.domain.group.chat.response.MessageReadStatusResponse;
-import com.ll.hfback.domain.group.chat.response.MessageSearchKeywordsResponse;
 import com.ll.hfback.domain.group.chat.response.ResponseMessage;
+import com.ll.hfback.domain.group.chat.request.MessageReadStatusRequest;
+import com.ll.hfback.domain.group.chat.request.MessageSearchKeywordsRequest;
+import com.ll.hfback.domain.group.chat.request.RequestMessage;
 import com.ll.hfback.domain.group.chat.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,33 +29,33 @@ public class ApiV1ChatMessageController {
     // 채팅 메시지 작성
     @PostMapping("/messages")
     public void writeMessage(@PathVariable("chatRoom-id") Long chatRoomId,
-                             @RequestBody ResponseMessage responseMessage) {
+                             @RequestBody RequestMessage requestMessage) {
         chatMessageService.writeMessage(chatRoomId,
-                responseMessage);
+                requestMessage);
     }
 
     // 채팅 메시지 조회
     @GetMapping("/messages")
-    public Page<RequestMessage> readMessages(@PathVariable("chatRoom-id") Long chatRoomId,
-                                             @RequestParam(value = "page", defaultValue = "0") int page) {
+    public Page<ResponseMessage> readMessages(@PathVariable("chatRoom-id") Long chatRoomId,
+                                              @RequestParam(value = "page", defaultValue = "0") int page) {
 
         return chatMessageService.readMessages(chatRoomId, page);
     }
 
     // 조건에 따른 채팅 메시지 검색 기능
     @GetMapping("/messages/search")
-    public Page<RequestMessage> searchMessages(@PathVariable("chatRoom-id") Long chatRoomId,
-                                               @RequestParam(value = "page", defaultValue = "0") int page,
-                                               @RequestBody MessageSearchKeywordsResponse messageSearchKeywordsResponse) {
+    public Page<ResponseMessage> searchMessages(@PathVariable("chatRoom-id") Long chatRoomId,
+                                                @RequestParam(value = "page", defaultValue = "0") int page,
+                                                @RequestBody MessageSearchKeywordsRequest messageSearchKeywordsRequest) {
 
-        return chatMessageService.searchMessages(chatRoomId, page, messageSearchKeywordsResponse);
+        return chatMessageService.searchMessages(chatRoomId, page, messageSearchKeywordsRequest);
     }
 
 
     // 메시지 읽음/안읽음 상태 확인용 필드 수정
     @PutMapping("/messages/readStatus")
     public void messageReadStatus(@PathVariable("chatRoom-id") Long chatRoomId,
-                                  @RequestBody MessageReadStatusResponse messageReadStatusResponse) {
-        chatMessageService.messageReadStatus(chatRoomId, messageReadStatusResponse);
+                                  @RequestBody MessageReadStatusRequest messageReadStatusRequest) {
+        chatMessageService.messageReadStatus(chatRoomId, messageReadStatusRequest);
     }
 }

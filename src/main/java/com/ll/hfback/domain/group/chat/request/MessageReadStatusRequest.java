@@ -1,4 +1,4 @@
-package com.ll.hfback.domain.group.chat.response;
+package com.ll.hfback.domain.group.chat.request;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +16,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class MessageReadStatusResponse {
+public class MessageReadStatusRequest {
     private Long memberId;
     private Long messageId;
 }
