@@ -22,21 +22,11 @@ public class QSocialAccount extends EntityPathBase<SocialAccount> {
 
     public static final QSocialAccount socialAccount = new QSocialAccount("socialAccount");
 
-    public final com.ll.hfback.global.jpa.QBaseEntity _super = new com.ll.hfback.global.jpa.QBaseEntity(this);
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> createDate = _super.createDate;
-
-    //inherited
-    public final NumberPath<Long> id = _super.id;
+    public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);
 
     public final com.ll.hfback.domain.member.member.entity.QMember member;
 
-    public final StringPath provider = createString("provider");
-
     public final StringPath providerId = createString("providerId");
-
-    public final StringPath refreshToken = createString("refreshToken");
 
     public QSocialAccount(String variable) {
         this(SocialAccount.class, forVariable(variable), INITS);

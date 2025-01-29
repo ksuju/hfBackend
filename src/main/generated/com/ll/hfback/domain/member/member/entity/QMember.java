@@ -24,6 +24,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final ListPath<com.ll.hfback.domain.member.alert.entity.Alert, com.ll.hfback.domain.member.alert.entity.QAlert> alerts = this.<com.ll.hfback.domain.member.alert.entity.Alert, com.ll.hfback.domain.member.alert.entity.QAlert>createList("alerts", com.ll.hfback.domain.member.alert.entity.Alert.class, com.ll.hfback.domain.member.alert.entity.QAlert.class, PathInits.DIRECT2);
 
+    public final StringPath apiKey = createString("apiKey");
+
     public final DatePath<java.time.LocalDate> birthday = createDate("birthday", java.time.LocalDate.class);
 
     //inherited
@@ -50,11 +52,11 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath profilePath = createString("profilePath");
 
-    public final StringPath refreshToken = createString("refreshToken");
-
     public final ListPath<com.ll.hfback.domain.member.report.entity.Report, com.ll.hfback.domain.member.report.entity.QReport> reports = this.<com.ll.hfback.domain.member.report.entity.Report, com.ll.hfback.domain.member.report.entity.QReport>createList("reports", com.ll.hfback.domain.member.report.entity.Report.class, com.ll.hfback.domain.member.report.entity.QReport.class, PathInits.DIRECT2);
 
     public final EnumPath<Member.MemberRole> role = createEnum("role", Member.MemberRole.class);
+
+    public final ListPath<com.ll.hfback.domain.member.auth.entity.SocialAccount, com.ll.hfback.domain.member.auth.entity.QSocialAccount> socialAccounts = this.<com.ll.hfback.domain.member.auth.entity.SocialAccount, com.ll.hfback.domain.member.auth.entity.QSocialAccount>createList("socialAccounts", com.ll.hfback.domain.member.auth.entity.SocialAccount.class, com.ll.hfback.domain.member.auth.entity.QSocialAccount.class, PathInits.DIRECT2);
 
     public final EnumPath<Member.MemberState> state = createEnum("state", Member.MemberState.class);
 
