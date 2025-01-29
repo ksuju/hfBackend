@@ -1,36 +1,39 @@
 package com.ll.hfback.domain.group.chatRoom.service;
 
+import com.ll.hfback.domain.group.chatRoom.dto.ChatRoomDto;
+import com.ll.hfback.domain.group.chatRoom.dto.DetailChatRoomDto;
 import com.ll.hfback.domain.group.chatRoom.entity.ChatRoom;
-import com.ll.hfback.domain.group.chatRoom.repository.ChatRoomRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.ll.hfback.domain.group.chatRoom.form.CreateChatRoomForm;
+import com.ll.hfback.domain.group.chatRoom.form.UpdateChatRoomForm;
+import com.ll.hfback.domain.member.member.entity.Member;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
-@RequiredArgsConstructor
-public class ChatRoomService {
-    private final ChatRoomRepository roomRepository;
+public interface ChatRoomService {
 
-    @Transactional(readOnly = true)
     // 해당 게시글의 모든 모임 조회
-    public List<ChatRoom> searchByFestivalId(String festivalId) {
-        return roomRepository.findByFestivalId(festivalId);
-    }
+    List<ChatRoomDto> searchByFestivalId(String festivalId);
 
-    @Transactional(readOnly = true)
     // 해당 게시글의 모임 상세 조회
-    public Optional<ChatRoom> searchById(Long id) {
-        return roomRepository.findById(id);
-    }
+    Optional<DetailChatRoomDto> searchById(Long id);
 
-    @Transactional
+    // DB에서 받아온 참여자명단과 대기자명단을 List<String>으로 변환하고, ChatRoom을 ChatRoomDto로 변환하는 메서드
+    ChatRoomDto convertToChatRoomDto(ChatRoom chatRoom);
+
+    // DB에서 받아온 참여자명단과 대기자명단을 List<String>으로 변환하고, ChatRoom을 DetailChatRoomDto로 변환하는 메서드
+    DetailChatRoomDto convertToDetailChatRoomDto(ChatRoom chatRoom);
+
     // 해당 게시글에 모임 생성
-    public void createRoom(int roomMemberLimit) {
-        if (roomMemberLimit > 100) {
-            throw new IllegalArgumentException("roomMemberLimit는 100을 초과할 수 없습니다.");
-        }
-    }
+    void createChatRoom(String festivalId, @Valid CreateChatRoomForm createChatRoomForm);
+
+    // 해당 모임채팅방 수정
+    void updateChatRoom(Long chatRoomId, @Valid UpdateChatRoomForm updateChatRoomForm);
+
+    // 해당 모임채팅방 삭제
+    void deleteChatRoom(Long chatRoomId);
+
+    // 해당 모임채팅방에 참여신청
+    void applyChatRoom(Long chatRoomId);
 }

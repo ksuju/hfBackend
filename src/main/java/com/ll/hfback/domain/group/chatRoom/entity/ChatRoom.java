@@ -1,11 +1,13 @@
 package com.ll.hfback.domain.group.chatRoom.entity;
 
+import com.ll.hfback.domain.group.chatRoom.converter.StringListConverter;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,6 +23,10 @@ public class ChatRoom extends BaseEntity {
     private String festivalId;
     private String roomTitle;
     private String roomContent;
-    private int roomMemberLimit;
-    private int roomState;
+    private Long roomMemberLimit;
+    private Long roomState;
+    @Convert(converter = StringListConverter.class)
+    private List<String> joinMemberIdList;
+    @Convert(converter = StringListConverter.class)
+    private List<String> waitingMemberIdList;
 }

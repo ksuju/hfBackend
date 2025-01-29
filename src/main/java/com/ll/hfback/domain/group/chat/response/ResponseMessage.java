@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.group.chat.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 public class ResponseMessage {
     private Long memberId;
     private String content;

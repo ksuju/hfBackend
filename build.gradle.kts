@@ -2,6 +2,7 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.4.1"
 	id("io.spring.dependency-management") version "1.1.7"
+	id("com.ewerk.gradle.plugins.querydsl") version "1.0.10"
 }
 
 group = "com.ll"
@@ -51,8 +52,41 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testImplementation("org.springframework.security:spring-security-test")
 
+	// QueryDSL
+	implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+	implementation("com.querydsl:querydsl-apt:5.0.0:jakarta")
+	annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jakarta")
+	annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+	annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+
+	// ApiScheduler: Xml -> Json
+	dependencies {
+		implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.2")
+		implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
+		implementation("com.fasterxml.jackson.core:jackson-annotations:2.18.2")
+	}
 }
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+val querydslDir = "src/main/generated"
+
+sourceSets {
+	main {
+		java {
+			srcDir(querydslDir)
+		}
+	}
+}
+
+tasks.withType<JavaCompile> {
+	options.generatedSourceOutputDirectory.set(file(querydslDir))
+}
+
+tasks.named("clean") {
+	doLast {
+		file(querydslDir).deleteRecursively()
+	}
 }
