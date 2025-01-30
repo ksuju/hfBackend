@@ -52,6 +52,9 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testImplementation("org.springframework.security:spring-security-test")
 
+	// Amazon S3 라이브러리
+	implementation ("com.amazonaws:aws-java-sdk-s3:1.12.772")
+
 	// QueryDSL
 	implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
 	implementation("com.querydsl:querydsl-apt:5.0.0:jakarta")

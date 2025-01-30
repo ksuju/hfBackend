@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.member.auth.controller;
 
+import com.ll.hfback.domain.member.auth.dto.LoginUserDto;
 import com.ll.hfback.domain.member.auth.dto.SignupRequest;
 import com.ll.hfback.domain.member.auth.dto.SignupResponse;
 import com.ll.hfback.domain.member.auth.service.AuthService;
@@ -82,8 +83,12 @@ public class ApiV1AuthController {
 
     // MEM01_LOGIN06 : 로그인 사용자 정보
     @GetMapping("/me")
-    public RsData<MemberDto> me(@LoginUser Member loginUser) {
-        return new RsData("200", "회원정보 조회 성공", new MemberDto(loginUser));
+    public RsData<LoginUserDto> me(@LoginUser Member loginUser) {
+        Member member = authService
+            .findByEmail(loginUser.getEmail())
+            .orElseThrow(() -> new ServiceException("401-1", "사용자 정보를 가져올 수 없습니다."));
+
+        return new RsData("200", "회원정보 조회 성공", LoginUserDto.of(member));
     }
 
 

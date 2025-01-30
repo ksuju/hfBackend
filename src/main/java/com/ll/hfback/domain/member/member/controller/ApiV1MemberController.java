@@ -2,15 +2,18 @@ package com.ll.hfback.domain.member.member.controller;
 
 import com.ll.hfback.domain.member.member.dto.MemberDto;
 import com.ll.hfback.domain.member.member.dto.MemberUpdateRequest;
+import com.ll.hfback.domain.member.member.dto.MemberUpdateResult;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.service.MemberService;
 import com.ll.hfback.global.rsData.RsData;
+import com.ll.hfback.global.webMvc.LoginUser;
 import com.ll.hfback.standard.base.Empty;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -40,7 +43,7 @@ public class ApiV1MemberController {
         @Valid @RequestBody MemberUpdateRequest memberUpdateRequest
     ) {
         Member member = memberService.findById(memberId).orElse(null);
-        Member modifiedMember = memberService.modify(member, memberUpdateRequest);
+        Member modifiedMember = memberService.updateInfo(member, memberUpdateRequest);
         return new RsData<>("200", "회원 정보 업데이트가 성공하였습니다.", new MemberDto(modifiedMember));
     }
 
@@ -48,6 +51,33 @@ public class ApiV1MemberController {
     // MEM03_MODIFY03 : 전화번호 인증
     // @PostMapping("/{memberId}/verify-phone")
 
+
+    // MEM03_MODIFY04 : 프로필 사진 변경
+    @PostMapping("/profile-image")
+    public RsData<MemberUpdateResult> updateProfileImage(
+        @LoginUser Member loginUser,
+        @RequestParam("profileImage") MultipartFile profileImage
+    ) {
+        Member member = memberService.updateProfileImage(loginUser.getId(), profileImage);
+        return new RsData<>(
+            "200",
+            "프로필 사진 변경이 성공하였습니다.",
+            MemberUpdateResult.of(member)
+        );
+    }
+
+    // MEM03_MODIFY05 : 프로필 사진 리셋
+    @PatchMapping("/reset-profile-image")
+    public RsData<MemberUpdateResult> resetProfileImage(
+        @LoginUser Member loginUser
+    ) {
+        Member member = memberService.resetToDefaultProfileImage(loginUser.getId());
+        return new RsData<>(
+            "200",
+            "프로필 사진 초기화가 성공하였습니다.",
+            MemberUpdateResult.of(member)
+        );
+    }
 
 
     // MEM05_DELETE : 회원 탈퇴

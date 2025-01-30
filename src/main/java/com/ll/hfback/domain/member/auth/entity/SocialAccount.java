@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class SocialAccount{
+public class SocialAccount {
 
   @Id
   @Column(length = 50)
