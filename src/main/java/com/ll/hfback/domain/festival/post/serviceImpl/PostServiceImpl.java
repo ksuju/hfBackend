@@ -67,6 +67,7 @@ public class PostServiceImpl implements PostService {
         return new PostDto(
                 post.getFestivalId(),
                 post.getFestivalName(),
+                post.getFestivalArea(),
                 post.getFestivalStartDate(),
                 post.getFestivalEndDate(),
                 post.getFestivalUrl()
