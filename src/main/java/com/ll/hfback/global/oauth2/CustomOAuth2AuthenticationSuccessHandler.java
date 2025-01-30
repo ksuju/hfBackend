@@ -3,6 +3,8 @@ package com.ll.hfback.global.oauth2;
 
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.service.MemberService;
+import com.ll.hfback.global.exceptions.ErrorCode;
+import com.ll.hfback.global.exceptions.ServiceException;
 import com.ll.hfback.global.rq.Rq;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,9 +31,9 @@ public class CustomOAuth2AuthenticationSuccessHandler extends SavedRequestAwareA
 
     String redirectUrl = request.getParameter("state");
     if (redirectUrl != null && !redirectUrl.isEmpty()) {
-      System.out.println("Redirecting to: " + redirectUrl);  // 로그 추가
+      System.out.println("Redirecting to: " + redirectUrl);
     } else {
-      System.out.println("No redirectUrl found, redirecting to default page.");
+      throw new ServiceException(ErrorCode.REDIRECT_URL_NOT_FOUND);
     }
 
     response.sendRedirect(redirectUrl);

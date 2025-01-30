@@ -5,6 +5,8 @@ import com.ll.hfback.domain.member.member.dto.MemberUpdateRequest;
 import com.ll.hfback.domain.member.member.dto.MemberUpdateResult;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.service.MemberService;
+import com.ll.hfback.global.exceptions.ErrorCode;
+import com.ll.hfback.global.exceptions.ServiceException;
 import com.ll.hfback.global.rsData.RsData;
 import com.ll.hfback.global.webMvc.LoginUser;
 import com.ll.hfback.standard.base.Empty;
@@ -42,7 +44,9 @@ public class ApiV1MemberController {
         @PathVariable Long memberId,
         @Valid @RequestBody MemberUpdateRequest memberUpdateRequest
     ) {
-        Member member = memberService.findById(memberId).orElse(null);
+        Member member = memberService.findById(memberId)
+            .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND));
+
         Member modifiedMember = memberService.updateInfo(member, memberUpdateRequest);
         return new RsData<>("200", "회원 정보 업데이트가 성공하였습니다.", new MemberDto(modifiedMember));
     }

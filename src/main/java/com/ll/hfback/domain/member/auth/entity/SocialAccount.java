@@ -3,8 +3,6 @@ package com.ll.hfback.domain.member.auth.entity;
 import com.ll.hfback.domain.member.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -14,24 +12,80 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class SocialAccount {
-
   @Id
-  @Column(length = 50)
+  @OneToOne
+  @JoinColumn(name = "member_id")
   @EqualsAndHashCode.Include
-  private String providerId;  // 소셜제공자__소셜자체ID
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "member_id", nullable = false)
   private Member member;
 
-  @CreatedDate
+  @Column(unique = true, length = 50)
+  private String kakaoProviderId;
+
+  @Column(unique = true, length = 50)
+  private String kakaoEmail;
+
+  @Column(nullable = false)
+  @Builder.Default
+  private boolean kakaoActive = false;
+
   @Setter(AccessLevel.PRIVATE)
-  private LocalDateTime createDate;
+  private LocalDateTime kakaoCreateDate;
+
+  @Setter(AccessLevel.PRIVATE)
+  private LocalDateTime kakaoModifyDate;
+
+  @Column(length = 50, unique = true)
+  private String googleProviderId;
+
+  @Column(unique = true, length = 50)
+  private String googleEmail;
+
+  @Column(nullable = false)
+  @Builder.Default
+  private boolean googleActive = false;
+
+  @Setter(AccessLevel.PRIVATE)
+  private LocalDateTime googleCreateDate;
+
+  @Setter(AccessLevel.PRIVATE)
+  private LocalDateTime googleModifyDate;
 
 
-  // 관련 메서드
+  public void updateKakaoInfo(String providerId, String email, boolean active) {
+    kakaoProviderId = providerId;
+    kakaoEmail = email;
+    kakaoActive = active;
+    kakaoModifyDate = LocalDateTime.now();
+  }
 
+  public void connectKakao(String providerId, String email) {
+    if (kakaoCreateDate == null) {
+      kakaoCreateDate = LocalDateTime.now();
+    }
+    updateKakaoInfo(providerId, email, true);
+  }
+
+  public void disconnectKakao() {
+    updateKakaoInfo(null, null, false);
+  }
+
+  public void updateGoogleInfo(String providerId, String email, boolean active) {
+    googleProviderId = providerId;
+    googleEmail = email;
+    googleActive = active;
+    googleModifyDate = LocalDateTime.now();
+  }
+
+  public void connectGoogle(String providerId, String email) {
+    if (googleCreateDate == null) {
+      googleCreateDate = LocalDateTime.now();
+    }
+    updateGoogleInfo(providerId, email, true);
+  }
+
+  public void disconnectGoogle() {
+    updateGoogleInfo(null, null, false);
+  }
 }

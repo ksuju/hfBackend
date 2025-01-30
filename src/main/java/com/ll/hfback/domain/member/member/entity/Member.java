@@ -35,9 +35,12 @@ public class Member extends BaseEntity {
     private String email;
 
 
-    @Column(nullable = false)
     @JsonIgnore
     private String password;
+
+    public boolean hasPassword() {
+        return password != null && !password.isEmpty();
+    }
 
 
     @Column(nullable = false)
@@ -96,10 +99,6 @@ public class Member extends BaseEntity {
         ROLE_USER, ROLE_ADMIN
     }
 
-    public boolean isAdmin() {
-        return role == MemberRole.ROLE_ADMIN;
-    }
-
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.role != null) {
             return Collections.singletonList(new SimpleGrantedAuthority(this.role.name()));
@@ -108,9 +107,6 @@ public class Member extends BaseEntity {
         }
     }
 
-    public List<String> getAuthoritiesAsStringList() {
-        return List.of(role.name());
-    }
 
 
     @JsonIgnore
@@ -136,8 +132,18 @@ public class Member extends BaseEntity {
 
 
     // 1대1 관계 설정
+    @JsonIgnore
+    @OneToOne(mappedBy = "member", cascade = ALL, orphanRemoval = true)
+    private SocialAccount socialAccount;
 
-
+    public SocialAccount getSocialAccountOrCreate() {
+        if (socialAccount == null) {
+            socialAccount = SocialAccount.builder()
+                .member(this)
+                .build();
+        }
+        return socialAccount;
+    }
 
 
 
@@ -182,19 +188,6 @@ public class Member extends BaseEntity {
     }
 
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "member", cascade = ALL, orphanRemoval = true) // fetch = FetchType.LAZY
-    @Builder.Default
-    private List<SocialAccount> socialAccounts = new ArrayList<>();
-
-    public void addSocialAccount(String providerId) {
-        SocialAccount socialAccount = SocialAccount.builder()
-            .member(this)
-            .providerId(providerId)
-            .build();
-
-        socialAccounts.add(socialAccount);
-    }
 
 
     // Entity 메서드

@@ -2,6 +2,8 @@ package com.ll.hfback.global.webMvc;
 
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.service.MemberService;
+import com.ll.hfback.global.exceptions.ErrorCode;
+import com.ll.hfback.global.exceptions.ServiceException;
 import com.ll.hfback.global.security.SecurityUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -33,7 +35,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication == null || !authentication.isAuthenticated()) {
-      throw new IllegalArgumentException("로그인 사용자 없음 !");
+      throw new ServiceException(ErrorCode.UNAUTHORIZED);
     }
 
     SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();

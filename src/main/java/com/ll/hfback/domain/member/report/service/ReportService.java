@@ -5,6 +5,7 @@ import com.ll.hfback.domain.member.member.service.MemberService;
 import com.ll.hfback.domain.member.report.entity.Report;
 import com.ll.hfback.domain.member.report.entity.Report.ReportState;
 import com.ll.hfback.domain.member.report.repository.ReportRepository;
+import com.ll.hfback.global.exceptions.ErrorCode;
 import com.ll.hfback.global.exceptions.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,13 +25,13 @@ public class ReportService {
     @Transactional
     public Report createReport(Long reporterId, Long reportedId, String content) {
         Member reporter = memberService.findById(reporterId)
-            .orElseThrow(() -> new ServiceException("createReport()", "신고자를 찾을 수 없습니다."));
+            .orElseThrow(() -> new ServiceException(ErrorCode.REPORTER_NOT_FOUND));
 
         Member reported = memberService.findById(reportedId)
-            .orElseThrow(() -> new ServiceException("createReport()", "신고 대상자를 찾을 수 없습니다."));
+            .orElseThrow(() -> new ServiceException(ErrorCode.REPORTED_NOT_FOUND));
 
         if (reporter.equals(reported)) {
-            throw new ServiceException("createReport()", "자기 자신을 신고할 수 없습니다.");
+            throw new ServiceException(ErrorCode.REPORTER_SELF_REPORT);
         }
 
         Report report = Report.builder()
@@ -53,7 +54,7 @@ public class ReportService {
     @Transactional
     public void rejectReport(Long reportId) {
         Report report = reportRepository.findById(reportId)
-            .orElseThrow(() -> new ServiceException("rejectReport()", "해당 신고를 찾을 수 없습니다."));
+            .orElseThrow(() -> new ServiceException(ErrorCode.REPORT_NOT_FOUND));
 
         report.reject();
     }
@@ -62,7 +63,7 @@ public class ReportService {
     @Transactional
     public void confirmReport(Long reportId) {
         Report report = reportRepository.findById(reportId)
-            .orElseThrow(() -> new ServiceException("confirmReport()", "해당 신고를 찾을 수 없습니다."));
+            .orElseThrow(() -> new ServiceException(ErrorCode.REPORT_NOT_FOUND));
 
         report.confirm();
 

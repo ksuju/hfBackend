@@ -20,7 +20,7 @@ public class SecurityUser extends User implements OAuth2User {
   public SecurityUser(
       long id, String email, String password, String nickname, String profilePath,
       Collection<? extends GrantedAuthority> authorities) {
-    super(email, password, authorities);
+    super(email, password != null ? password : "", authorities);
     this.id = id;
     this.nickname = nickname;
     this.profilePath = profilePath;

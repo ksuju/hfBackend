@@ -22,11 +22,27 @@ public class QSocialAccount extends EntityPathBase<SocialAccount> {
 
     public static final QSocialAccount socialAccount = new QSocialAccount("socialAccount");
 
-    public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);
+    public final BooleanPath googleActive = createBoolean("googleActive");
+
+    public final DateTimePath<java.time.LocalDateTime> googleCreateDate = createDateTime("googleCreateDate", java.time.LocalDateTime.class);
+
+    public final StringPath googleEmail = createString("googleEmail");
+
+    public final DateTimePath<java.time.LocalDateTime> googleModifyDate = createDateTime("googleModifyDate", java.time.LocalDateTime.class);
+
+    public final StringPath googleProviderId = createString("googleProviderId");
+
+    public final BooleanPath kakaoActive = createBoolean("kakaoActive");
+
+    public final DateTimePath<java.time.LocalDateTime> kakaoCreateDate = createDateTime("kakaoCreateDate", java.time.LocalDateTime.class);
+
+    public final StringPath kakaoEmail = createString("kakaoEmail");
+
+    public final DateTimePath<java.time.LocalDateTime> kakaoModifyDate = createDateTime("kakaoModifyDate", java.time.LocalDateTime.class);
+
+    public final StringPath kakaoProviderId = createString("kakaoProviderId");
 
     public final com.ll.hfback.domain.member.member.entity.QMember member;
-
-    public final StringPath providerId = createString("providerId");
 
     public QSocialAccount(String variable) {
         this(SocialAccount.class, forVariable(variable), INITS);
@@ -46,7 +62,7 @@ public class QSocialAccount extends EntityPathBase<SocialAccount> {
 
     public QSocialAccount(Class<? extends SocialAccount> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.member = inits.isInitialized("member") ? new com.ll.hfback.domain.member.member.entity.QMember(forProperty("member")) : null;
+        this.member = inits.isInitialized("member") ? new com.ll.hfback.domain.member.member.entity.QMember(forProperty("member"), inits.get("member")) : null;
     }
 
 }

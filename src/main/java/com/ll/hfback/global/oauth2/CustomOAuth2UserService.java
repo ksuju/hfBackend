@@ -2,6 +2,8 @@ package com.ll.hfback.global.oauth2;
 
 import com.ll.hfback.domain.member.auth.service.AuthService;
 import com.ll.hfback.domain.member.member.entity.Member;
+import com.ll.hfback.global.exceptions.ErrorCode;
+import com.ll.hfback.global.exceptions.ServiceException;
 import com.ll.hfback.global.security.SecurityUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -32,21 +34,28 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         .toUpperCase(Locale.getDefault());
 
 
-    Map<String, Object> attributes = oAuth2User.getAttributes();
+    String email;
+    String nickname;
+    String profilePath;
+    if (loginType.equals("KAKAO")) {
+      Map<String, Object> attributes = oAuth2User.getAttributes();
 
-    Map<String, String> properties = (Map<String, String>) attributes.get("properties");
-    System.out.println("카카오 로그인 정보 꺼낸다 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    String nickname = properties.get("nickname");
-    System.out.println("nickname = " + nickname);
-    String profilePath = properties.get("profile_image");
-    System.out.println(
-        "profilePath = " + profilePath
-    );
+      Map<String, String> properties = (Map<String, String>) attributes.get("properties");
+      nickname = properties.get("nickname");
+      profilePath = properties.get("profile_image");
 
-    Map<String, String> kakaoAccount = (Map<String, String>) attributes.get("kakao_account");
-    String email = kakaoAccount.get("email");
-    System.out.println("email = " + email);
-    String providerId = loginType + "__" + oauthId;
+      Map<String, String> kakaoAccount = (Map<String, String>) attributes.get("kakao_account");
+      email = kakaoAccount.get("email");
+
+    } else if (loginType.equals("GOOGLE")) {
+      email = oAuth2User.getAttribute("email");
+      nickname = oAuth2User.getAttribute("name");
+      profilePath = oAuth2User.getAttribute("picture");
+    } else {
+      throw new ServiceException(ErrorCode.INVALID_LOGIN_TYPE);
+    }
+
+    String providerId = loginType + "__" + oauthId;   // ex) KAKAO__1234567890
 
     Member member = authService.modifyOrSignup(
         email, nickname, loginType, profilePath, providerId
@@ -55,7 +64,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     return new SecurityUser(
         member.getId(),
         member.getEmail(),
-        "",
+        member.getPassword(),
         member.getNickname(),
         member.getProfilePath(),
         member.getAuthorities());

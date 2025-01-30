@@ -32,6 +32,11 @@ spring:
             authorization-grant-type: authorization_code
             redirect-uri: "http://localhost:8090/login/oauth2/code/{registrationId}"    # 리디렉션 URI
             client-name: Kakao    # 클라이언트 이름
+          google:
+            scope:
+              - email
+              - profile
+            redirect-uri: "http://localhost:8090/login/oauth2/code/{registrationId}"
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize

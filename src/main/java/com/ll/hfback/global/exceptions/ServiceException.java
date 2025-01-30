@@ -3,21 +3,19 @@ package com.ll.hfback.global.exceptions;
 
 import com.ll.hfback.global.rsData.RsData;
 import com.ll.hfback.standard.base.Empty;
+import lombok.Getter;
 
-
+@Getter
 public class ServiceException extends RuntimeException {
 
-  private final String resultCode;
-  private final String msg;
+  private final ErrorCode errorCode;
 
-
-  public ServiceException(String resultCode, String msg) {
-    super(resultCode + " : " + msg);
-    this.resultCode = resultCode;
-    this.msg = msg;
+  public ServiceException(ErrorCode errorCode) {
+    super(errorCode.getCode() + " : " + errorCode.getMessage());
+    this.errorCode = errorCode;
   }
 
   public RsData<Empty> getRsData() {
-    return new RsData<>(resultCode, msg);
+    return new RsData<>(errorCode.getCode(), errorCode.getMessage());
   }
 }

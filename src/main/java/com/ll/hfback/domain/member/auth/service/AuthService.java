@@ -3,9 +3,10 @@ package com.ll.hfback.domain.member.auth.service;
 import com.ll.hfback.domain.member.auth.entity.SocialAccount;
 import com.ll.hfback.domain.member.auth.repository.AuthRepository;
 import com.ll.hfback.domain.member.member.entity.Member;
+import com.ll.hfback.domain.member.member.entity.Member.LoginType;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
+import com.ll.hfback.global.exceptions.ErrorCode;
 import com.ll.hfback.global.exceptions.ServiceException;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,16 +27,18 @@ public class AuthService {
 
     public Member signup(
             String email, String password, String nickname,
-            String loginType, String providerId, String profilePath
+            String loginType, String providerId, String providerEmail, String profilePath
         ) {
         Optional<Member> existingMember = memberRepository.findByEmail(email);
         if (existingMember.isPresent()) {
-            throw new ServiceException("이메일 중복", "이미 사용 중인 이메일입니다.");
+            throw new ServiceException(ErrorCode.DUPLICATE_EMAIL);
         }
 
         Member member = Member.builder()
                 .email(email)
-                .password(passwordEncoder.encode(password))
+                .password(
+                    loginType.equals(LoginType.SELF) ? passwordEncoder.encode(password) : null
+                )
                 .nickname(nickname)
                 .loginType(loginType)
                 .profilePath(profilePath)
@@ -43,7 +46,7 @@ public class AuthService {
                 .build();
 
         if (providerId != null) {
-            member.addSocialAccount(providerId);
+            _connectSocialAccount(member, loginType, providerId, providerEmail);
         }
 
         return memberRepository.save(member);
@@ -83,38 +86,46 @@ public class AuthService {
         return memberRepository.count();
     }
 
-    public void modify(
-            Member member, @NotBlank String nickname, @NotBlank String loginType,
-            String providerId, String profilePath
-        ) {
-        SocialAccount socialAccount = member.getSocialAccounts().stream()
-                .filter(account -> account.getProviderId().equals(providerId))
-                .findFirst()
-                .orElse(null);
-        if (socialAccount == null) {
-            member.addSocialAccount(providerId);
-        }
-
-        member.setNickname(nickname);
-        member.setProfilePath(profilePath);
-
-        if (Member.LoginType.isValid(loginType)) {
-            member.setLoginType(loginType);
-        } else {
-            throw new ServiceException("잘못된 로그인 타입", "지원하지 않는 로그인 타입입니다.");
-        }
-    }
-
     public Member modifyOrSignup(
-            String email, String nickname,
-            String loginType, String profilePath, String providerId
-        ) {
-        Optional<Member> opMember = findByEmail(email);
-        if (opMember.isPresent()) {
-            Member member = opMember.get();
-            modify(member, nickname, loginType, providerId, profilePath);
+        String email, String nickname,
+        String loginType, String profilePath, String providerId
+    ) {
+        Optional<Member> existingMember = findByEmail(email);
+        if (existingMember.isPresent()) {
+            Member member = existingMember.get();
+            _modify(member, nickname, loginType, providerId, email, profilePath);
             return member;
         }
-        return signup(email, "", nickname, loginType, providerId, profilePath);
+        return signup(email, null, nickname, loginType, providerId, email, profilePath);
     }
+
+    private void _modify(
+            Member member, String nickname, String loginType,
+            String providerId, String providerEmail, String profilePath
+        ) {
+        if (!LoginType.isValid(loginType)) {
+            throw new ServiceException(ErrorCode.INVALID_LOGIN_TYPE);
+        }
+
+        _connectSocialAccount(member, loginType, providerId, providerEmail);
+
+        member.setLoginType(loginType);
+        member.setNickname(nickname);
+        member.setProfilePath(profilePath);
+    }
+
+    private void _connectSocialAccount(
+        Member member, String loginType,
+        String providerId, String providerEmail
+    ) {
+        SocialAccount socialAccount = member.getSocialAccountOrCreate();
+
+        if (LoginType.KAKAO.equals(loginType)) {
+            socialAccount.connectKakao(providerId, providerEmail);
+
+        } else if (LoginType.GOOGLE.equals(loginType)) {
+            socialAccount.connectGoogle(providerId, providerEmail);
+        }
+    }
+
 }

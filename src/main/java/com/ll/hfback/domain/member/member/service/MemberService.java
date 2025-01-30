@@ -4,11 +4,11 @@ import com.ll.hfback.domain.member.auth.repository.AuthRepository;
 import com.ll.hfback.domain.member.member.dto.MemberUpdateRequest;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
+import com.ll.hfback.global.exceptions.ErrorCode;
 import com.ll.hfback.global.exceptions.ServiceException;
 import com.ll.hfback.global.storage.FileStorageHandler;
 import com.ll.hfback.global.storage.FileUploadRequest;
 import com.ll.hfback.global.storage.FileUploadResult;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -52,7 +52,7 @@ public class MemberService {
     @Transactional
     public Member updateProfileImage(Long memberId, MultipartFile file) {
         Member member = findById(memberId)
-            .orElseThrow(() -> new ServiceException("updateProfileImage()", "회원을 찾을 수 없습니다."));
+            .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND));
 
         FileUploadResult uploadResult = fileStorageHandler.handleFileUpload(
             FileUploadRequest.builder()
@@ -74,7 +74,7 @@ public class MemberService {
     @Transactional
     public Member resetToDefaultProfileImage(Long memberId) {
         Member member = findById(memberId)
-            .orElseThrow(() -> new ServiceException("resetToDefaultProfileImage()", "회원을 찾을 수 없습니다."));
+            .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND));
 
         if (!member.getProfilePath().equals("default.png")) {
             FileUploadResult result = fileStorageHandler.handleFileUpload(
@@ -95,7 +95,7 @@ public class MemberService {
     @Transactional
     public void banMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new ServiceException("banMember()", "회원을 찾을 수 없습니다."));
+            .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND));
 
         member.setState(Member.MemberState.BANNED);
     }
@@ -104,7 +104,7 @@ public class MemberService {
     @Transactional
     public void deactivateMember(Long id) {
         memberRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(id + "번 사용자가 존재하지 않습니다."))
+            .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND))
             .deactivate();
     }
 
@@ -112,7 +112,7 @@ public class MemberService {
     @Transactional
     public void restoreMember(Long id) {
         memberRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(id + "번 사용자가 존재하지 않습니다."))
+            .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND))
             .restore();
     }
 }

@@ -9,6 +9,8 @@ import com.ll.hfback.domain.member.report.dto.ReportRequest;
 import com.ll.hfback.domain.member.report.dto.ReportResponse;
 import com.ll.hfback.domain.member.report.entity.Report;
 import com.ll.hfback.domain.member.report.service.ReportService;
+import com.ll.hfback.global.exceptions.ErrorCode;
+import com.ll.hfback.global.exceptions.ServiceException;
 import com.ll.hfback.global.rsData.RsData;
 import com.ll.hfback.global.webMvc.LoginUser;
 import jakarta.validation.Valid;
@@ -19,8 +21,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/reports")
@@ -29,6 +29,7 @@ public class ApiV1ReportController {
     private final ReportService reportService;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
+
 
     // MEM04_REPORT01 : 회원 신고하기
     @PostMapping
@@ -94,18 +95,16 @@ public class ApiV1ReportController {
     public RsData<Member> changeRole(
         @PathVariable Long memberId, @RequestBody RoleChangeRequest request) {
 
-        Optional<Member> opMember = memberService.findById(memberId);
-        if (opMember.isEmpty()) {
-            return new RsData<>("404-1", "회원을 찾을 수 없습니다.", null);
-        }
-        Member member = opMember.get();
+        Member member = memberService.findById(memberId)
+            .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND));
 
         try {
             member.setRole(MemberRole.valueOf(request.role));
             memberRepository.save(member);
             return new RsData<>("200-1", "권한을 변경했습니다.", member);
+
         } catch (IllegalArgumentException e) {
-            return new RsData<>("400-1", "잘못된 권한입니다.", null);
+            throw new ServiceException(ErrorCode.INVALID_ROLE);
         }
     }
 

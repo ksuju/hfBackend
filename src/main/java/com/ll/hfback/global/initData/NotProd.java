@@ -31,15 +31,15 @@ public class NotProd {
             public void run(ApplicationArguments args) throws Exception {
                 Member member1 = authService.signup(
                     "test1@test.com", "1234", "강남",
-                    Member.LoginType.SELF, null, null
+                    Member.LoginType.SELF, null, null, null
                 );
                 Member member2 = authService.signup(
                     "test2@test.com", "1234", "홍길동",
-                    Member.LoginType.SELF, null, null
+                    Member.LoginType.SELF, null, null, null
                 );
                 Member member3 = authService.signup(
                     "test3@test.com", "1234", "제펫토",
-                    Member.LoginType.SELF, null, null
+                    Member.LoginType.SELF, null, null, null
                 );
 
 

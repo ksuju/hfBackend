@@ -9,12 +9,12 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.ll.hfback.global.exceptions.ErrorCode;
 import com.ll.hfback.global.exceptions.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Map;
 
@@ -65,11 +65,12 @@ public class NcpObjectStorageService implements StorageService {
 
       if (exists) {
         s3.deleteObject(bucketName, filePath);
+
       } else {
-        throw new FileNotFoundException("파일이 존재하지 않는다. : " + filePath);
+        throw new ServiceException(ErrorCode.FILE_NOT_FOUND);
       }
     } catch (AmazonS3Exception e) {
-      throw new ServiceException("Ncp delete()", "파일 삭제 실패 : %s".formatted(e));
+      throw new ServiceException(ErrorCode.FILE_DELETE_ERROR);
     }
   }
 }

@@ -6,6 +6,7 @@ import com.ll.hfback.domain.member.auth.dto.SignupResponse;
 import com.ll.hfback.domain.member.auth.service.AuthService;
 import com.ll.hfback.domain.member.member.dto.MemberDto;
 import com.ll.hfback.domain.member.member.entity.Member;
+import com.ll.hfback.global.exceptions.ErrorCode;
 import com.ll.hfback.global.exceptions.ServiceException;
 import com.ll.hfback.global.rq.Rq;
 import com.ll.hfback.global.rsData.RsData;
@@ -48,15 +49,17 @@ public class ApiV1AuthController {
 
     // MEM01_LOGIN01 : 로그인
     @PostMapping("/login")
-    public RsData<LoginResponse> login(
-            @Valid @RequestBody LoginRequest request
-        ) {
+    public RsData<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         Member member = authService
             .findByEmail(request.email)
-            .orElseThrow(() -> new ServiceException("401-1", "존재하지 않는 사용자입니다."));
+            .orElseThrow(() -> new ServiceException(ErrorCode.INVALID_EMAIL));
+
+        if (!member.hasPassword()) {
+            throw new ServiceException(ErrorCode.SOCIAL_ONLY_ACCOUNT);
+        }
 
         if (!passwordEncoder.matches(request.password, member.getPassword())) {
-            throw new ServiceException("401-2", "비밀번호가 일치하지 않습니다.");
+            throw new ServiceException(ErrorCode.INVALID_PASSWORD);
         }
 
         String accessToken = rq.makeAuthCookies(member);
@@ -86,7 +89,7 @@ public class ApiV1AuthController {
     public RsData<LoginUserDto> me(@LoginUser Member loginUser) {
         Member member = authService
             .findByEmail(loginUser.getEmail())
-            .orElseThrow(() -> new ServiceException("401-1", "사용자 정보를 가져올 수 없습니다."));
+            .orElseThrow(() -> new ServiceException(ErrorCode.INVALID_EMAIL));
 
         return new RsData("200", "회원정보 조회 성공", LoginUserDto.of(member));
     }
@@ -97,7 +100,7 @@ public class ApiV1AuthController {
     public RsData<SignupResponse> signup(@Valid @RequestBody SignupRequest request) {
         Member member = authService.signup(
             request.getEmail(), request.getPassword(), request.getNickname(),
-            Member.LoginType.SELF, null, null
+            Member.LoginType.SELF, null, null, null
         );
 
         return new RsData<>(

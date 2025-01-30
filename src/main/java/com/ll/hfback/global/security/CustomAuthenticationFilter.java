@@ -85,9 +85,6 @@ public class CustomAuthenticationFilter  extends OncePerRequestFilter {
 
     String apiKey = authTokens.apiKey;
     String accessToken = authTokens.accessToken;
-    System.out.println("AuthTokens 만듬 !!!!!!!!");
-    System.out.println(apiKey);
-    System.out.println(accessToken);
 
     Member member = authService.getMemberFromAccessToken(accessToken);
     if (member == null)

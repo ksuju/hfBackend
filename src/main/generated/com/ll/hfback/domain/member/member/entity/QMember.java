@@ -18,6 +18,8 @@ public class QMember extends EntityPathBase<Member> {
 
     private static final long serialVersionUID = -182293629L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QMember member = new QMember("member1");
 
     public final com.ll.hfback.global.jpa.QBaseEntity _super = new com.ll.hfback.global.jpa.QBaseEntity(this);
@@ -56,20 +58,29 @@ public class QMember extends EntityPathBase<Member> {
 
     public final EnumPath<Member.MemberRole> role = createEnum("role", Member.MemberRole.class);
 
-    public final ListPath<com.ll.hfback.domain.member.auth.entity.SocialAccount, com.ll.hfback.domain.member.auth.entity.QSocialAccount> socialAccounts = this.<com.ll.hfback.domain.member.auth.entity.SocialAccount, com.ll.hfback.domain.member.auth.entity.QSocialAccount>createList("socialAccounts", com.ll.hfback.domain.member.auth.entity.SocialAccount.class, com.ll.hfback.domain.member.auth.entity.QSocialAccount.class, PathInits.DIRECT2);
+    public final com.ll.hfback.domain.member.auth.entity.QSocialAccount socialAccount;
 
     public final EnumPath<Member.MemberState> state = createEnum("state", Member.MemberState.class);
 
     public QMember(String variable) {
-        super(Member.class, forVariable(variable));
+        this(Member.class, forVariable(variable), INITS);
     }
 
     public QMember(Path<? extends Member> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QMember(PathMetadata metadata) {
-        super(Member.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QMember(PathMetadata metadata, PathInits inits) {
+        this(Member.class, metadata, inits);
+    }
+
+    public QMember(Class<? extends Member> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.socialAccount = inits.isInitialized("socialAccount") ? new com.ll.hfback.domain.member.auth.entity.QSocialAccount(forProperty("socialAccount"), inits.get("socialAccount")) : null;
     }
 
 }
