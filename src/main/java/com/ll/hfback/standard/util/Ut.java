@@ -16,6 +16,26 @@ public class Ut {
     public static boolean isBlank(String str) {
       return str == null || str.trim().isEmpty();
     }
+
+    public static String maskEmail(String email) {
+      if (isBlank(email)) {
+        return email;
+      }
+
+      String[] parts = email.split("@");
+      if (parts.length != 2) {
+        return email;
+      }
+
+      String name = parts[0];
+      String domain = parts[1];
+
+      String maskedName = name.length() <= 3
+          ? name.substring(0, name.length() - 1) + "*"
+          : name.charAt(0) + "*".repeat(name.length() - 1);
+
+      return maskedName + "@" + domain;
+    }
   }
 
 

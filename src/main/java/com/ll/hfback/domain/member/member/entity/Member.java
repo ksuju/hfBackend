@@ -149,6 +149,7 @@ public class Member extends BaseEntity {
 
 
 
+
     // 1:N 관계 설정
     @JsonIgnore
     @OneToMany(mappedBy = "member", cascade = ALL, orphanRemoval = true) // fetch = FetchType.LAZY

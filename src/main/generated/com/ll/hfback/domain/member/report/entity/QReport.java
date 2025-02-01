@@ -56,8 +56,8 @@ public class QReport extends EntityPathBase<Report> {
 
     public QReport(Class<? extends Report> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.reported = inits.isInitialized("reported") ? new com.ll.hfback.domain.member.member.entity.QMember(forProperty("reported")) : null;
-        this.reporter = inits.isInitialized("reporter") ? new com.ll.hfback.domain.member.member.entity.QMember(forProperty("reporter")) : null;
+        this.reported = inits.isInitialized("reported") ? new com.ll.hfback.domain.member.member.entity.QMember(forProperty("reported"), inits.get("reported")) : null;
+        this.reporter = inits.isInitialized("reporter") ? new com.ll.hfback.domain.member.member.entity.QMember(forProperty("reporter"), inits.get("reporter")) : null;
     }
 
 }

@@ -41,6 +41,6 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
     SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
     String email = securityUser.getName();
 
-    return memberService.getMember(email);
+    return memberService.findByEmail(email);
   }
 }

@@ -1,5 +1,7 @@
 package com.ll.hfback.domain.member.auth.service;
 
+import com.ll.hfback.domain.member.auth.dto.EmailInfo;
+import com.ll.hfback.domain.member.auth.dto.FindEmailsResponse;
 import com.ll.hfback.domain.member.auth.entity.SocialAccount;
 import com.ll.hfback.domain.member.auth.repository.AuthRepository;
 import com.ll.hfback.domain.member.member.entity.Member;
@@ -7,14 +9,18 @@ import com.ll.hfback.domain.member.member.entity.Member.LoginType;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
 import com.ll.hfback.global.exceptions.ErrorCode;
 import com.ll.hfback.global.exceptions.ServiceException;
+import com.ll.hfback.standard.util.Ut;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -24,11 +30,13 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
 
-
+    @Transactional
     public Member signup(
             String email, String password, String nickname,
             String loginType, String providerId, String providerEmail, String profilePath
         ) {
+        _validateEmailAndPassword(email, password, loginType);
+
         Optional<Member> existingMember = memberRepository.findByEmail(email);
         if (existingMember.isPresent()) {
             throw new ServiceException(ErrorCode.DUPLICATE_EMAIL);
@@ -86,6 +94,8 @@ public class AuthService {
         return memberRepository.count();
     }
 
+
+    @Transactional
     public Member modifyOrSignup(
         String email, String nickname,
         String loginType, String profilePath, String providerId
@@ -128,4 +138,29 @@ public class AuthService {
         }
     }
 
+    private void _validateEmailAndPassword(String email, String password, String loginType) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new ServiceException(ErrorCode.EMAIL_REQUIRED);
+        }
+
+        if (LoginType.SELF.equals(loginType) && (password == null || password.trim().isEmpty())) {
+            throw new ServiceException(ErrorCode.PASSWORD_REQUIRED);
+        }
+    }
+
+    public FindEmailsResponse findEmailsByPhoneNumber(String phoneNumber) {
+        List<Member> members = memberRepository.findAllByPhoneNumber(phoneNumber);
+        if (members.isEmpty()) {
+            throw new ServiceException(ErrorCode.INVALID_PHONE_NUMBER);
+        }
+
+        List<EmailInfo> emailInfos = members.stream()
+            .map(member -> new EmailInfo(
+                Ut.str.maskEmail(member.getEmail()),
+                member.getCreateDate()
+            ))
+            .toList();
+
+        return new FindEmailsResponse(emailInfos);
+    }
 }

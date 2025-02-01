@@ -1,19 +1,18 @@
 package com.ll.hfback.domain.member.member.controller;
 
-import com.ll.hfback.domain.member.member.dto.MemberDto;
-import com.ll.hfback.domain.member.member.dto.MemberUpdateRequest;
-import com.ll.hfback.domain.member.member.dto.MemberUpdateResult;
+import com.ll.hfback.domain.member.member.dto.*;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.service.MemberService;
+import com.ll.hfback.domain.member.member.service.PasswordService;
 import com.ll.hfback.global.exceptions.ErrorCode;
 import com.ll.hfback.global.exceptions.ServiceException;
 import com.ll.hfback.global.rsData.RsData;
 import com.ll.hfback.global.webMvc.LoginUser;
 import com.ll.hfback.standard.base.Empty;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,38 +24,71 @@ import java.util.List;
 public class ApiV1MemberController {
 
     private final MemberService memberService;
+    private final PasswordService passwordService;
+    private final PasswordEncoder passwordEncoder;
 
 
-    // MEM03_MODIFY01 : 회원정보 수정 전 비밀번호 인증
-    @PostMapping("/{memberId}/verify-password")
-    public RsData<Void> verifyPassword(
-        @PathVariable("memberId") Long memberId,
-        HttpServletRequest request
+
+    // [1. 회원 정보 관리]
+    // MEM01_MODIFY01 : 회원정보 수정 전 비밀번호 인증
+    @PostMapping("/password/check")
+    public RsData<Void> checkPassword(
+        @Valid @RequestBody CheckPasswordRequest request,
+        @LoginUser Member loginUser
     ) {
-
-        return new RsData<>("200", "비밀번호 인증이 성공하였습니다.");
+        if (!passwordEncoder.matches(request.password(), loginUser.getPassword())) {
+            throw new ServiceException(ErrorCode.INVALID_PASSWORD);
+        }
+        return new RsData<>("200-1", "비밀번호가 확인되었습니다.");
     }
 
 
-    // MEM03_MODIFY02 : 회원정보 수정
-    @PutMapping("/{memberId}")
+    // MEM01_MODIFY02 - 비밀번호 변경
+    @PutMapping("/password/change")
+    public RsData<Void> changePassword(
+        @Valid @RequestBody ChangePasswordRequest request,
+        @LoginUser Member loginUser
+    ) {
+        passwordService.changePassword(
+            loginUser.getEmail(),
+            request.currentPassword(),
+            request.newPassword()
+        );
+        return new RsData<>("200-1", "비밀번호가 변경되었습니다.");
+    }
+
+
+    // MEM01_MODIFY03 : 회원정보 수정  (성별, 전화번호, 주소, 마케팅 수신여부 ...)
+    @PutMapping("/me")
     public RsData<MemberDto> updateMember(
-        @PathVariable Long memberId,
+        @LoginUser Member loginUser,
         @Valid @RequestBody MemberUpdateRequest memberUpdateRequest
     ) {
-        Member member = memberService.findById(memberId)
-            .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND));
-
-        Member modifiedMember = memberService.updateInfo(member, memberUpdateRequest);
-        return new RsData<>("200", "회원 정보 업데이트가 성공하였습니다.", new MemberDto(modifiedMember));
+        Member modifiedMember = memberService.updateInfo(loginUser, memberUpdateRequest);
+        return new RsData<>(
+            "200",
+            "회원 정보 업데이트가 성공하였습니다.",
+            new MemberDto(modifiedMember)
+        );
     }
 
 
-    // MEM03_MODIFY03 : 전화번호 인증
+    // MEM01_MODIFY04 : 전화번호 인증코드 발송 (SMS 인증)
+    // @PostMapping("/{memberId}/verify-phone")
+
+    // MEM01_MODIFY05 : 전화번호 인증코드 확인 (SMS 인증)
     // @PostMapping("/{memberId}/verify-phone")
 
 
-    // MEM03_MODIFY04 : 프로필 사진 변경
+    // MEM01_MODIFY06 : 주소 등록 (도로명 주소 찾기)
+    //@PostMapping("/address-verify")
+
+
+
+
+
+    // [2. 프로필 이미지 관리]
+    // MEM02_IMAGE01 : 프로필 이미지 업로드
     @PostMapping("/profile-image")
     public RsData<MemberUpdateResult> updateProfileImage(
         @LoginUser Member loginUser,
@@ -70,7 +102,8 @@ public class ApiV1MemberController {
         );
     }
 
-    // MEM03_MODIFY05 : 프로필 사진 리셋
+
+    // MEM02_IMAGE01 : 프로필 이미지 초기화
     @PatchMapping("/reset-profile-image")
     public RsData<MemberUpdateResult> resetProfileImage(
         @LoginUser Member loginUser
@@ -84,14 +117,29 @@ public class ApiV1MemberController {
     }
 
 
+
+
+    // [3. 소셜 계정 연동 관리]
+    //@PostMapping("/me/social/password")         // 소셜 전용 계정에 비밀번호 추가
+    //@PostMapping("/me/social/kakao")            // 카카오 계정 연동
+    //@PostMapping("/me/social/google")           // 구글 계정 연동
+    //@DeleteMapping("/me/social/kakao")          // 카카오 계정 연동 해제
+    //@DeleteMapping("/me/social/google")         // 구글 계정 연동 해제
+
+
+
+
+    // [4. 회원 상태 관리]
     // MEM05_DELETE : 회원 탈퇴
-    @PatchMapping("/{memberId}/deactivate")
-    public RsData<Void> deactivateMember(@PathVariable Long memberId) {
-        memberService.deactivateMember(memberId);
+    @PatchMapping("/me/deactivate")
+    public RsData<Void> deactivateMember(@LoginUser Member loginUser) {
+        memberService.deactivateMember(loginUser.getId());
         return new RsData<>("200", "회원 탈퇴가 성공하였습니다.");
     }
 
 
+
+    // [5. 관리자 회원 관리]
     // MEMCTL01_CONTROL1 : 회원 목록 (관리자)
     @GetMapping
     public List<MemberDto> getMembers() {
@@ -108,7 +156,7 @@ public class ApiV1MemberController {
     }
 
 
-    // MEMCTL01_CONTROL3 : 회원 복구 (관리자)
+    // MEMCTL01_CONTROL3 : 회원 탈퇴 복구 (관리자)
     @PatchMapping("/{memberId}/restore")
     public RsData<Void> restoreMember(@PathVariable Long memberId) {
         memberService.restoreMember(memberId);

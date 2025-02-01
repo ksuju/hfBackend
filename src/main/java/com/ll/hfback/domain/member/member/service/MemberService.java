@@ -1,6 +1,5 @@
 package com.ll.hfback.domain.member.member.service;
 
-import com.ll.hfback.domain.member.auth.repository.AuthRepository;
 import com.ll.hfback.domain.member.member.dto.MemberUpdateRequest;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
@@ -26,7 +25,6 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final AuthRepository authRepository;
     private final FileStorageHandler fileStorageHandler;
 
 
@@ -38,8 +36,9 @@ public class MemberService {
         return memberRepository.findById(id);
     }
 
-    public Member getMember(String email) {
-        return authRepository.findByEmail(email);
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+            .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND));
     }
 
 

@@ -18,6 +18,9 @@ public class AuthTokenService {
   private long accessTokenExpirationSeconds;
 
 
+
+
+
   String genAccessToken(Member member) {
     long id = member.getId();
     String email = member.getEmail();

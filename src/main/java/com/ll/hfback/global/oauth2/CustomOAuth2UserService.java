@@ -67,6 +67,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         member.getPassword(),
         member.getNickname(),
         member.getProfilePath(),
-        member.getAuthorities());
+        member.getAuthorities()
+    );
   }
 }

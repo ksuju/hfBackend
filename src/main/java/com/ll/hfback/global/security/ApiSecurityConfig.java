@@ -47,7 +47,7 @@ public class ApiSecurityConfig {
         return source;
     }
 
-
+    // "/api/v1/auth/verification/email/send", "/api/v1/auth/verification/email/verify"
     @Bean
     SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http
@@ -58,6 +58,8 @@ public class ApiSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/api/*/auth/login").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/*/auth/logout").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/*/auth/signup").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/*/auth/verification/email/send").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/*/auth/verification/email/verify").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/Posts/*").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/session").permitAll()
                                 .requestMatchers("/oauth2/**").permitAll()
