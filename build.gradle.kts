@@ -59,6 +59,11 @@ dependencies {
 		implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
 		implementation("com.fasterxml.jackson.core:jackson-annotations:2.18.2")
 	}
+
+	// 축제 데이터 가져오기 (페이지 스크롤링 기준 요청)
+	dependencies {
+		implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+	}
 }
 
 tasks.withType<Test> {

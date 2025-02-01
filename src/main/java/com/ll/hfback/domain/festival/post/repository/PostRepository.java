@@ -1,11 +1,16 @@
 package com.ll.hfback.domain.festival.post.repository;
 
 import com.ll.hfback.domain.festival.post.entity.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
+    // 모든 게시글 조회
+    Page<Post> findAll(Pageable pageable);
+
     // 키워드로 게시글 조회
     List<Post> findByFestivalNameContaining(String keyword);
 

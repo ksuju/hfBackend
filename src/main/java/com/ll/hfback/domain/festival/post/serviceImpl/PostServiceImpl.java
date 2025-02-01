@@ -6,6 +6,9 @@ import com.ll.hfback.domain.festival.post.entity.Post;
 import com.ll.hfback.domain.festival.post.repository.PostRepository;
 import com.ll.hfback.domain.festival.post.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +23,10 @@ public class PostServiceImpl implements PostService {
 
     // 모든 게시글 조회
     @Override
-    public List<PostDto> findAll() {
-        List<Post> posts = postRepository.findAll();
-        return posts.stream()
-                .map(this::convertToPostDto)
-                .collect(Collectors.toList());
+    public Page<PostDto> findAll(Pageable pageable) {
+        Page<Post> posts = postRepository.findAll(pageable);
+        return posts.map(this::convertToPostDto);
+
     }
 
     // 키워드로 게시글 조회
@@ -46,19 +48,21 @@ public class PostServiceImpl implements PostService {
     // 장르별 게시글 조회(축제, 연극, 무용(서양/한국무용), 대중무용, 서양음악(클래식),
     // 한국음악(국악), 대중음악, 복합, 서커스/마술, 뮤지컬)
     @Override
-    public List<PostDto> searchByGenrenm(String genre) {
+    public List<PostDto> searchByGenrenm(String genre, Integer count) {
         List<Post> posts = postRepository.findByGenrenm(genre);
         return posts.stream()
                 .map(this::convertToPostDto)
+                .limit(count != null ? count : posts.size())
                 .collect(Collectors.toList());
     }
 
     // 지역 기준으로 게시글 조회
     @Override
-    public List<PostDto> searchByFestivalArea(String area) {
+    public List<PostDto> searchByFestivalArea(String area, Integer count) {
         List<Post> posts = postRepository.findByFestivalAreaContaining(area);
         return posts.stream()
                 .map(this::convertToPostDto)
+                .limit(count != null ? count : posts.size())
                 .collect(Collectors.toList());
     }
 
