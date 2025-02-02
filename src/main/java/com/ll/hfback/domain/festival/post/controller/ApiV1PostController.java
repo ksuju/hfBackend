@@ -27,8 +27,8 @@ public class ApiV1PostController {
 
     // 키워드로 게시글 조회
     @GetMapping("/search")
-    public List<PostDto> searchPosts(@RequestParam("keyword") String keyword) {
-        List<PostDto> posts = postService.searchByKeyword(keyword);
+    public Page<PostDto> searchPosts(@RequestParam("keyword") String keyword, Pageable pageable) {
+        Page<PostDto> posts = postService.searchByKeyword(keyword, pageable);
 
         return posts;
     }
@@ -44,8 +44,8 @@ public class ApiV1PostController {
     // 장르별 게시글 조회(축제, 연극, 무용(서양/한국무용), 대중무용, 서양음악(클래식),
     // 한국음악(국악), 대중음악, 복합, 서커스/마술, 뮤지컬)
     @GetMapping("/select")
-    public List<PostDto> selectGenrePosts(@RequestParam("genre") String genre, @RequestParam(value = "count", required = false) Integer count) {
-        List<PostDto> posts = postService.searchByGenrenm(genre, count);
+    public Page<PostDto> searchByGenreOrAll(@RequestParam(value = "genre", required = false) String genre, Pageable pageable) {
+        Page<PostDto> posts = postService.searchByGenreOrAll(genre, pageable);
 
         return posts;
     }
