@@ -2,8 +2,10 @@ package com.ll.hfback.domain.member.member.controller;
 
 import com.ll.hfback.domain.member.member.dto.*;
 import com.ll.hfback.domain.member.member.entity.Member;
+import com.ll.hfback.domain.member.member.entity.Member.LoginType;
 import com.ll.hfback.domain.member.member.service.MemberService;
 import com.ll.hfback.domain.member.member.service.PasswordService;
+import com.ll.hfback.domain.member.member.service.SocialConnectService;
 import com.ll.hfback.global.exceptions.ErrorCode;
 import com.ll.hfback.global.exceptions.ServiceException;
 import com.ll.hfback.global.rsData.RsData;
@@ -26,12 +28,13 @@ public class ApiV1MemberController {
     private final MemberService memberService;
     private final PasswordService passwordService;
     private final PasswordEncoder passwordEncoder;
+    private final SocialConnectService socialConnectService;
 
 
 
     // [1. 회원 정보 관리]
     // MEM01_MODIFY01 : 회원정보 수정 전 비밀번호 인증
-    @PostMapping("/password/check")
+    @PostMapping("/me/password")
     public RsData<Void> checkPassword(
         @Valid @RequestBody CheckPasswordRequest request,
         @LoginUser Member loginUser
@@ -44,7 +47,7 @@ public class ApiV1MemberController {
 
 
     // MEM01_MODIFY02 - 비밀번호 변경
-    @PutMapping("/password/change")
+    @PatchMapping("/me/password")
     public RsData<Void> changePassword(
         @Valid @RequestBody ChangePasswordRequest request,
         @LoginUser Member loginUser
@@ -59,7 +62,7 @@ public class ApiV1MemberController {
 
 
     // MEM01_MODIFY03 : 회원정보 수정  (성별, 전화번호, 주소, 마케팅 수신여부 ...)
-    @PutMapping("/me")
+    @PutMapping("/me/profile")
     public RsData<MemberDto> updateMember(
         @LoginUser Member loginUser,
         @Valid @RequestBody MemberUpdateRequest memberUpdateRequest
@@ -74,14 +77,13 @@ public class ApiV1MemberController {
 
 
     // MEM01_MODIFY04 : 전화번호 인증코드 발송 (SMS 인증)
-    // @PostMapping("/{memberId}/verify-phone")
+    // @PostMapping("/me/phone/verification-code")
 
     // MEM01_MODIFY05 : 전화번호 인증코드 확인 (SMS 인증)
-    // @PostMapping("/{memberId}/verify-phone")
-
+    // @PostMapping("/me/phone/verify")
 
     // MEM01_MODIFY06 : 주소 등록 (도로명 주소 찾기)
-    //@PostMapping("/address-verify")
+    //@PostMapping("/me/address")
 
 
 
@@ -89,7 +91,7 @@ public class ApiV1MemberController {
 
     // [2. 프로필 이미지 관리]
     // MEM02_IMAGE01 : 프로필 이미지 업로드
-    @PostMapping("/profile-image")
+    @PostMapping("/me/profile-image")
     public RsData<MemberUpdateResult> updateProfileImage(
         @LoginUser Member loginUser,
         @RequestParam("profileImage") MultipartFile profileImage
@@ -104,7 +106,7 @@ public class ApiV1MemberController {
 
 
     // MEM02_IMAGE01 : 프로필 이미지 초기화
-    @PatchMapping("/reset-profile-image")
+    @DeleteMapping("/me/profile-image")
     public RsData<MemberUpdateResult> resetProfileImage(
         @LoginUser Member loginUser
     ) {
@@ -120,17 +122,68 @@ public class ApiV1MemberController {
 
 
     // [3. 소셜 계정 연동 관리]
-    //@PostMapping("/me/social/password")         // 소셜 전용 계정에 비밀번호 추가
-    //@PostMapping("/me/social/kakao")            // 카카오 계정 연동
-    //@PostMapping("/me/social/google")           // 구글 계정 연동
-    //@DeleteMapping("/me/social/kakao")          // 카카오 계정 연동 해제
-    //@DeleteMapping("/me/social/google")         // 구글 계정 연동 해제
+    // MEM03_SOCIAL01 : 소셜전용 계정 비번 추가
+    @PostMapping("/me/social/password")
+    public RsData<Void> addPasswordToSocialAccount(
+        @Valid @RequestBody AddPasswordRequest request,
+        @LoginUser Member loginUser
+    ) {
+        if (loginUser.getPassword() != null) {
+            throw new ServiceException(ErrorCode.ALREADY_HAS_PASSWORD);
+        }
+
+        memberService.addPassword(loginUser.getId(), request.password());
+        return new RsData<>("200", "소셜 계정에 비밀번호가 추가되었습니다.");
+    }
+
+
+    // MEM03_SOCIAL02 : 소셜 계정 연동 가능 여부 검증 후 로그인 유저 정보 저장 => 프론트에서 확인 후 처리
+    @GetMapping("/me/social/{provider}/validate")
+    public RsData<Void> validateSocialConnection(
+        @PathVariable String provider, @LoginUser Member loginUser
+    ) {
+        String upperProvider = provider.toUpperCase();
+        if (!LoginType.isValid(upperProvider)) {
+            throw new ServiceException(ErrorCode.INVALID_LOGIN_TYPE);
+        }
+
+        if (loginUser.hasSocialAccount(upperProvider)) {   // 이미 해당 소셜 계정으로 연동된 경우
+            throw new ServiceException(ErrorCode.ALREADY_CONNECTED_SOCIAL_ACCOUNT);
+        }
+
+        socialConnectService.storeOrigin(loginUser.getId());
+
+        return new RsData<>("200", "%s 소셜 계정 연동이 가능합니다.".formatted(provider));
+    }
+
+
+    // MEM03_SOCIAL03 : 소셜 계정 연동 해제
+    @DeleteMapping("/me/social/{provider}")
+    public RsData<Void> disconnectSocialAccount(
+        @PathVariable String provider, @LoginUser Member loginUser
+    ) {
+        String upperProvider = provider.toUpperCase();
+        if (!LoginType.isValid(upperProvider)) {
+            throw new ServiceException(ErrorCode.INVALID_LOGIN_TYPE);
+        }
+
+        if (!loginUser.hasSocialAccount(upperProvider)) {   // 연동되지 않은 소셜 계정인 경우
+            throw new ServiceException(ErrorCode.NOT_CONNECTED_SOCIAL_ACCOUNT);
+        }
+
+        if (loginUser.getPassword() == null && loginUser.getConnectedSocialCount() == 1) {  // 마지막 로그인 수단인 경우
+            throw new ServiceException(ErrorCode.CANNOT_DISCONNECT_LAST_LOGIN_METHOD);
+        }
+
+        memberService.disconnectSocialAccount(loginUser.getId(), upperProvider);
+        return new RsData<>("200", "%s 소셜 계정 연동을 해제하였습니다.".formatted(upperProvider));
+    }
 
 
 
 
     // [4. 회원 상태 관리]
-    // MEM05_DELETE : 회원 탈퇴
+    // MEM04_DELETE : 회원 탈퇴
     @PatchMapping("/me/deactivate")
     public RsData<Void> deactivateMember(@LoginUser Member loginUser) {
         memberService.deactivateMember(loginUser.getId());
@@ -140,7 +193,7 @@ public class ApiV1MemberController {
 
 
     // [5. 관리자 회원 관리]
-    // MEMCTL01_CONTROL1 : 회원 목록 (관리자)
+    // ADMIN01_MEMBER01 : 회원 목록 (관리자)
     @GetMapping
     public List<MemberDto> getMembers() {
         List<Member> members = memberService.findAll();
@@ -148,7 +201,7 @@ public class ApiV1MemberController {
     }
 
 
-    // MEMCTL01_CONTROL2 : 회원 상세 조회 (관리자)
+    // ADMIN01_MEMBER02 : 회원 상세 조회 (관리자)
     @GetMapping("/{memberId}")
     public MemberDto getMember(@PathVariable Long memberId) {
         Member member = memberService.findById(memberId).orElse(null);
@@ -156,7 +209,7 @@ public class ApiV1MemberController {
     }
 
 
-    // MEMCTL01_CONTROL3 : 회원 탈퇴 복구 (관리자)
+    // ADMIN01_MEMBER03 : 회원 탈퇴 복구 (관리자)
     @PatchMapping("/{memberId}/restore")
     public RsData<Void> restoreMember(@PathVariable Long memberId) {
         memberService.restoreMember(memberId);
@@ -164,7 +217,7 @@ public class ApiV1MemberController {
     }
 
 
-    // MEMCTL01_CONTROL4 : 회원 차단 처리 (관리자)
+    // ADMIN01_MEMBER04 : 회원 차단 처리 (관리자)
     @PatchMapping("/{memberId}/block")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public RsData<Empty> banMember(@PathVariable Long memberId) {

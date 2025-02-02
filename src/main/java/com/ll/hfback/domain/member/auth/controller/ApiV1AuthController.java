@@ -12,7 +12,6 @@ import com.ll.hfback.global.exceptions.ServiceException;
 import com.ll.hfback.global.rq.Rq;
 import com.ll.hfback.global.rsData.RsData;
 import com.ll.hfback.global.webMvc.LoginUser;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
@@ -94,8 +93,8 @@ public class ApiV1AuthController {
 
 
     // AUTH01_LOGIN05 : 로그아웃
-    @GetMapping("/logout")
-    public RsData<Void> logout(HttpServletResponse response) {
+    @PostMapping("/logout")
+    public RsData<Void> logout() {
         rq.deleteCookie("accessToken");
         rq.deleteCookie("apiKey");
 
@@ -109,6 +108,11 @@ public class ApiV1AuthController {
     // AUTH02_SIGNUP01 : 회원가입
     @PostMapping("/signup")
     public RsData<SignupResponse> signup(@Valid @RequestBody SignupRequest request) {
+        String verified = redisTemplate.opsForValue().get("email:verify:" + request.getEmail());
+        if (verified == null) {
+            throw new ServiceException(ErrorCode.EMAIL_NOT_VERIFIED);
+        }
+
         Member member = authService.signup(
             request.getEmail(), request.getPassword(), request.getNickname(),
             Member.LoginType.SELF, null, null, null
@@ -123,7 +127,7 @@ public class ApiV1AuthController {
 
 
     // AUTH02_SIGNUP02 : 이메일 인증 코드 발송
-    @PostMapping("/verification/email/send")
+    @PostMapping("/email/verification-code")
     public RsData<Void> sendVerificationEmail(@Valid @RequestBody EmailRequest request) {
         emailService.sendVerificationEmail(request.email());
         return new RsData<>("200-1", "입력하신 이메일로 인증 코드가 발송되었습니다.");
@@ -131,13 +135,15 @@ public class ApiV1AuthController {
 
 
     // AUTH02_SIGNUP03 : 이메일 인증 코드 확인
-    @PostMapping("/verification/email/verify")
+    @PostMapping("/email/verify")
     public RsData<Void> verifyEmail(@Valid @RequestBody EmailVerifyRequest request) {
         boolean isValid = emailService.verifyCode(request.email(), request.code());
         if (!isValid) {
             throw new ServiceException(ErrorCode.EMAIL_VERIFICATION_NOT_MATCH);
         }
 
+        redisTemplate.opsForValue()
+            .set("email:verify:" + request.email(), "verified", 3, TimeUnit.MINUTES);
         return new RsData<>("200-1", "이메일 인증이 완료되었습니다.");
     }
 
@@ -146,7 +152,7 @@ public class ApiV1AuthController {
 
     // [3. 계정 복구 프로세스]
     // AUTH03_RECOVER01 : 아이디 찾기 (이메일)
-    @PostMapping("/find-email")
+    @PostMapping("/find-account")
     public RsData<FindEmailsResponse> findEmail(@Valid @RequestBody FindEmailsRequest request) {
         FindEmailsResponse response = authService.findEmailsByPhoneNumber(request.phoneNumber());
 
@@ -185,7 +191,7 @@ public class ApiV1AuthController {
 
 
     // AUTH03_RECOVER04 : 3. Redis에서 값을 꺼내서 확인 후 새 비밀번호 설정
-    @PostMapping("/password/reset/new")
+    @PatchMapping("/password/reset/new")
     public RsData<Void> setNewPassword(@Valid @RequestBody SetNewPasswordRequest request) {
         String verified = redisTemplate.opsForValue().get("pwd:reset:" + request.email());
         if (verified == null) {

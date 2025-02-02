@@ -73,9 +73,13 @@ public class CustomAuthenticationFilter  extends OncePerRequestFilter {
     }
 
     if (List.of(
-          "/api/v1/auth/login", "/api/v1/auth/logout",
-          "/api/v1/auth/signup", "/api/v1/auth/verification/email/send", "/api/v1/auth/verification/email/verify")
-        .contains(request.getRequestURI())
+        "/api/v1/auth/login", "/api/v1/auth/logout",
+        "/api/v1/auth/signup",
+        "/api/v1/auth/email/verification-code", "/api/v1/auth/email/verify",
+        "/api/v1/auth/find-account",
+        "/api/v1/auth/password/reset", "/api/v1/auth/password/reset/verify",
+        "/api/v1/auth/password/reset/new"
+        ).contains(request.getRequestURI())
     ) {
       filterChain.doFilter(request, response);
       return;

@@ -8,8 +8,10 @@ import com.ll.hfback.global.exceptions.ServiceException;
 import com.ll.hfback.global.storage.FileStorageHandler;
 import com.ll.hfback.global.storage.FileUploadRequest;
 import com.ll.hfback.global.storage.FileUploadResult;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +28,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final FileStorageHandler fileStorageHandler;
+    private final PasswordEncoder passwordEncoder;
 
 
     public List<Member> findAll() {
@@ -44,8 +47,11 @@ public class MemberService {
 
     @Transactional
     public Member updateInfo(Member member, MemberUpdateRequest memberUpdateRequest) {
-        member.updateInfo(memberUpdateRequest);
-        return member;
+        Member modifiedMember = memberRepository.findById(member.getId())
+            .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND));
+
+        modifiedMember.updateInfo(memberUpdateRequest);
+        return modifiedMember;
     }
 
     @Transactional
@@ -101,17 +107,31 @@ public class MemberService {
 
 
     @Transactional
-    public void deactivateMember(Long id) {
-        memberRepository.findById(id)
+    public void deactivateMember(Long memberId) {
+        memberRepository.findById(memberId)
             .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND))
             .deactivate();
     }
 
 
     @Transactional
-    public void restoreMember(Long id) {
-        memberRepository.findById(id)
+    public void restoreMember(Long memberId) {
+        memberRepository.findById(memberId)
             .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND))
             .restore();
+    }
+
+    @Transactional
+    public void addPassword(Long memberId, @NotBlank String password) {
+        memberRepository.findById(memberId)
+            .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND))
+            .setPassword(passwordEncoder.encode(password));
+    }
+
+    @Transactional
+    public void disconnectSocialAccount(Long memberId, String upperProvider) {
+        memberRepository.findById(memberId)
+            .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND))
+            .disconnectSocialAccount(upperProvider);
     }
 }

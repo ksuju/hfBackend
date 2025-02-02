@@ -9,8 +9,5 @@ public record SetNewPasswordRequest(
     String email,
 
     @NotBlank
-    String code,
-
-    @NotBlank
     String newPassword
 ) {}

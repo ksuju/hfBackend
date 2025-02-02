@@ -187,7 +187,7 @@ public class AuthServiceTest {
     );
 
     // 소셜 로그인 시도
-    Member member = authService.modifyOrSignup(
+    Member member = authService.handleSocialLogin(
         testCase.email, testCase.nickname,
         LoginType.KAKAO, testCase.profilePath, testCase.providerId
     );

@@ -31,7 +31,7 @@ public class ApiV1ReportController {
     private final MemberRepository memberRepository;
 
 
-    // MEM04_REPORT01 : 회원 신고하기
+    // REP01_REPORT01 : 회원 신고하기
     @PostMapping
     public RsData<ReportResponse> createReport(
         @Valid @RequestBody ReportRequest request,
@@ -49,7 +49,7 @@ public class ApiV1ReportController {
     }
 
 
-    // MEMCTL02_REPORTS01 : 신고 목록 (관리자)
+    // ADMIN02_REPORT01 : 신고 목록 (관리자)
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public RsData<ReportListResponse> getReports(
@@ -68,8 +68,8 @@ public class ApiV1ReportController {
     }
 
 
-    // MEMCTL02_REPORTS02 : 허위 신고 제거 (관리자)
-    @PatchMapping("/{reportId}/deactivate")
+    // ADMIN02_REPORT02 : 허위 신고 제거 (관리자)
+    @PatchMapping("/{reportId}/reject")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public RsData<Void> rejectReport(@PathVariable Long reportId) {
         reportService.rejectReport(reportId);
@@ -77,7 +77,7 @@ public class ApiV1ReportController {
     }
 
 
-    // MEMCTL02_REPORTS03 : 신고 확정 처리 (관리자)
+    // ADMIN02_REPORT03 : 신고 확정 처리 (관리자)
     @PatchMapping("/{reportId}/confirm")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public RsData<Void> confirmReport(@PathVariable Long reportId) {

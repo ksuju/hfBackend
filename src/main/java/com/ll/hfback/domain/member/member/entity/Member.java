@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ll.hfback.domain.member.alert.entity.Alert;
 import com.ll.hfback.domain.member.auth.entity.SocialAccount;
 import com.ll.hfback.domain.member.member.dto.MemberUpdateRequest;
+import com.ll.hfback.domain.member.member.dto.SocialAccountStatus;
 import com.ll.hfback.domain.member.report.entity.Report;
+import com.ll.hfback.global.exceptions.ErrorCode;
+import com.ll.hfback.global.exceptions.ServiceException;
 import com.ll.hfback.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,10 +18,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static jakarta.persistence.CascadeType.ALL;
 
@@ -115,16 +115,18 @@ public class Member extends BaseEntity {
 
 
     @Column(nullable = false, columnDefinition = "VARCHAR(50) DEFAULT 'SELF'")
-    private String loginType = LoginType.SELF;  // 최초 가입 방식
+    private String loginType = LoginType.SELF;  // 현재 로그인 방식
     @UtilityClass
     public class LoginType {
         public static final String SELF = "SELF";
         public static final String NAVER = "NAVER";
         public static final String KAKAO = "KAKAO";
         public static final String GOOGLE = "GOOGLE";
+        public static final String GITHUB = "GITHUB";
 
         public static boolean isValid(String loginType) {
-            return SELF.equals(loginType) || NAVER.equals(loginType) || KAKAO.equals(loginType) || GOOGLE.equals(loginType);
+            return SELF.equals(loginType) || NAVER.equals(loginType)
+                || KAKAO.equals(loginType) || GOOGLE.equals(loginType) || GITHUB.equals(loginType);
         }
     }
 
@@ -144,6 +146,70 @@ public class Member extends BaseEntity {
         }
         return socialAccount;
     }
+
+    public boolean hasSocialAccount(String provider) {
+        return socialAccount != null && socialAccount.hasSocialAccount(provider);
+    }
+
+    public int getConnectedSocialCount() {
+        if (socialAccount == null) return 0;
+
+        int count = 0;
+        if (socialAccount.isKakaoActive()) count++;
+        if (socialAccount.isGoogleActive()) count++;
+        if (socialAccount.isNaverActive()) count++;
+        if (socialAccount.isGithubActive()) count++;
+        return count;
+    }
+
+    public void disconnectSocialAccount(String provider) {
+        if (socialAccount == null) {
+            throw new ServiceException(ErrorCode.NOT_CONNECTED_SOCIAL_ACCOUNT);
+        }
+
+        switch (provider) {
+            case LoginType.KAKAO -> socialAccount.disconnectKakao();
+            case LoginType.GOOGLE -> socialAccount.disconnectGoogle();
+            case LoginType.GITHUB -> socialAccount.disconnectGithub();
+            case LoginType.NAVER -> socialAccount.disconnectNaver();
+            default -> throw new ServiceException(ErrorCode.DISCONNECT_FAIL);
+        }
+    }
+
+
+    public Map<String, SocialAccountStatus> getSocialAccountStatuses() {
+        Map<String, SocialAccountStatus> statuses = new HashMap<>();
+        if (socialAccount != null) {
+            // Kakao
+            statuses.put(LoginType.KAKAO, SocialAccountStatus.builder()
+                .createDate(socialAccount.getKakaoCreateDate())
+                .active(socialAccount.isKakaoActive())
+                .build());
+
+            // Google
+            statuses.put(LoginType.GOOGLE, SocialAccountStatus.builder()
+                .createDate(socialAccount.getGoogleCreateDate())
+                .active(socialAccount.isGoogleActive())
+                .build());
+
+            // Github
+            statuses.put(LoginType.GITHUB, SocialAccountStatus.builder()
+                .createDate(socialAccount.getGithubCreateDate())
+                .active(socialAccount.isGithubActive())
+                .build());
+
+            // Naver
+            statuses.put(LoginType.NAVER, SocialAccountStatus.builder()
+                .createDate(socialAccount.getNaverCreateDate())
+                .active(socialAccount.isNaverActive())
+                .build());
+        }
+
+        return statuses;
+    }
+
+
+
 
 
 
@@ -201,15 +267,12 @@ public class Member extends BaseEntity {
     }
 
     public void updateInfo(MemberUpdateRequest request) {
-        email = request.getEmail();
         gender = request.getGender();
         nickname = request.getNickname();
-        password = request.getPassword();
-        phoneNumber = request.getPhoneNumber();
         mkAlarm = request.isMkAlarm();
         birthday = request.getBirthday();
         location = request.getLocation();
-        profilePath = request.getProfilePath();
+        phoneNumber = request.getPhoneNumber();
     }
 
 }

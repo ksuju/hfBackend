@@ -3,7 +3,7 @@ package com.ll.hfback.domain.member.auth.service;
 import com.ll.hfback.domain.member.auth.dto.EmailInfo;
 import com.ll.hfback.domain.member.auth.dto.FindEmailsResponse;
 import com.ll.hfback.domain.member.auth.entity.SocialAccount;
-import com.ll.hfback.domain.member.auth.repository.AuthRepository;
+import com.ll.hfback.domain.member.auth.repository.SocialAccountRepository;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.entity.Member.LoginType;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
@@ -26,7 +26,7 @@ import java.util.UUID;
 public class AuthService {
 
     private final AuthTokenService authTokenService;
-    private final AuthRepository authRepository;
+    private final SocialAccountRepository socialAccountRepository;
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
 
@@ -65,7 +65,7 @@ public class AuthService {
     }
 
     public Optional<Member> findByApiKey(String apiKey) {
-        return authRepository.findByApiKey(apiKey);
+        return memberRepository.findByApiKey(apiKey);
     }
 
     public String genAccessToken(Member member) {
@@ -90,63 +90,6 @@ public class AuthService {
         return new Member(id, email, nickname, profilePath, Member.MemberRole.valueOf(role));
     }
 
-    public long count() {
-        return memberRepository.count();
-    }
-
-
-    @Transactional
-    public Member modifyOrSignup(
-        String email, String nickname,
-        String loginType, String profilePath, String providerId
-    ) {
-        Optional<Member> existingMember = findByEmail(email);
-        if (existingMember.isPresent()) {
-            Member member = existingMember.get();
-            _modify(member, nickname, loginType, providerId, email, profilePath);
-            return member;
-        }
-        return signup(email, null, nickname, loginType, providerId, email, profilePath);
-    }
-
-    private void _modify(
-            Member member, String nickname, String loginType,
-            String providerId, String providerEmail, String profilePath
-        ) {
-        if (!LoginType.isValid(loginType)) {
-            throw new ServiceException(ErrorCode.INVALID_LOGIN_TYPE);
-        }
-
-        _connectSocialAccount(member, loginType, providerId, providerEmail);
-
-        member.setLoginType(loginType);
-        member.setNickname(nickname);
-        member.setProfilePath(profilePath);
-    }
-
-    private void _connectSocialAccount(
-        Member member, String loginType,
-        String providerId, String providerEmail
-    ) {
-        SocialAccount socialAccount = member.getSocialAccountOrCreate();
-
-        if (LoginType.KAKAO.equals(loginType)) {
-            socialAccount.connectKakao(providerId, providerEmail);
-
-        } else if (LoginType.GOOGLE.equals(loginType)) {
-            socialAccount.connectGoogle(providerId, providerEmail);
-        }
-    }
-
-    private void _validateEmailAndPassword(String email, String password, String loginType) {
-        if (email == null || email.trim().isEmpty()) {
-            throw new ServiceException(ErrorCode.EMAIL_REQUIRED);
-        }
-
-        if (LoginType.SELF.equals(loginType) && (password == null || password.trim().isEmpty())) {
-            throw new ServiceException(ErrorCode.PASSWORD_REQUIRED);
-        }
-    }
 
     public FindEmailsResponse findEmailsByPhoneNumber(String phoneNumber) {
         List<Member> members = memberRepository.findAllByPhoneNumber(phoneNumber);
@@ -163,4 +106,80 @@ public class AuthService {
 
         return new FindEmailsResponse(emailInfos);
     }
+
+
+    public long count() {
+        return memberRepository.count();
+    }
+
+
+    @Transactional
+    public Member handleSocialLogin(
+        String email, String nickname,
+        String loginType, String profilePath, String providerId
+    ) {
+        Member connectedMember = _findByProviderId(loginType, providerId);
+        if (connectedMember != null) {
+            connectedMember.setLoginType(loginType);
+            return connectedMember;  // 연결된 계정이 있다면 그 계정으로 로그인
+        }
+
+        Optional<Member> existingMember = findByEmail(email); // 이메일이 사용중인지 확인
+        if (existingMember.isPresent()) {
+            Member member = existingMember.get();
+            _connectSocialAccount(member, loginType, providerId, email);  // 기존 계정에 소셜 계정 연결
+            return member;
+        }
+
+        return signup(email, null, nickname, loginType, providerId, email, profilePath);
+    }
+
+    @Transactional
+    public void connectSocial(
+            Member loginUser, String loginType, String providerId, String providerEmail
+        ) {
+        Member connectedMember = _findByProviderId(loginType, providerId);
+        if (connectedMember != null) {
+            throw new ServiceException(ErrorCode.SOCIAL_ACCOUNT_ALREADY_IN_USE);
+        }
+        _connectSocialAccount(loginUser, loginType, providerId, providerEmail);
+    }
+
+
+    private void _connectSocialAccount(
+        Member member, String loginType,
+        String providerId, String providerEmail
+    ) {
+        SocialAccount socialAccount = member.getSocialAccountOrCreate();
+
+        switch (loginType) {
+            case LoginType.KAKAO -> socialAccount.connectKakao(providerId, providerEmail);
+            case LoginType.GOOGLE -> socialAccount.connectGoogle(providerId, providerEmail);
+            case LoginType.GITHUB -> socialAccount.connectGithub(providerId, providerEmail);
+            case LoginType.NAVER -> socialAccount.connectNaver(providerId, providerEmail);
+        }
+    }
+
+
+    private Member _findByProviderId(String loginType, String providerId) {
+        return switch (loginType) {
+            case LoginType.KAKAO -> memberRepository.findByKakaoProviderId(providerId).orElse(null);
+            case LoginType.GOOGLE -> memberRepository.findByGoogleProviderId(providerId).orElse(null);
+            case LoginType.GITHUB -> memberRepository.findByGithubProviderId(providerId).orElse(null);
+            case LoginType.NAVER -> memberRepository.findByNaverProviderId(providerId).orElse(null);
+            default -> null;
+        };
+    }
+
+
+    private void _validateEmailAndPassword(String email, String password, String loginType) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new ServiceException(ErrorCode.EMAIL_REQUIRED);
+        }
+
+        if (LoginType.SELF.equals(loginType) && (password == null || password.trim().isEmpty())) {
+            throw new ServiceException(ErrorCode.PASSWORD_REQUIRED);
+        }
+    }
+
 }

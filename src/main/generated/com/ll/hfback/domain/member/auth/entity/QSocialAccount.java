@@ -22,6 +22,16 @@ public class QSocialAccount extends EntityPathBase<SocialAccount> {
 
     public static final QSocialAccount socialAccount = new QSocialAccount("socialAccount");
 
+    public final BooleanPath githubActive = createBoolean("githubActive");
+
+    public final DateTimePath<java.time.LocalDateTime> githubCreateDate = createDateTime("githubCreateDate", java.time.LocalDateTime.class);
+
+    public final StringPath githubEmail = createString("githubEmail");
+
+    public final DateTimePath<java.time.LocalDateTime> githubModifyDate = createDateTime("githubModifyDate", java.time.LocalDateTime.class);
+
+    public final StringPath githubProviderId = createString("githubProviderId");
+
     public final BooleanPath googleActive = createBoolean("googleActive");
 
     public final DateTimePath<java.time.LocalDateTime> googleCreateDate = createDateTime("googleCreateDate", java.time.LocalDateTime.class);
@@ -31,6 +41,8 @@ public class QSocialAccount extends EntityPathBase<SocialAccount> {
     public final DateTimePath<java.time.LocalDateTime> googleModifyDate = createDateTime("googleModifyDate", java.time.LocalDateTime.class);
 
     public final StringPath googleProviderId = createString("googleProviderId");
+
+    public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final BooleanPath kakaoActive = createBoolean("kakaoActive");
 
@@ -43,6 +55,16 @@ public class QSocialAccount extends EntityPathBase<SocialAccount> {
     public final StringPath kakaoProviderId = createString("kakaoProviderId");
 
     public final com.ll.hfback.domain.member.member.entity.QMember member;
+
+    public final BooleanPath naverActive = createBoolean("naverActive");
+
+    public final DateTimePath<java.time.LocalDateTime> naverCreateDate = createDateTime("naverCreateDate", java.time.LocalDateTime.class);
+
+    public final StringPath naverEmail = createString("naverEmail");
+
+    public final DateTimePath<java.time.LocalDateTime> naverModifyDate = createDateTime("naverModifyDate", java.time.LocalDateTime.class);
+
+    public final StringPath naverProviderId = createString("naverProviderId");
 
     public QSocialAccount(String variable) {
         this(SocialAccount.class, forVariable(variable), INITS);
