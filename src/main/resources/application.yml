@@ -86,6 +86,8 @@ spring:
       auth-code-expiration-millis: 1800000   #  인증 코드 만료 시간 (30분)
 
 
+  config:
+    import: classpath:application-secret.yml
 
 logging:
   level:

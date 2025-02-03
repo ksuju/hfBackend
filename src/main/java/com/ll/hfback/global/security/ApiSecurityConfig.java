@@ -64,37 +64,37 @@ public class ApiSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/api/*/auth/password/reset").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/*/auth/password/reset/verify").permitAll()
                                 .requestMatchers(HttpMethod.PATCH, "/api/*/auth/password/reset/new").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/Posts/*").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/session").permitAll()
                                 .requestMatchers("/oauth2/**").permitAll()
                                 .requestMatchers("/login/oauth2/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .headers(headers ->
-                    headers.frameOptions(frameOptions ->
-                        frameOptions.sameOrigin()
-                    )
+                        headers.frameOptions(frameOptions ->
+                                frameOptions.sameOrigin()
+                        )
                 )
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .formLogin(
-                    AbstractHttpConfigurer::disable
+                        AbstractHttpConfigurer::disable
                 )
                 .sessionManagement(sessionManagement ->
-                    sessionManagement.sessionCreationPolicy(
-                        SessionCreationPolicy.STATELESS
-                    )
-                )
-                .oauth2Login(
-                    oauth2Login -> oauth2Login
-                        .successHandler(customOAuth2AuthenticationSuccessHandler)
-                        .authorizationEndpoint(
-                            authorizationEndpoint -> authorizationEndpoint
-                                .authorizationRequestResolver(customAuthorizationRequestResolver)
+                        sessionManagement.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS
                         )
                 )
+                .oauth2Login(
+                        oauth2Login -> oauth2Login
+                                .successHandler(customOAuth2AuthenticationSuccessHandler)
+                                .authorizationEndpoint(
+                                        authorizationEndpoint -> authorizationEndpoint
+                                                .authorizationRequestResolver(customAuthorizationRequestResolver)
+                                )
+                )
                 .addFilterBefore(
-                    customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
+                        customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
                 );
 
         // CORS 설정 적용
