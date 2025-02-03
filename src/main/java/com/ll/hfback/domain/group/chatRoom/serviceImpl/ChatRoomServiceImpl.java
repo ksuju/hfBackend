@@ -37,6 +37,14 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return chatRooms.map(this::convertToChatRoomDto);
     }
 
+    // 모임채팅방 검색
+    @Override
+    @Transactional
+    public Page<ChatRoomDto> searchByKeyword(String keyword, Pageable pageable) {
+        Page<ChatRoom> chatRooms = chatRoomRepository.findByRoomTitleContaining(keyword, pageable);
+        return chatRooms.map(this::convertToChatRoomDto);
+    }
+
     // 해당 게시글의 모든 모임채팅방 조회
     @Override
     @Transactional(readOnly = true)

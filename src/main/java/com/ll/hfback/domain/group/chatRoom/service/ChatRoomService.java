@@ -16,6 +16,9 @@ public interface ChatRoomService {
     // 모든 모임채팅방 조회
     Page<ChatRoomDto> findAll(Pageable pageable);
 
+    // 모임채팅방 검색
+    Page<ChatRoomDto> searchByKeyword(String keyword, Pageable pageable);
+
     // 해당 게시글의 모든 모임채팅방 조회
     Page<ChatRoomDto> searchByFestivalId(String festivalId, Pageable pageable);
 

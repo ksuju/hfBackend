@@ -30,6 +30,12 @@ public class ChatRoomController {
         return chatRoomService.findAll(pageable);
     }
 
+    // 모임채팅방 검색
+    @GetMapping("/chat-rooms/search")
+    public Page<ChatRoomDto> searchRooms(@RequestParam("keyword") String keyword, Pageable pageable){
+        return chatRoomService.searchByKeyword(keyword, pageable);
+    }
+
     // 해당 게시글의 모든 모임채팅방 조회
     @GetMapping("/{festival-id}/chat-rooms")
     public Page<ChatRoomDto> getRooms(@PathVariable("festival-id") String festivalId, Pageable pageable) {
