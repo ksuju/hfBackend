@@ -25,7 +25,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
   @Override
   @SneakyThrows
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-      FilterChain filterChain) {
+                                  FilterChain filterChain) {
     if (request.getRequestURI().equals("/api/v1/auth/login") ||
             request.getRequestURI().equals("/api/v1/auth/logout") ||
             request.getRequestURI().equals("/api/v1/Posts/**") ||
@@ -65,13 +65,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
   private String _getCookie(String name) {
     Cookie[] cookies = req.getCookies();
     return Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(name)).findFirst()
-        .map(Cookie::getValue).orElse("");
+            .map(Cookie::getValue).orElse("");
   }
 
   private void _addHeaderCookie(String tokenName, String token) {
     ResponseCookie cookie =
-        ResponseCookie.from(tokenName, token).path("/").sameSite("None").secure(true).httpOnly(true)
-            .build();
+            ResponseCookie.from(tokenName, token).path("/").sameSite("None").secure(true).httpOnly(true)
+                    .build();
     resp.addHeader("Set-Cookie", cookie.toString());
   }
 
