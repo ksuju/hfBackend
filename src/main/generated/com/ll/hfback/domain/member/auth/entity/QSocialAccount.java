@@ -22,21 +22,49 @@ public class QSocialAccount extends EntityPathBase<SocialAccount> {
 
     public static final QSocialAccount socialAccount = new QSocialAccount("socialAccount");
 
-    public final com.ll.hfback.global.jpa.QBaseEntity _super = new com.ll.hfback.global.jpa.QBaseEntity(this);
+    public final BooleanPath githubActive = createBoolean("githubActive");
 
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> createDate = _super.createDate;
+    public final DateTimePath<java.time.LocalDateTime> githubCreateDate = createDateTime("githubCreateDate", java.time.LocalDateTime.class);
 
-    //inherited
-    public final NumberPath<Long> id = _super.id;
+    public final StringPath githubEmail = createString("githubEmail");
+
+    public final DateTimePath<java.time.LocalDateTime> githubModifyDate = createDateTime("githubModifyDate", java.time.LocalDateTime.class);
+
+    public final StringPath githubProviderId = createString("githubProviderId");
+
+    public final BooleanPath googleActive = createBoolean("googleActive");
+
+    public final DateTimePath<java.time.LocalDateTime> googleCreateDate = createDateTime("googleCreateDate", java.time.LocalDateTime.class);
+
+    public final StringPath googleEmail = createString("googleEmail");
+
+    public final DateTimePath<java.time.LocalDateTime> googleModifyDate = createDateTime("googleModifyDate", java.time.LocalDateTime.class);
+
+    public final StringPath googleProviderId = createString("googleProviderId");
+
+    public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    public final BooleanPath kakaoActive = createBoolean("kakaoActive");
+
+    public final DateTimePath<java.time.LocalDateTime> kakaoCreateDate = createDateTime("kakaoCreateDate", java.time.LocalDateTime.class);
+
+    public final StringPath kakaoEmail = createString("kakaoEmail");
+
+    public final DateTimePath<java.time.LocalDateTime> kakaoModifyDate = createDateTime("kakaoModifyDate", java.time.LocalDateTime.class);
+
+    public final StringPath kakaoProviderId = createString("kakaoProviderId");
 
     public final com.ll.hfback.domain.member.member.entity.QMember member;
 
-    public final StringPath provider = createString("provider");
+    public final BooleanPath naverActive = createBoolean("naverActive");
 
-    public final StringPath providerId = createString("providerId");
+    public final DateTimePath<java.time.LocalDateTime> naverCreateDate = createDateTime("naverCreateDate", java.time.LocalDateTime.class);
 
-    public final StringPath refreshToken = createString("refreshToken");
+    public final StringPath naverEmail = createString("naverEmail");
+
+    public final DateTimePath<java.time.LocalDateTime> naverModifyDate = createDateTime("naverModifyDate", java.time.LocalDateTime.class);
+
+    public final StringPath naverProviderId = createString("naverProviderId");
 
     public QSocialAccount(String variable) {
         this(SocialAccount.class, forVariable(variable), INITS);
@@ -56,7 +84,7 @@ public class QSocialAccount extends EntityPathBase<SocialAccount> {
 
     public QSocialAccount(Class<? extends SocialAccount> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.member = inits.isInitialized("member") ? new com.ll.hfback.domain.member.member.entity.QMember(forProperty("member")) : null;
+        this.member = inits.isInitialized("member") ? new com.ll.hfback.domain.member.member.entity.QMember(forProperty("member"), inits.get("member")) : null;
     }
 
 }
