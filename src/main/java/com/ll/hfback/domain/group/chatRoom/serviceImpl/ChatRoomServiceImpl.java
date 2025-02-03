@@ -82,7 +82,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 chatRoom.getRoomContent(),
                 festivalName,
                 chatRoom.getRoomMemberLimit(),
+                chatRoom.getJoinMemberIdList(),
                 chatRoom.getJoinMemberIdList().size(),
+                chatRoom.getWaitingMemberIdList(),
                 chatRoom.getCreateDate()
         );
 

@@ -38,11 +38,6 @@ public class NotProd {
             @Transactional
             @Override
             public void run(ApplicationArguments args) throws Exception {
-                // Apis, Kopis 스케쥴러 실행
-                fetchApisScheduler.getApisApiData();
-                fetchKopisScheduler.getKopisApiData();
-
-
 
                 // Member1,2,3 생성
                 Member member1 = authService.signup(
@@ -315,6 +310,10 @@ public class NotProd {
                     chatMessageService.writeMessage(1L, requestMessage
                     );
                 }
+
+                // Apis, Kopis 스케쥴러 실행
+                fetchApisScheduler.getApisApiData();
+                fetchKopisScheduler.getKopisApiData();
             }
         };
     }
