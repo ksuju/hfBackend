@@ -26,7 +26,6 @@ public class PostServiceImpl implements PostService {
     public Page<PostDto> findAll(Pageable pageable) {
         Page<Post> posts = postRepository.findAll(pageable);
         return posts.map(this::convertToPostDto);
-
     }
 
     // 키워드로 게시글 조회
