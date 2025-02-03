@@ -1,7 +1,10 @@
 package com.ll.hfback.global.initData;
 
+import com.ll.hfback.domain.festival.api.scheduler.FetchApisScheduler;
+import com.ll.hfback.domain.festival.api.scheduler.FetchKopisScheduler;
 import com.ll.hfback.domain.festival.comment.service.CommentService;
 import com.ll.hfback.domain.group.chat.request.RequestMessage;
+import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.service.ChatMessageService;
 import com.ll.hfback.domain.group.chatRoom.service.ChatRoomService;
 import com.ll.hfback.domain.member.auth.service.AuthService;
