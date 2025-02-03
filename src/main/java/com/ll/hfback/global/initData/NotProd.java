@@ -126,8 +126,8 @@ public class NotProd {
                 // member3가 PF256158 공연게시글에서 만든 모임채팅방
                 // member3 로그인 로직 필요
                 CreateChatRoomForm createChatRoomForm3 = new CreateChatRoomForm();
-                createChatRoomForm3.setRoomTitle("이것은 member3이 작성한 테스트 제목입니다.");
-                createChatRoomForm3.setRoomContent("이것은 member3이 작성한 테스트 본문입니다.");
+                createChatRoomForm3.setRoomTitle("이것은 member3이 작성한 매우매우매우매우매우매우매우매우매우매우매우매우 긴 테스트 제목입니다.");
+                createChatRoomForm3.setRoomContent("이것은 member3이 작성한  매우매우매우매우매우매우매우매우매우매우매우매우 긴 테스트 본문입니다.");
                 createChatRoomForm3.setRoomMemberLimit(30L);
                 chatroomservice.createChatRoom("PF256158", createChatRoomForm3, member3);
 
@@ -138,6 +138,17 @@ public class NotProd {
                 createChatRoomForm4.setRoomContent("이것은 member3이 작성한 테스트 본문22입니다.");
                 createChatRoomForm4.setRoomMemberLimit(40L);
                 chatroomservice.createChatRoom("PF256158", createChatRoomForm4, member3);
+
+                // member3가 PF256158 공연게시글에서 만든 모임채팅방(1-25)
+                // member3 로그인 로직 필요
+                for (int i = 0; i < 25; i++) {
+                    CreateChatRoomForm createChatRoomForm = new CreateChatRoomForm();
+
+                    createChatRoomForm.setRoomTitle(String.format("이것은 member3이 작성한 테스트 제목%d 입니다.", i+1));
+                    createChatRoomForm.setRoomContent(String.format("이것은 member3이 작성한 테스트 본문%d 입니다.", i+1));
+                    createChatRoomForm.setRoomMemberLimit(70L);
+                    chatroomservice.createChatRoom("PF256158", createChatRoomForm, member3);
+                }
 
 
 
