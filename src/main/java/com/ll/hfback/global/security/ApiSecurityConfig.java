@@ -51,16 +51,44 @@ public class ApiSecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/*/auth/logout").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
                                 .anyRequest().permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/*/auth/logout").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/*/auth/signup").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/*/auth/email/verification-code").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/*/auth/email/verify").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/*/auth/find-account").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/*/auth/password/reset").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/*/auth/password/reset/verify").permitAll()
+                                .requestMatchers(HttpMethod.PATCH, "/api/*/auth/password/reset/new").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/session").permitAll()
+                                .requestMatchers("/oauth2/**").permitAll()
+                                .requestMatchers("/login/oauth2/**").permitAll()
+                                .anyRequest().authenticated()
+                )
+                .headers(headers ->
+                    headers.frameOptions(frameOptions ->
+                        frameOptions.sameOrigin()
+                    )
                 )
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
-                .formLogin(formLogin -> formLogin.disable())
-                .sessionManagement(
-                        sessionManagement -> sessionManagement.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS)
+                .formLogin(
+                    AbstractHttpConfigurer::disable
+                )
+                .sessionManagement(sessionManagement ->
+                    sessionManagement.sessionCreationPolicy(
+                        SessionCreationPolicy.STATELESS
+                    )
+                )
+                .oauth2Login(
+                    oauth2Login -> oauth2Login
+                        .successHandler(customOAuth2AuthenticationSuccessHandler)
+                        .authorizationEndpoint(
+                            authorizationEndpoint -> authorizationEndpoint
+                                .authorizationRequestResolver(customAuthorizationRequestResolver)
+                        )
                 )
                 .addFilterBefore(
-                        jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class
+                    customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
                 );
 
         // CORS 설정 적용

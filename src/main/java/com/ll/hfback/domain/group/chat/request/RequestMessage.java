@@ -1,25 +1,24 @@
 package com.ll.hfback.domain.group.chat.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.Setter;
 
 /**
- * packageName    : com.ll.hfback.domain.group.chat.request
- * fileName       : RequestMessage
+ * packageName    : com.ll.hfback.domain.group.chat.dto.response
+ * fileName       : ResponseMessage
  * author         : sungjun
- * date           : 2025-01-23
+ * date           : 2025-01-22
  * description    : 자동 주석 생성
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
- * 2025-01-23        kyd54       최초 생성
+ * 2025-01-22        kyd54       최초 생성
  */
+@Getter
 @Setter
 @AllArgsConstructor
 public class RequestMessage {
-    @JsonProperty("nickname")
-    private String nickname;
-    @JsonProperty("chatMessageContent")
+    private Long memberId;
     private String content;
 }

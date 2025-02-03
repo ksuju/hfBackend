@@ -26,8 +26,6 @@ public class QChatMessage extends EntityPathBase<ChatMessage> {
 
     public final StringPath chatMessageContent = createString("chatMessageContent");
 
-    public final NumberPath<Integer> chatMessageStatus = createNumber("chatMessageStatus", Integer.class);
-
     public final com.ll.hfback.domain.group.chatRoom.entity.QChatRoom chatRoom;
 
     //inherited
