@@ -69,9 +69,9 @@ public class ApiV1ChatMessageController {
                                   @RequestBody MessageReadStatusRequest messageReadStatusRequest) {
         try {
             chatMessageService.messageReadStatus(chatRoomId, messageReadStatusRequest);
-            return new RsData<>("200", "메시지 수신 상태 변경 완료");
+            return new RsData<>("200", "메시지 수신 상태 변경에 성공했습니다.");
         } catch (Exception e) {
-            return new RsData<>("500", "메시지 수신 상태 변경 실패" + e.getMessage());
+            return new RsData<>("500", "메시지 수신 상태 변경에 실패했습니다." + e.getMessage());
         }
     }
 }
