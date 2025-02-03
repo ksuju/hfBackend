@@ -13,12 +13,15 @@ import com.ll.hfback.global.webMvc.LoginUser;
 import com.ll.hfback.standard.base.Empty;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,21 +32,53 @@ public class ApiV1MemberController {
     private final PasswordService passwordService;
     private final PasswordEncoder passwordEncoder;
     private final SocialConnectService socialConnectService;
+    private final RedisTemplate<String, String> redisTemplate;
 
 
+
+    public record VerifyResponse(String token) {}
+    public record VerifyTokenRequest(String token) {}
 
     // [1. 회원 정보 관리]
     // MEM01_MODIFY01 : 회원정보 수정 전 비밀번호 인증
     @PostMapping("/me/password")
-    public RsData<Void> checkPassword(
+    public RsData<VerifyResponse> checkPassword(
         @Valid @RequestBody CheckPasswordRequest request,
         @LoginUser Member loginUser
     ) {
         if (!passwordEncoder.matches(request.password(), loginUser.getPassword())) {
             throw new ServiceException(ErrorCode.INVALID_PASSWORD);
         }
-        return new RsData<>("200-1", "비밀번호가 확인되었습니다.");
+
+        String token = UUID.randomUUID().toString();
+        redisTemplate.opsForValue().set(
+            "password-verify:" + loginUser.getEmail(),
+            token,
+            30,
+            TimeUnit.MINUTES
+        );
+
+        return new RsData<>("200-1", "비밀번호가 확인되었습니다.", new VerifyResponse(token));
     }
+
+
+    @PostMapping("/me/password/validate")
+    public RsData<Void> validatePassword(
+        @LoginUser Member loginUser,
+        @RequestBody VerifyTokenRequest request
+    ) {
+        String storedToken = redisTemplate.opsForValue().get("password-verify:" + loginUser.getEmail());
+
+        if (storedToken == null || !storedToken.equals(request.token())) {
+            throw new ServiceException(ErrorCode.PASSWORD_VERIFICATION_REQUIRED);
+        }
+
+        redisTemplate.expire("password-verify:" + loginUser.getEmail(), 30, TimeUnit.MINUTES);
+
+        return new RsData<>("200-1", "비밀번호 확인이 유효합니다.");
+    }
+
+
 
 
     // MEM01_MODIFY02 - 비밀번호 변경

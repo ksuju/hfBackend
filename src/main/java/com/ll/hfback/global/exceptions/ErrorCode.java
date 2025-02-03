@@ -33,7 +33,7 @@ public enum ErrorCode {
   CANNOT_DISCONNECT_LAST_LOGIN_METHOD(400, "MEMBER_010", "마지막 로그인 수단은 연결을 해제할 수 없습니다."),
   DISCONNECT_FAIL(500, "MEMBER_011", "소셜 계정 연동 해제에 실패했습니다."),
   INVALID_SOCIAL_CONNECTION(400, "MEMBER_012", "기존 정보를 찾지 못하여 소셜 연동이 실패했습니다."),
-
+  PASSWORD_VERIFICATION_REQUIRED(400, "MEMBER_013", "비밀번호 확인이 필요합니다."),
 
   // Report 관련 에러
   REPORT_NOT_FOUND(404, "REPORT_001", "해당 신고를 찾을 수 없습니다."),
