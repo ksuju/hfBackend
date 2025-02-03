@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.group.chatRoom.serviceImpl;
 
+import com.ll.hfback.domain.festival.post.repository.PostRepository;
 import com.ll.hfback.domain.group.chatRoom.dto.ChatRoomDto;
 import com.ll.hfback.domain.group.chatRoom.dto.DetailChatRoomDto;
 import com.ll.hfback.domain.group.chatRoom.entity.ChatRoom;
@@ -11,6 +12,8 @@ import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,15 +27,22 @@ import java.util.stream.Collectors;
 public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
+    private final PostRepository postRepository;
+
+    // 모든 게시글 조회
+    @Override
+    @Transactional
+    public Page<ChatRoomDto> findAll(Pageable pageable) {
+        Page<ChatRoom> chatRooms = chatRoomRepository.findAll(pageable);
+        return chatRooms.map(this::convertToChatRoomDto);
+    }
 
     // 해당 게시글의 모든 모임채팅방 조회
     @Override
     @Transactional(readOnly = true)
-    public List<ChatRoomDto> searchByFestivalId(String festivalId) {
-        List<ChatRoom> chatRooms = chatRoomRepository.findByFestivalId(festivalId);
-        return chatRooms.stream()
-                .map(this::convertToChatRoomDto)  // convert ChatRoom to ChatRoomDto
-                .collect(Collectors.toList());
+    public Page<ChatRoomDto> searchByFestivalId(String festivalId, Pageable pageable) {
+        Page<ChatRoom> chatRooms = chatRoomRepository.findByFestivalId(festivalId, pageable);
+        return chatRooms.map(this::convertToChatRoomDto);
     }
 
     // 해당 게시글의 모임채팅방 상세 조회(참여자 명단에 있는 사용자만 접근 가능)
@@ -52,14 +62,20 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     // DB에서 받아온 참여자명단을 List<String>으로 변환하고, ChatRoom을 ChatRoomDto로 변환하는 메서드
     private ChatRoomDto convertToChatRoomDto(ChatRoom chatRoom) {
+        // festivalId를 기반으로 Festival 엔티티 조회
+        String festivalName = postRepository.findByFestivalId(chatRoom.getFestivalId())
+                .getFestivalName();
+
         // Create ChatRoomDto
         ChatRoomDto chatRoomDto = new ChatRoomDto(
                 chatRoom.getMember().getId(),
                 chatRoom.getId(),
                 chatRoom.getRoomTitle(),
                 chatRoom.getRoomContent(),
+                festivalName,
                 chatRoom.getRoomMemberLimit(),
-                chatRoom.getJoinMemberIdList().size()
+                chatRoom.getJoinMemberIdList().size(),
+                chatRoom.getCreateDate()
         );
 
         return chatRoomDto;

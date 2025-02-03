@@ -6,14 +6,18 @@ import com.ll.hfback.domain.group.chatRoom.form.CreateChatRoomForm;
 import com.ll.hfback.domain.group.chatRoom.form.UpdateChatRoomForm;
 import com.ll.hfback.domain.member.member.entity.Member;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface ChatRoomService {
+    // 모든 모임채팅방 조회
+    Page<ChatRoomDto> findAll(Pageable pageable);
 
     // 해당 게시글의 모든 모임채팅방 조회
-    List<ChatRoomDto> searchByFestivalId(String festivalId);
+    Page<ChatRoomDto> searchByFestivalId(String festivalId, Pageable pageable);
 
     // 해당 게시글의 모임채팅방 상세 조회(참여자 명단에 있는 사용자만 접근 가능)
     Optional<DetailChatRoomDto> searchById(Long id, Member loginUser);

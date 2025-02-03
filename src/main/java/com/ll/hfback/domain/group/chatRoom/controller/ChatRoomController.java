@@ -9,6 +9,8 @@ import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.global.webMvc.LoginUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +24,16 @@ import java.util.Optional;
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
 
+    // 모든 모임채팅방 조회
+    @GetMapping("/chat-rooms")
+    public Page<ChatRoomDto> getAllRooms(Pageable pageable){
+        return chatRoomService.findAll(pageable);
+    }
+
     // 해당 게시글의 모든 모임채팅방 조회
     @GetMapping("/{festival-id}/chat-rooms")
-    public List<ChatRoomDto> getRooms(@PathVariable("festival-id") String festivalId) {
-        return chatRoomService.searchByFestivalId(festivalId);
+    public Page<ChatRoomDto> getRooms(@PathVariable("festival-id") String festivalId, Pageable pageable) {
+        return chatRoomService.searchByFestivalId(festivalId, pageable);
     }
 
     // 해당 게시글의 모임채팅방 상세 조회(참여자 명단에 있는 사용자만 접근 가능)
