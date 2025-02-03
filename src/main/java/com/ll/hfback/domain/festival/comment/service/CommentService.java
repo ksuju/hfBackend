@@ -3,6 +3,7 @@ package com.ll.hfback.domain.festival.comment.service;
 import com.ll.hfback.domain.festival.comment.dto.CommentDto;
 import com.ll.hfback.domain.festival.comment.form.AddCommentForm;
 import com.ll.hfback.domain.festival.comment.form.UpdateCommentForm;
+import com.ll.hfback.domain.member.member.entity.Member;
 import jakarta.validation.Valid;
 import java.util.List;
 
@@ -14,11 +15,11 @@ public interface CommentService {
     List<CommentDto> searchBySuperCommentId(Long superCommentId);
 
     // 해당 게시글에 댓글 생성
-    void addComment(String festivalId, @Valid AddCommentForm addCommentForm);
+    void addComment(String festivalId, @Valid AddCommentForm addCommentForm, Member loginUser);
 
     // 해당 댓글 수정
-    void updateComment(Long commentId, @Valid UpdateCommentForm updateCommentForm);
+    void updateComment(Long commentId, @Valid UpdateCommentForm updateCommentForm, Member loginUser);
 
     // 해당 댓글 삭제
-    void deleteComment(Long commentId);
+    void deleteComment(Long commentId, Member loginUser);
 }
