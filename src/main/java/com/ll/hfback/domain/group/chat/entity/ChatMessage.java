@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.group.chat.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ll.hfback.domain.group.chatRoom.entity.ChatRoom;
 import com.ll.hfback.global.jpa.BaseEntity;
 import jakarta.persistence.*;
@@ -27,6 +28,7 @@ import lombok.experimental.SuperBuilder;
 public class ChatMessage extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_room_id", nullable = false)
+    @JsonIgnore
     private ChatRoom chatRoom;
 
     @Column(nullable = false)
@@ -34,7 +36,4 @@ public class ChatMessage extends BaseEntity {
 
     @Column(nullable = false)
     private String nickname;
-
-    @Builder.Default
-    private int chatMessageStatus = 1; // 기본값 = 1 (안읽음 상태), 0 (읽음 상태)
 }

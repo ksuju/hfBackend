@@ -1,13 +1,12 @@
 package com.ll.hfback.domain.festival.post.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
-
 
 @Entity
 @Setter
@@ -16,25 +15,37 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @SuperBuilder
 @ToString(callSuper = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Post {
     @Id
+    @JacksonXmlProperty(localName = "mt20id")
     private String festivalId;
 
+    @JacksonXmlProperty(localName = "prfnm")
     private String festivalName;
+
+    @JacksonXmlProperty(localName = "prfpdfrom")
     private String festivalStartDate;
+
+    @JacksonXmlProperty(localName = "prfpdto")
     private String festivalEndDate;
+
+    @JacksonXmlProperty(localName = "area")
     private String festivalArea;
+
+    @JacksonXmlProperty(localName = "fcltynm")
     private String festivalHallName;
+
+    @JacksonXmlProperty(localName = "prfstate")
     private String festivalState;
+
+    @JacksonXmlProperty(localName = "poster")
     private String festivalUrl;
-    private String inputType;
 
-    @CreatedDate
-    @Getter//Setter는?
+    @JacksonXmlProperty(localName = "genrenm")
+    private String genrenm;
+
     private LocalDateTime createDate;
-
-    @LastModifiedDate
-    @Getter
     private LocalDateTime modifyDate;
-
+    private String inputType;
 }
