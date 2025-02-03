@@ -1,8 +1,8 @@
 package com.ll.hfback.domain.group.chat.serviceImpl;
 
-import com.ll.hfback.domain.group.chat.entity.MessageReadStatus;
+import com.ll.hfback.domain.group.chat.entity.ChatRoomUser;
 import com.ll.hfback.domain.group.chat.entity.QChatMessage;
-import com.ll.hfback.domain.group.chat.repository.MessageReadStatusRepository;
+import com.ll.hfback.domain.group.chat.repository.ChatRoomUserRepository;
 import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.request.MessageReadStatusRequest;
 import com.ll.hfback.domain.group.chat.request.MessageSearchKeywordsRequest;
@@ -49,7 +49,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final Logger logger = LoggerFactory.getLogger(ChatMessageServiceImpl.class.getName());
     private final ChatRoomRepository chatRoomRepository;
-    private final MessageReadStatusRepository messageReadStatusRepository;
+    private final ChatRoomUserRepository chatRoomUserRepository;
 
     // 채팅 메시지 작성
     @Transactional
@@ -200,16 +200,16 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Transactional
     public void messageReadStatus(Long chatRoomId, MessageReadStatusRequest messageReadStatusRequest) {
         try {
-            MessageReadStatus readStatus = messageReadStatusRepository
+            ChatRoomUser readStatus = chatRoomUserRepository
                     .findByChatRoomIdAndMemberId(chatRoomId, messageReadStatusRequest.getMemberId())
-                    .orElse(MessageReadStatus.builder()
+                    .orElse(ChatRoomUser.builder()
                             .chatRoom(chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new RuntimeException("ChatRoom not found")))
                             .member(memberRepository.findById(messageReadStatusRequest.getMemberId()).orElseThrow(() -> new RuntimeException("Member not found")))
                             .lastReadMessageId(messageReadStatusRequest.getMessageId())
                             .build());
 
             readStatus.setLastReadMessageId(messageReadStatusRequest.getMessageId());
-            messageReadStatusRepository.save(readStatus);
+            chatRoomUserRepository.save(readStatus);
 
             logger.info("ChatRoom ID: {}, Member ID: {} - 마지막 읽은 메시지 ID가 성공적으로 업데이트되었습니다.",
                     chatRoomId,
