@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.group.chat.controller;
 
+import com.ll.hfback.domain.group.chat.response.ResponseMemberStatus;
 import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.request.MessageReadStatusRequest;
 import com.ll.hfback.domain.group.chat.request.MessageSearchKeywordsRequest;
@@ -9,6 +10,8 @@ import com.ll.hfback.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * packageName    : com.ll.hfback.domain.group.chat.controller
@@ -62,7 +65,6 @@ public class ApiV1ChatMessageController {
         }
     }
 
-
     // 메시지 읽음/안읽음 상태 확인용 필드 수정
     @PutMapping("/messages/readStatus")
     public RsData<Void> messageReadStatus(@PathVariable("chatRoom-id") Long chatRoomId,
@@ -72,6 +74,16 @@ public class ApiV1ChatMessageController {
             return new RsData<>("200", "메시지 수신 상태 변경에 성공했습니다.");
         } catch (Exception e) {
             return new RsData<>("500", "메시지 수신 상태 변경에 실패했습니다." + e.getMessage());
+        }
+    }
+
+    // 채팅방 멤버 로그인/로그아웃 상태 확인
+    @GetMapping("/members")
+    public RsData<List<ResponseMemberStatus>> memberLoginStatus(@PathVariable("chatRoom-id") Long chatRoomId) {
+        try {
+            return new RsData<List<ResponseMemberStatus>>("200", "채팅방 멤버 로그인 상태 조회 성공", chatMessageService.memberLoginStatus(chatRoomId));
+        } catch (Exception e) {
+            return new RsData<>("500", "채팅방 멤버 로그인 상태 조회 실패" + e.getMessage());
         }
     }
 }
