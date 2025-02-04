@@ -1,11 +1,15 @@
 package com.ll.hfback.domain.group.chat.service;
 
+import com.ll.hfback.domain.group.chat.entity.ChatRoomUser;
+import com.ll.hfback.domain.group.chat.response.ResponseMemberStatus;
 import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.request.MessageReadStatusRequest;
 import com.ll.hfback.domain.group.chat.request.MessageSearchKeywordsRequest;
 import com.ll.hfback.domain.group.chat.request.RequestMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 /**
  * packageName    : com.ll.hfback.domain.group.chat.service
@@ -35,4 +39,7 @@ public interface ChatMessageService {
     
     // 메시지 읽음/안읽음 상태 확인
     void messageReadStatus(Long chatRoomId, MessageReadStatusRequest messageReadStatusRequest);
+
+    // 채팅방 멤버 로그인/로그아웃 상태 확인
+    List<ResponseMemberStatus> memberLoginStatus(Long chatRoomId);
 }

@@ -1,13 +1,11 @@
 package com.ll.hfback.domain.group.chat.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ll.hfback.domain.group.chat.enums.ChatRoomUserStatus;
 import com.ll.hfback.domain.group.chatRoom.entity.ChatRoom;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.global.jpa.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -29,7 +27,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 @ToString(callSuper = true)
-public class MessageReadStatus extends BaseEntity {
+public class ChatRoomUser extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_room_id", nullable = false)
     @JsonIgnore
@@ -40,5 +38,9 @@ public class MessageReadStatus extends BaseEntity {
     @JsonIgnore
     private Member member;
 
-    private Long lastReadMessageId;
+    private Long lastReadMessageId; // 마지막으로 읽은 메시지
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private ChatRoomUserStatus userLoginStatus = ChatRoomUserStatus.LOGOUT; // 채팅방 입장, 퇴장 구분
 }

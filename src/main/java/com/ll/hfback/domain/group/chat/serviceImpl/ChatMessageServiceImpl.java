@@ -1,8 +1,10 @@
 package com.ll.hfback.domain.group.chat.serviceImpl;
 
-import com.ll.hfback.domain.group.chat.entity.MessageReadStatus;
+import com.ll.hfback.domain.group.chat.entity.ChatRoomUser;
 import com.ll.hfback.domain.group.chat.entity.QChatMessage;
-import com.ll.hfback.domain.group.chat.repository.MessageReadStatusRepository;
+import com.ll.hfback.domain.group.chat.enums.ChatRoomUserStatus;
+import com.ll.hfback.domain.group.chat.repository.ChatRoomUserRepository;
+import com.ll.hfback.domain.group.chat.response.ResponseMemberStatus;
 import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.request.MessageReadStatusRequest;
 import com.ll.hfback.domain.group.chat.request.MessageSearchKeywordsRequest;
@@ -28,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * packageName    : com.ll.hfback.domain.group.chat.service
@@ -49,7 +53,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final Logger logger = LoggerFactory.getLogger(ChatMessageServiceImpl.class.getName());
     private final ChatRoomRepository chatRoomRepository;
-    private final MessageReadStatusRepository messageReadStatusRepository;
+    private final ChatRoomUserRepository chatRoomUserRepository;
 
     // 채팅 메시지 작성
     @Transactional
@@ -200,16 +204,16 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Transactional
     public void messageReadStatus(Long chatRoomId, MessageReadStatusRequest messageReadStatusRequest) {
         try {
-            MessageReadStatus readStatus = messageReadStatusRepository
+            ChatRoomUser readStatus = chatRoomUserRepository
                     .findByChatRoomIdAndMemberId(chatRoomId, messageReadStatusRequest.getMemberId())
-                    .orElse(MessageReadStatus.builder()
+                    .orElse(ChatRoomUser.builder()
                             .chatRoom(chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new RuntimeException("ChatRoom not found")))
                             .member(memberRepository.findById(messageReadStatusRequest.getMemberId()).orElseThrow(() -> new RuntimeException("Member not found")))
                             .lastReadMessageId(messageReadStatusRequest.getMessageId())
                             .build());
 
             readStatus.setLastReadMessageId(messageReadStatusRequest.getMessageId());
-            messageReadStatusRepository.save(readStatus);
+            chatRoomUserRepository.save(readStatus);
 
             logger.info("ChatRoom ID: {}, Member ID: {} - 마지막 읽은 메시지 ID가 성공적으로 업데이트되었습니다.",
                     chatRoomId,
@@ -219,5 +223,27 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             throw e;
         }
 
+    }
+
+    // 채팅방 멤버 로그인/로그아웃 상태 확인
+    public List<ResponseMemberStatus> memberLoginStatus(Long chatRoomId) {
+        // 채팅방에 속한 사용자 정보 가져오기
+        List<ChatRoomUser> chatRoomUsers =
+                chatRoomUserRepository.findAllByChatRoomId(chatRoomId)
+                        .orElse(null);
+
+        // ResponseMemberStatus 리스트를 생성하여 로그인 상태와 멤버 정보를 담기
+        List<ResponseMemberStatus> responseList = new ArrayList<>();
+
+        for (ChatRoomUser chatRoomUser : chatRoomUsers) {
+            String nickname = chatRoomUser.getMember().getNickname(); // 해당 멤버 정보
+            ChatRoomUserStatus userLoginStatus = chatRoomUser.getUserLoginStatus(); // 해당 멤버의 로그인 상태
+
+            // ResponseMemberStatus 객체 생성 후 리스트에 추가
+            ResponseMemberStatus responseMemberStatus = new ResponseMemberStatus(nickname, userLoginStatus);
+            responseList.add(responseMemberStatus);
+        }
+
+        return responseList;
     }
 }
