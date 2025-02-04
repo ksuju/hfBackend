@@ -246,4 +246,44 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
         return responseList;
     }
+
+    // 채팅방 멤버 로그인 상태 변경 (로그인)
+    public void chatMemberLogin(Long chatRoomId, Member member) {
+        chatRoomUserRepository.findByChatRoomIdAndMemberId(chatRoomId, member.getId())
+                .ifPresentOrElse(user -> {
+                    // chatRoomUser가 존재하면 처리
+                    logger.info("채팅방 유저 찾음: {}", user);
+                    if (user.getUserLoginStatus() != ChatRoomUserStatus.LOGIN) {    // 로그인 상태가 변경되어야 할 때만 처리
+                        user.setUserLoginStatus(ChatRoomUserStatus.LOGIN);  // 로그인 상태로 변경
+                        chatRoomUserRepository.save(user);  // 저장
+
+                        // 유저 상태 전송
+                        simpMessagingTemplate.convertAndSend("/topic/members/" + chatRoomId, user);
+                        logger.info("로그인 처리 완료");
+                    }
+                }, () -> {
+                    // chatRoomUser가 없으면 로그 남기기
+                    logger.error("채팅방 유저 정보 없음: chatRoomId={}, memberId={}", chatRoomId, member.getId());
+                });
+    }
+
+    // 채팅방 멤버 로그인 상태 변경 (로그아웃)
+    public void chatMemberLogout(Long chatRoomId, Member member) {
+        chatRoomUserRepository.findByChatRoomIdAndMemberId(chatRoomId, member.getId())
+                .ifPresentOrElse(user -> {
+                    // chatRoomUser가 존재하면 처리
+                    logger.info("채팅방 유저 찾음: {}", user);
+                    if (user.getUserLoginStatus() != ChatRoomUserStatus.LOGOUT) {    // 로그아웃 상태가 변경되어야 할 때만 처리
+                        user.setUserLoginStatus(ChatRoomUserStatus.LOGOUT);  // 로그아웃 상태로 변경
+                        chatRoomUserRepository.save(user);  // 저장
+
+                        // 유저 상태 전송
+                        simpMessagingTemplate.convertAndSend("/topic/members/" + chatRoomId, user);
+                        logger.info("로그아웃 처리 완료");
+                    }
+                }, () -> {
+                    // chatRoomUser가 없으면 로그 남기기
+                    logger.error("채팅방 유저 정보 없음: chatRoomId={}, memberId={}", chatRoomId, member.getId());
+                });
+    }
 }
