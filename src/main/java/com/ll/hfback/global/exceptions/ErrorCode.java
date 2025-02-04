@@ -52,8 +52,19 @@ public enum ErrorCode {
   EMAIL_VERIFICATION_EXPIRED(400, "EMAIL_003", "만료된 인증 코드입니다."),
   EMAIL_VERIFICATION_NOT_MATCH(400, "EMAIL_004", "인증 코드가 일치하지 않습니다."),
 
+  // SMS 관련 에러
+  SMS_SEND_FAILED(500, "SMS_001", "SMS 발송에 실패했습니다."),
+  SMS_CODE_EXPIRED(400, "SMS_002", "만료된 인증번호입니다."),
+  SMS_RESEND_TOO_EARLY(400, "SMS_003", "재전송 대기 시간이 아직 남았습니다."),
+  SMS_DAILY_LIMIT_EXCEEDED(400, "SMS_004", "하루 최대 전송 횟수를 초과했습니다."),
+  INVALID_SNS_VERIFICATION_CODE(400, "SMS_005", "인증번호가 일치하지 않습니다."),
+  PHONE_NUMBER_NOT_VERIFIED(400, "SMS_006", "휴대폰 번호는 인증을 완료 후 추가할 수 있습니다."),
+  ALREADY_VERIFIED_PHONE_NUMBER(400, "SMS_007", "이미 인증된 휴대폰 번호입니다."),
+
   // Business 에러 (500번대)
-  INTERNAL_ERROR(500, "SYS_001", "내부 시스템 에러");
+  INTERNAL_ERROR(500, "SYS_001", "내부 시스템 에러"),
+  API_CALL_FAILED(500, "SYS_002", "외부 API 호출에 실패했습니다.");
+
 
 
   private final int status;
