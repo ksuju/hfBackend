@@ -6,6 +6,7 @@ import com.ll.hfback.standard.util.Ut;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -28,13 +29,17 @@ public class AuthTokenService {
     String profilePath = member.getProfilePath();
     String role = member.getRole().name();
 
+    Map<String, Object> payload = new HashMap<>();
+    payload.put("id", id);
+    payload.put("email", email != null ? email : "");
+    payload.put("nickname", nickname != null ? nickname : "");
+    payload.put("profilePath", profilePath != null ? profilePath : "");
+    payload.put("role", role);
+
     return Ut.jwt.toString(
-        jwtSecretKey,
-        accessTokenExpirationSeconds,
-        Map.of(
-            "id", id, "email", email, "nickname", nickname,
-            "profilePath", profilePath, "role", role
-        )
+            jwtSecretKey,
+            accessTokenExpirationSeconds,
+            payload
     );
   }
 

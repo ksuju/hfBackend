@@ -1,6 +1,7 @@
 package com.ll.hfback.domain.member.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ll.hfback.domain.group.chatRoom.converter.StringListConverter;
 import com.ll.hfback.domain.member.alert.entity.Alert;
 import com.ll.hfback.domain.member.auth.entity.SocialAccount;
 import com.ll.hfback.domain.member.member.dto.MemberUpdateRequest;
@@ -30,6 +31,14 @@ import static jakarta.persistence.CascadeType.ALL;
 @SuperBuilder
 @DynamicInsert
 public class Member extends BaseEntity {
+
+    // 참여하고 있는 모임채팅방ID 리스트
+    @Convert(converter = StringListConverter.class)
+    private List<String> joinRoomIdList;
+
+    // 대기하고 있는 모임채팅방ID 리스트
+    @Convert(converter = StringListConverter.class)
+    private List<String> waitRoomIdList;
 
     @Column(unique = true, nullable = false, length = 30)
     private String email;
