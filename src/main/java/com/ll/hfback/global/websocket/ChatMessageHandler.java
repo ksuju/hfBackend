@@ -31,6 +31,10 @@ public class ChatMessageHandler implements ChannelInterceptor {
     private final ChatRoomUserRepository chatRoomUserRepository;
     private final Logger logger = LoggerFactory.getLogger(ChatMessageHandler.class.getName());
 
+    // 전역변수설정
+    private Long saveChatRoomId = null;
+    private Long saveMemberId = null;
+
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
@@ -47,9 +51,10 @@ public class ChatMessageHandler implements ChannelInterceptor {
             // 채팅방, 멤버 정보 가져오기
             Long chatRoomId = Long.valueOf(accessor.getFirstNativeHeader("chatRoomId"));
             Long memberId = Long.valueOf(accessor.getFirstNativeHeader("memberId"));
-            String token = accessor.getFirstNativeHeader("Authorization");
-
-            System.out.println("======================" + token);
+            
+            // 전역변수에 저장
+            saveChatRoomId = chatRoomId;
+            saveMemberId = memberId;
 
             chatRoomUserRepository.findByChatRoomIdAndMemberId(chatRoomId, memberId)
                     .ifPresentOrElse(user -> {
@@ -66,25 +71,19 @@ public class ChatMessageHandler implements ChannelInterceptor {
 
         } else if (accessor.getCommand() == StompCommand.DISCONNECT) {
             logger.info("STOMP 연결 종료");
-            // 채팅방, 멤버 정보 가져오기
-            String chatRoomId = accessor.getFirstNativeHeader("chatRoomId");
-            String memberId = accessor.getFirstNativeHeader("memberId");
 
-            System.out.println("======================" + chatRoomId);
-            System.out.println("======================" + memberId);
-
-//            chatRoomUserRepository.findByChatRoomIdAndMemberId(chatRoomId, memberId)
-//                    .ifPresentOrElse(user -> {
-//                        // chatRoomUser가 존재하면 처리
-//                        logger.info("채팅방 유저 찾음: {}", user);
-//                        if (user.getUserLoginStatus() != ChatRoomUserStatus.LOGOUT) {    // 로그아웃 상태가 변경되어야 할 때만 처리
-//                            user.setUserLoginStatus(ChatRoomUserStatus.LOGOUT);  // 로그아웃 상태로 변경
-//                            chatRoomUserRepository.save(user);  // 저장
-//                        }
-//                    }, () -> {
-//                        // chatRoomUser가 없으면 로그 남기기
-//                        logger.error("채팅방 유저 정보 없음: chatRoomId={}, memberId={}", chatRoomId, memberId);
-//                    });
+            chatRoomUserRepository.findByChatRoomIdAndMemberId(saveChatRoomId, saveMemberId)
+                    .ifPresentOrElse(user -> {
+                        // chatRoomUser가 존재하면 처리
+                        logger.info("채팅방 유저 찾음: {}", user);
+                        if (user.getUserLoginStatus() != ChatRoomUserStatus.LOGOUT) {    // 로그아웃 상태가 변경되어야 할 때만 처리
+                            user.setUserLoginStatus(ChatRoomUserStatus.LOGOUT);  // 로그아웃 상태로 변경
+                            chatRoomUserRepository.save(user);  // 저장
+                        }
+                    }, () -> {
+                        // chatRoomUser가 없으면 로그 남기기
+                        logger.error("채팅방 유저 정보 없음: chatRoomId={}, memberId={}", saveChatRoomId, saveMemberId);
+                    });
         }
 
         return message;
