@@ -24,7 +24,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final StompHandler stompHandler;
+    private final ChatMessageHandler chatMessageHandler;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -42,6 +42,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(stompHandler);
+        registration.interceptors(chatMessageHandler);
     }
 }
