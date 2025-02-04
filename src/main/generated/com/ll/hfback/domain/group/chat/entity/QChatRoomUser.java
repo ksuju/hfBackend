@@ -11,16 +11,16 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QMessageReadStatus is a Querydsl query type for MessageReadStatus
+ * QChatRoomUser is a Querydsl query type for ChatRoomUser
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QMessageReadStatus extends EntityPathBase<MessageReadStatus> {
+public class QChatRoomUser extends EntityPathBase<ChatRoomUser> {
 
-    private static final long serialVersionUID = 1766137257L;
+    private static final long serialVersionUID = 1753022820L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QMessageReadStatus messageReadStatus = new QMessageReadStatus("messageReadStatus");
+    public static final QChatRoomUser chatRoomUser = new QChatRoomUser("chatRoomUser");
 
     public final com.ll.hfback.global.jpa.QBaseEntity _super = new com.ll.hfback.global.jpa.QBaseEntity(this);
 
@@ -36,23 +36,25 @@ public class QMessageReadStatus extends EntityPathBase<MessageReadStatus> {
 
     public final com.ll.hfback.domain.member.member.entity.QMember member;
 
-    public QMessageReadStatus(String variable) {
-        this(MessageReadStatus.class, forVariable(variable), INITS);
+    public final EnumPath<com.ll.hfback.domain.group.chat.enums.ChatRoomUserStatus> userLoginStatus = createEnum("userLoginStatus", com.ll.hfback.domain.group.chat.enums.ChatRoomUserStatus.class);
+
+    public QChatRoomUser(String variable) {
+        this(ChatRoomUser.class, forVariable(variable), INITS);
     }
 
-    public QMessageReadStatus(Path<? extends MessageReadStatus> path) {
+    public QChatRoomUser(Path<? extends ChatRoomUser> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QMessageReadStatus(PathMetadata metadata) {
+    public QChatRoomUser(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QMessageReadStatus(PathMetadata metadata, PathInits inits) {
-        this(MessageReadStatus.class, metadata, inits);
+    public QChatRoomUser(PathMetadata metadata, PathInits inits) {
+        this(ChatRoomUser.class, metadata, inits);
     }
 
-    public QMessageReadStatus(Class<? extends MessageReadStatus> type, PathMetadata metadata, PathInits inits) {
+    public QChatRoomUser(Class<? extends ChatRoomUser> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.chatRoom = inits.isInitialized("chatRoom") ? new com.ll.hfback.domain.group.chatRoom.entity.QChatRoom(forProperty("chatRoom"), inits.get("chatRoom")) : null;
         this.member = inits.isInitialized("member") ? new com.ll.hfback.domain.member.member.entity.QMember(forProperty("member"), inits.get("member")) : null;
