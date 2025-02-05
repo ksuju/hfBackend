@@ -94,15 +94,23 @@ public class ApiV1ChatMessageController {
     @PatchMapping("/members/logout")
     public RsData<Void> chatMemberLogout(@PathVariable("chatRoom-id") Long chatRoomId,
                                          @LoginUser Member member) {
-        chatMessageService.chatMemberLogout(chatRoomId, member);
-        return new RsData<Void>("200", "성공");
+        try {
+            chatMessageService.chatMemberLogout(chatRoomId, member);
+            return new RsData<Void>("200", "채팅방 멤버 로그아웃 처리 성공");
+        } catch (Exception e) {
+            return new RsData<Void>("500", "채팅방 멤버 로그아웃 처리 실패" + e);
+        }
     }
 
     // 채팅방 멤버 로그인 상태 변경 (로그인)
     @PatchMapping("/members/login")
     public RsData<Void> chatMemberLogin(@PathVariable("chatRoom-id") Long chatRoomId,
                                          @LoginUser Member member) {
-        chatMessageService.chatMemberLogin(chatRoomId, member);
-        return new RsData<Void>("200", "성공");
+        try {
+            chatMessageService.chatMemberLogin(chatRoomId, member);
+            return new RsData<Void>("200", "채팅방 멤버 로그인 처리 성공");
+        } catch (Exception e) {
+            return new RsData<Void>("500", "채팅방 멤버 로그인 처리 실패" + e);
+        }
     }
 }
