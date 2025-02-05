@@ -21,7 +21,10 @@ import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,7 +66,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             if (chatRoom == null) {
                 return new RsData<>("404", "존재하지 않는 채팅방입니다.");
             }
-            
+
             // 2️⃣ 채팅방 참여 여부 확인
             if (!chatRoom.getJoinMemberIdList().contains(loginUser.getId().toString())) {
                 return new RsData<>("403", "해당 채팅방에 참여하지 않은 사용자입니다.");
@@ -164,34 +167,34 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             }
 
             // 닉네임(nickname)이 있으면 해당 조건 추가
-            if (messageSearchKeywordsRequest.getNickname() != null) {
+            if (messageSearchKeywordsRequest != null && messageSearchKeywordsRequest.getNickname() != null) {
                 String nickname = messageSearchKeywordsRequest.getNickname();
                 builder.and(qChatMessage.nickname.containsIgnoreCase(nickname)); // 대소문자 구분 없이 검색
             }
-
-            // 날짜 처리: 날짜를 LocalDateTime으로 변환하여 비교
-            // startDate만 있을 경우
-            if (messageSearchKeywordsRequest.getStartDate() != null) {
-                LocalDate startDate = messageSearchKeywordsRequest.getStartDate();
-                LocalDateTime startDateTime = startDate.atStartOfDay(); // startDate를 00:00:00로 변환
-                builder.and(qChatMessage.createDate.goe(startDateTime)); // startDate부터 최근까지 메시지 검색
-            }
-
-            // endDate만 있을 경우
-            if (messageSearchKeywordsRequest.getEndDate() != null) {
-                LocalDate endDate = messageSearchKeywordsRequest.getEndDate();
-                LocalDateTime endDateTime = endDate.atTime(23, 59, 59, 999999999); // endDate를 23:59:59로 변환
-                builder.and(qChatMessage.createDate.loe(endDateTime)); // 처음부터 endDate까지 메시지 검색
-            }
-
-            // startDate와 endDate 모두 있을 경우
-            if (messageSearchKeywordsRequest.getStartDate() != null && messageSearchKeywordsRequest.getEndDate() != null) {
-                LocalDate startDate = messageSearchKeywordsRequest.getStartDate();
-                LocalDate endDate = messageSearchKeywordsRequest.getEndDate();
-                LocalDateTime startDateTime = startDate.atStartOfDay(); // startDate를 00:00:00로 변환
-                LocalDateTime endDateTime = endDate.atTime(23, 59, 59, 999999999); // endDate를 23:59:59로 변환
-                builder.and(qChatMessage.createDate.between(startDateTime, endDateTime)); // 두 날짜 사이의 메시지 검색
-            }
+//
+//            // 날짜 처리: 날짜를 LocalDateTime으로 변환하여 비교
+//            // startDate만 있을 경우
+//            if (messageSearchKeywordsRequest.getStartDate() != null) {
+//                LocalDate startDate = messageSearchKeywordsRequest.getStartDate();
+//                LocalDateTime startDateTime = startDate.atStartOfDay(); // startDate를 00:00:00로 변환
+//                builder.and(qChatMessage.createDate.goe(startDateTime)); // startDate부터 최근까지 메시지 검색
+//            }
+//
+//            // endDate만 있을 경우
+//            if (messageSearchKeywordsRequest.getEndDate() != null) {
+//                LocalDate endDate = messageSearchKeywordsRequest.getEndDate();
+//                LocalDateTime endDateTime = endDate.atTime(23, 59, 59, 999999999); // endDate를 23:59:59로 변환
+//                builder.and(qChatMessage.createDate.loe(endDateTime)); // 처음부터 endDate까지 메시지 검색
+//            }
+//
+//            // startDate와 endDate 모두 있을 경우
+//            if (messageSearchKeywordsRequest.getStartDate() != null && messageSearchKeywordsRequest.getEndDate() != null) {
+//                LocalDate startDate = messageSearchKeywordsRequest.getStartDate();
+//                LocalDate endDate = messageSearchKeywordsRequest.getEndDate();
+//                LocalDateTime startDateTime = startDate.atStartOfDay(); // startDate를 00:00:00로 변환
+//                LocalDateTime endDateTime = endDate.atTime(23, 59, 59, 999999999); // endDate를 23:59:59로 변환
+//                builder.and(qChatMessage.createDate.between(startDateTime, endDateTime)); // 두 날짜 사이의 메시지 검색
+//            }
 
             // chatRoomId에 맞는 메시지 필터링
             builder.and(qChatMessage.chatRoom.id.eq(chatRoomId));
@@ -227,10 +230,10 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             }
 
             ChatRoomUser readStatus = chatRoomUserRepository
-                    .findByChatRoomIdAndMemberId(chatRoomId, messageReadStatusRequest.getMemberId())
+                    .findByChatRoomIdAndMemberId(chatRoomId, loginUser.getId())
                     .orElse(ChatRoomUser.builder()
                             .chatRoom(chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new RuntimeException("ChatRoom not found")))
-                            .member(memberRepository.findById(messageReadStatusRequest.getMemberId()).orElseThrow(() -> new RuntimeException("Member not found")))
+                            .member(memberRepository.findById(loginUser.getId()).orElseThrow(() -> new RuntimeException("Member not found")))
                             .lastReadMessageId(messageReadStatusRequest.getMessageId())
                             .build());
 
@@ -239,7 +242,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
             logger.info("ChatRoom ID: {}, Member ID: {} - 마지막 읽은 메시지 ID가 성공적으로 업데이트되었습니다.",
                     chatRoomId,
-                    messageReadStatusRequest.getMemberId());
+                    loginUser.getId());
         } catch (Exception e) {
             logger.error("마지막 읽은 메시지 업데이트 실패");
             throw e;
@@ -276,5 +279,45 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         }
 
         return responseList;
+    }
+
+    // 채팅방 멤버 로그인 상태 변경 (로그인)
+    public void chatMemberLogin(Long chatRoomId, Member member) {
+        chatRoomUserRepository.findByChatRoomIdAndMemberId(chatRoomId, member.getId())
+                .ifPresentOrElse(user -> {
+                    // chatRoomUser가 존재하면 처리
+                    logger.info("채팅방 유저 찾음: {}", user);
+                    if (user.getUserLoginStatus() != ChatRoomUserStatus.LOGIN) {    // 로그인 상태가 변경되어야 할 때만 처리
+                        user.setUserLoginStatus(ChatRoomUserStatus.LOGIN);  // 로그인 상태로 변경
+                        chatRoomUserRepository.save(user);  // 저장
+
+                        // 유저 상태 전송
+                        simpMessagingTemplate.convertAndSend("/topic/members/" + chatRoomId, user);
+                        logger.info("로그인 처리 완료");
+                    }
+                }, () -> {
+                    // chatRoomUser가 없으면 로그 남기기
+                    logger.error("채팅방 유저 정보 없음: chatRoomId={}, memberId={}", chatRoomId, member.getId());
+                });
+    }
+
+    // 채팅방 멤버 로그인 상태 변경 (로그아웃)
+    public void chatMemberLogout(Long chatRoomId, Member member) {
+        chatRoomUserRepository.findByChatRoomIdAndMemberId(chatRoomId, member.getId())
+                .ifPresentOrElse(user -> {
+                    // chatRoomUser가 존재하면 처리
+                    logger.info("채팅방 유저 찾음: {}", user);
+                    if (user.getUserLoginStatus() != ChatRoomUserStatus.LOGOUT) {    // 로그아웃 상태가 변경되어야 할 때만 처리
+                        user.setUserLoginStatus(ChatRoomUserStatus.LOGOUT);  // 로그아웃 상태로 변경
+                        chatRoomUserRepository.save(user);  // 저장
+
+                        // 유저 상태 전송
+                        simpMessagingTemplate.convertAndSend("/topic/members/" + chatRoomId, user);
+                        logger.info("로그아웃 처리 완료");
+                    }
+                }, () -> {
+                    // chatRoomUser가 없으면 로그 남기기
+                    logger.error("채팅방 유저 정보 없음: chatRoomId={}, memberId={}", chatRoomId, member.getId());
+                });
     }
 }

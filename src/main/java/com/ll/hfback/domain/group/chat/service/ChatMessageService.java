@@ -43,4 +43,10 @@ public interface ChatMessageService {
 
     // 채팅방 멤버 로그인/로그아웃 상태 확인
     List<ResponseMemberStatus> memberLoginStatus(Long chatRoomId, Member loginUser);
+
+    // 채팅방 멤버 로그인 상태 변경 (로그인)
+    void chatMemberLogin(Long chatRoomId, Member member);
+
+    // 채팅방 멤버 로그인 상태 변경 (로그아웃)
+    void chatMemberLogout(Long chatRoomId, Member member);
 }

@@ -30,9 +30,14 @@ public class Ut {
       String name = parts[0];
       String domain = parts[1];
 
-      String maskedName = name.length() <= 3
-          ? name.substring(0, name.length() - 1) + "*"
-          : name.charAt(0) + "*".repeat(name.length() - 1);
+      String maskedName;
+      if (name.length() <= 3) {
+        maskedName = name.substring(0, name.length() - 1) + "*";
+      } else if (name.length() <= 5) {
+        maskedName = name.substring(0, name.length() - 2) + "**";
+      } else {
+        maskedName = name.substring(0, 3) + "*".repeat(name.length() - 3);
+      }
 
       return maskedName + "@" + domain;
     }

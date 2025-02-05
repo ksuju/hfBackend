@@ -21,6 +21,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor 
 public class RequestMessage {
-    private Long memberId;
+//    private Long memberId;
     private String content;
 }
