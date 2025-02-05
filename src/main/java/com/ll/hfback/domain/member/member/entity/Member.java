@@ -73,7 +73,6 @@ public class Member extends BaseEntity {
     private String phoneNumber;  // 전화번호
 
 
-    @Column(columnDefinition = "VARCHAR(255) DEFAULT 'default.png'")
     private String profilePath;  // 프로필 사진 경로
 
 
