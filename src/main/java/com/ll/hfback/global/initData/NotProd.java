@@ -298,7 +298,7 @@ public class NotProd {
                 //
                 //
                 for (int i = 0; i < messages.size(); i++) {
-                    Member sender = switch (i % 3) {  // switch 표현식 사용
+                    Member sender = switch (i % 3) {
                         case 0 -> member1;
                         case 1 -> member2;
                         default -> member3;
@@ -306,9 +306,8 @@ public class NotProd {
 
                     RequestMessage requestMessage = new RequestMessage(sender.getId(), messages.get(i));
 
-                    // 메시지 저장 호출
-                    chatMessageService.writeMessage(1L, requestMessage
-                    );
+                    // 메시지 저장 호출 (올바른 sender 전달)
+                    chatMessageService.writeMessage(1L, requestMessage, sender);
                 }
 
 

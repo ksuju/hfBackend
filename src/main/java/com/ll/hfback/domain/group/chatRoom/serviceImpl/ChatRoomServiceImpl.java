@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,7 +63,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         return chatRoom
                 // joinMemberList에 memberId 포함 여부 확인
-                .filter(room -> room.getJoinMemberIdList().contains(currentUserId))
+                .filter(room -> room.getJoinMemberIdList().contains(currentUserId.toString()))
                 .map(this::convertToDetailChatRoomDto);
     }
 
@@ -82,9 +81,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 chatRoom.getRoomContent(),
                 festivalName,
                 chatRoom.getRoomMemberLimit(),
-                chatRoom.getJoinMemberIdList(),
                 chatRoom.getJoinMemberIdList().size(),
-                chatRoom.getWaitingMemberIdList(),
                 chatRoom.getCreateDate()
         );
 

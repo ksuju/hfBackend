@@ -15,13 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
-public class ChatRoomController {
+public class ApiV1ChatRoomController {
     private final ChatRoomService chatRoomService;
 
     // 모든 모임채팅방 조회

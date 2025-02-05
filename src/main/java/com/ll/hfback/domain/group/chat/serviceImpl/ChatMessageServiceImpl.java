@@ -16,14 +16,12 @@ import com.ll.hfback.domain.group.chatRoom.entity.ChatRoom;
 import com.ll.hfback.domain.group.chatRoom.repository.ChatRoomRepository;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
+import com.ll.hfback.global.rsData.RsData;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,55 +55,59 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     // 채팅 메시지 작성
     @Transactional
-    public void writeMessage(Long chatId, RequestMessage requestMessage) {
+    public RsData<Object> writeMessage(Long chatRoomId, RequestMessage requestMessage, Member loginUser) {
         try {
-            // 빈 메시지 또는 250자 초과 메시지 검사
+
+            // 1️⃣ 채팅방 존재 여부 확인
+            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElse(null);
+            if (chatRoom == null) {
+                return new RsData<>("404", "존재하지 않는 채팅방입니다.");
+            }
+            
+            // 2️⃣ 채팅방 참여 여부 확인
+            if (!chatRoom.getJoinMemberIdList().contains(loginUser.getId().toString())) {
+                return new RsData<>("403", "해당 채팅방에 참여하지 않은 사용자입니다.");
+            }
+
+            // 3️⃣ 빈 메시지 또는 250자 초과 메시지 검사
             if (requestMessage.getContent() == null || requestMessage.getContent().trim().isEmpty()) {
-                throw new IllegalArgumentException("채팅 메시지는 비어 있을 수 없습니다.");
+                return new RsData<>("400", "채팅 메시지는 비어 있을 수 없습니다.");
             }
             if (requestMessage.getContent().length() > 250) {
-                throw new IllegalArgumentException("채팅 메시지는 250자를 넘을 수 없습니다.");
+                return new RsData<>("400", "채팅 메시지는 250자를 넘을 수 없습니다.");
             }
 
-            // chatId로 채팅방 정보 가져오기
-            ChatRoom chatRoom = chatRoomRepository.findById(chatId).orElse(null);
+            // 4️⃣ 메시지 저장 및 전송
+            ChatMessage chatMessage = ChatMessage.builder()
+                    .chatRoom(chatRoom)
+                    .nickname(loginUser.getNickname())
+                    .chatMessageContent(requestMessage.getContent())
+                    .build();
+            chatMessageRepository.save(chatMessage);
+            simpMessagingTemplate.convertAndSend("/topic/chat/" + chatRoomId, chatMessage);
 
-            if(chatRoom != null) {
-                // memberId로 멤버 정보 가져오기
-                Member member = memberRepository.findById(requestMessage.getMemberId()).orElse(null);
-
-                // 채팅 메시지 저장
-                ChatMessage chatMessage = ChatMessage.builder()
-                        .chatRoom(chatRoom)
-                        .nickname(member.getNickname())
-                        .chatMessageContent(requestMessage.getContent())
-                        .build();
-
-                chatMessageRepository.save(chatMessage);
-
-                // 지정된 채팅방으로 메시지 전송
-                simpMessagingTemplate.convertAndSend("/topic/chat/" + chatId, chatMessage);
-
-                logger.info("채팅 메시지 작성 성공");
-            } else {
-                logger.error("채팅 메시지 작성 실패, ChatRoom is null");
-            }
-            // fix: 어떤 에러가 발생 할 수 있는지, 에러 유형별 처리 방법 생각 (던지기 x)
-            // 예외를 발생시켜 클라이언트에 알림, 필요하면 400 Bad Request와 같은 HTTP 응답 코드 설정
-            // 또는 커스텀 예외를 던질 수 있음
-        } catch (IllegalArgumentException e) {
-            logger.error("채팅 메시지 작성 실패: " + e.getMessage());
-            throw e;
+            logger.info("채팅 메시지 작성 성공");
+            return new RsData<>("200", "채팅 메시지 작성 성공");
         } catch (Exception e) {
-            logger.error("채팅 메시지 작성 실패 : " + e);
-            throw e;
+            logger.error("채팅 메시지 작성 실패: ", e);
+            return new RsData<>("500", "서버 내부 오류가 발생했습니다.");
         }
     }
 
     // 채팅 메시지 가져오기
     @Transactional(readOnly = true)
-    public Page<ResponseMessage> readMessages(Long chatRoomId, int page) {
+    public Page<ResponseMessage> readMessages(Long chatRoomId, int page, Member loginUser) {
         try {
+            // 1️⃣ 채팅방 존재 여부 확인
+            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() ->
+                    new IllegalArgumentException("존재하지 않는 채팅방입니다.")
+            );
+
+            // 2️⃣ 채팅방 참여 여부 확인
+            if (!chatRoom.getJoinMemberIdList().contains(loginUser.getId().toString())) {
+                throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
+            }
+
             Page<ChatMessage> chatMessages = chatMessageRepository.findByChatRoomId(chatRoomId, customPaging(page));
             logger.info("채팅 메시지 가져오기 성공");
             // ChatMessage -> RequestMessage 변환
@@ -139,8 +141,18 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     // 조건에 따른 채팅 메시지 검색 기능
     public Page<ResponseMessage> searchMessages(Long chatRoomId,
                                                 int page,
-                                                MessageSearchKeywordsRequest messageSearchKeywordsRequest) {
+                                                MessageSearchKeywordsRequest messageSearchKeywordsRequest, Member loginUser) {
         try {
+            // 1️⃣ 채팅방 존재 여부 확인
+            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() ->
+                    new IllegalArgumentException("존재하지 않는 채팅방입니다.")
+            );
+
+            // 2️⃣ 채팅방 참여 여부 확인
+            if (!chatRoom.getJoinMemberIdList().contains(loginUser.getId().toString())) {
+                throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
+            }
+
             QChatMessage qChatMessage = QChatMessage.chatMessage; // QueryDSL 메타 모델 객체
 
             BooleanBuilder builder = new BooleanBuilder();
@@ -202,8 +214,18 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     // 메시지 읽음/안읽음 상태 확인
     @Transactional
-    public void messageReadStatus(Long chatRoomId, MessageReadStatusRequest messageReadStatusRequest) {
+    public void messageReadStatus(Long chatRoomId, MessageReadStatusRequest messageReadStatusRequest, Member loginUser) {
         try {
+            // 1️⃣ 채팅방 존재 여부 확인
+            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() ->
+                    new IllegalArgumentException("존재하지 않는 채팅방입니다.")
+            );
+
+            // 2️⃣ 채팅방 참여 여부 확인
+            if (!chatRoom.getJoinMemberIdList().contains(loginUser.getId().toString())) {
+                throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
+            }
+
             ChatRoomUser readStatus = chatRoomUserRepository
                     .findByChatRoomIdAndMemberId(chatRoomId, messageReadStatusRequest.getMemberId())
                     .orElse(ChatRoomUser.builder()
@@ -222,11 +244,20 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             logger.error("마지막 읽은 메시지 업데이트 실패");
             throw e;
         }
-
     }
 
     // 채팅방 멤버 로그인/로그아웃 상태 확인
-    public List<ResponseMemberStatus> memberLoginStatus(Long chatRoomId) {
+    public List<ResponseMemberStatus> memberLoginStatus(Long chatRoomId, Member loginUser) {
+        // 1️⃣ 채팅방 존재 여부 확인
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 채팅방입니다.")
+        );
+
+        // 2️⃣ 채팅방 참여 여부 확인
+        if (!chatRoom.getJoinMemberIdList().contains(loginUser.getId().toString())) {
+            throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
+        }
+
         // 채팅방에 속한 사용자 정보 가져오기
         List<ChatRoomUser> chatRoomUsers =
                 chatRoomUserRepository.findAllByChatRoomId(chatRoomId)
