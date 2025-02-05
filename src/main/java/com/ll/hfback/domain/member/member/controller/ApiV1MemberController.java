@@ -6,7 +6,6 @@ import com.ll.hfback.domain.member.auth.service.PhoneVerificationService;
 import com.ll.hfback.domain.member.member.dto.*;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.entity.Member.LoginType;
-import com.ll.hfback.domain.member.member.service.AddressService;
 import com.ll.hfback.domain.member.member.service.MemberService;
 import com.ll.hfback.domain.member.member.service.PasswordService;
 import com.ll.hfback.domain.member.member.service.SocialConnectService;
@@ -34,7 +33,6 @@ public class ApiV1MemberController {
 
     private final MemberService memberService;
     private final PasswordService passwordService;
-    private final AddressService addressService;
     private final PhoneVerificationService phoneVerificationService;
     private final PasswordEncoder passwordEncoder;
     private final SocialConnectService socialConnectService;
@@ -158,20 +156,6 @@ public class ApiV1MemberController {
     }
 
 
-
-    // MEM01_MODIFY07 : 주소 등록 (도로명 주소 찾기)
-    @GetMapping("/me/address/{keyword}")
-    public RsData<List<AddressResponse>> searchAddress(
-        @PathVariable String keyword
-    ) {
-        List<AddressResponse> addresses = addressService.searchAddress(keyword);
-
-        return new RsData<>(
-            "200",
-            "행정안전부 API를 통해 주소 검색을 완료하였습니다.",
-            addresses
-        );
-    }
 
 
 
