@@ -60,7 +60,7 @@ public class ApiV1ChatMessageController {
     @GetMapping("/messages/search")
     public RsData<Page<ResponseMessage>> searchMessages(@PathVariable("chatRoom-id") Long chatRoomId,
                                                 @RequestParam(value = "page", defaultValue = "0") int page,
-                                                @RequestBody MessageSearchKeywordsRequest messageSearchKeywordsRequest, @LoginUser Member loginUser) {
+                                                        @ModelAttribute MessageSearchKeywordsRequest messageSearchKeywordsRequest, @LoginUser Member loginUser) {
         try {
             Page<ResponseMessage> messages = chatMessageService.searchMessages(chatRoomId, page, messageSearchKeywordsRequest, loginUser);
             return new RsData<>("200", "검색 조건에 따른 채팅 메시지 조회에 성공했습니다.", messages);

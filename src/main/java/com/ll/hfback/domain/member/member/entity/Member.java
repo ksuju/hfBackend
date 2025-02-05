@@ -73,7 +73,6 @@ public class Member extends BaseEntity {
     private String phoneNumber;  // 전화번호
 
 
-    @Column(columnDefinition = "VARCHAR(255) DEFAULT 'default.png'")
     private String profilePath;  // 프로필 사진 경로
 
 
@@ -192,24 +191,28 @@ public class Member extends BaseEntity {
             // Kakao
             statuses.put(LoginType.KAKAO, SocialAccountStatus.builder()
                 .createDate(socialAccount.getKakaoCreateDate())
+                .email(socialAccount.getKakaoEmail())
                 .active(socialAccount.isKakaoActive())
                 .build());
 
             // Google
             statuses.put(LoginType.GOOGLE, SocialAccountStatus.builder()
                 .createDate(socialAccount.getGoogleCreateDate())
+                .email(socialAccount.getGoogleEmail())
                 .active(socialAccount.isGoogleActive())
                 .build());
 
             // Github
             statuses.put(LoginType.GITHUB, SocialAccountStatus.builder()
                 .createDate(socialAccount.getGithubCreateDate())
+                .email(socialAccount.getGithubEmail())
                 .active(socialAccount.isGithubActive())
                 .build());
 
             // Naver
             statuses.put(LoginType.NAVER, SocialAccountStatus.builder()
                 .createDate(socialAccount.getNaverCreateDate())
+                .email(socialAccount.getNaverEmail())
                 .active(socialAccount.isNaverActive())
                 .build());
         }
