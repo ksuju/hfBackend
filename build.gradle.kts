@@ -35,6 +35,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 	implementation("org.springframework.boot:spring-boot-starter-mail")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	implementation("org.springframework.boot:spring-boot-starter-webflux")
 
 	// JWT
 	implementation("io.jsonwebtoken:jjwt-api:0.12.6")
@@ -63,6 +64,10 @@ dependencies {
 	annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jakarta")
 	annotationProcessor("jakarta.annotation:jakarta.annotation-api")
 	annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+
+	// Solapi (SMS)
+	implementation ("cloud.solapi:java-sdk:4.1.1")
+	implementation ("net.nurigo:sdk:4.2.7")
 
 	// ApiScheduler: Xml -> Json
 	dependencies {
