@@ -127,7 +127,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return detailChatRoomDto;
     }
 
-    // 해당 게시글에 모임채팅방 생성 XXX
+    // 해당 게시글에 모임채팅방 생성
     @Override
     @Transactional
     public void createChatRoom(String festivalId, @Valid CreateChatRoomForm createChatRoomForm, Member loginUser) {
@@ -161,7 +161,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         chatRoomRepository.save(chatRoom);
 
-        // 채팅방 멤버 테이블에 사용자를 참여자로 등록 OOO
+        // 채팅방 멤버 테이블에 사용자를 참여자로 등록
         AddChatRoomUser(chatRoom, loginUser);
 
         // 유저가 참여중인 채팅방 리스트 불러옴
@@ -195,7 +195,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         chatRoomRepository.save(chatRoom);
     }
 
-    // 해당 모임채팅방 삭제 XXX
+    // 해당 모임채팅방 삭제
     @Override
     @Transactional
     public void deleteChatRoom(Long chatRoomId, Member loginUser) {
@@ -207,6 +207,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         if (!chatRoom.getMember().getId().equals(currentUserId)) {
             throw new IllegalStateException("모임 채팅방 삭제 권한이 없습니다.");
         }
+
+        // 채팅방 삭제 시 채팅방 참여자 모두 삭제
+        RemoveAllUser(chatRoomId);
 
         chatRoomRepository.delete(chatRoom);
     }
@@ -284,7 +287,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         memberRepository.save(loginUser);
     }
 
-    // 해당 모임채팅방 참여신청 승인 XXX
+    // 해당 모임채팅방 참여신청 승인
     @Override
     @Transactional
     public void approveApplyChatRoom(Long chatRoomId, String applyMemberId, Member loginUser) {
@@ -360,7 +363,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         }
     }
 
-    // 해당 모임채팅방의 참여자 강퇴 XXX
+    // 해당 모임채팅방의 참여자 강퇴
     @Override
     @Transactional
     public void unqualifyChatRoom(Long chatRoomId, String memberId, Member loginUser) {
@@ -396,7 +399,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         RemoveChatRoomUser(chatRoom, member);
     }
 
-    // 해당 모임채팅방 나가기(방장이 나가는 경우 해당 모임채팅방 삭제) XXX
+    // 해당 모임채팅방 나가기(방장이 나가는 경우 해당 모임채팅방 삭제)
     @Override
     @Transactional
     public void leaveChatRoom(Long chatRoomId, Member loginUser) {
@@ -417,6 +420,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         if (currentUserId.equals(chatRoom.getMember().getId())) {
             deleteChatRoom(chatRoomId, loginUser);
             joinRoomIdList.remove(String.valueOf(chatRoomId));
+            // 채팅방 삭제 시 채팅방 참여자 모두 삭제
+            RemoveAllUser(chatRoomId);
         } else {
             // 참여자 명단 등록여부 확인 및 사용자 ID 제거
             if (!joinMemberIdList.contains(memberId)) {
@@ -468,12 +473,18 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         chatRoomUserRepository.save(chatRoomUser);
     }
     
-    // 채팅방 멤버 테이블에 사용자로 등록된 참여자 삭제
+    // 채팅방 멤버 테이블에 사용자로 등록된 참여자 삭제 (한명)
     @Transactional
     public void RemoveChatRoomUser(ChatRoom chatRoom, Member member) {
         ChatRoomUser chatRoomUser = chatRoomUserRepository.findByChatRoomIdAndMemberId(chatRoom.getId(), member.getId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
 
         chatRoomUserRepository.delete(chatRoomUser);
+    }
+    
+    // 채팅방 삭제 시 채팅방 참여자 모두 삭제
+    @Transactional
+    public void RemoveAllUser(Long chatRoomId) {
+        chatRoomUserRepository.deleteAllByChatRoomId(chatRoomId);
     }
 }
