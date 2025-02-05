@@ -25,7 +25,7 @@ import java.util.List;
  */
 public interface ChatMessageService {
     // 해당 채팅방에 채팅 메시지 저장
-    void writeMessage(Long chatRoomId, RequestMessage requestMessage);
+    void writeMessage(Long chatRoomId, RequestMessage requestMessage, Member member);
 
     // 해당 채팅방의 모든 메시지 불러오기
     Page<ResponseMessage> readMessages(Long chatRoomId, int page);
@@ -39,7 +39,7 @@ public interface ChatMessageService {
                                          MessageSearchKeywordsRequest messageSearchKeywordsRequest);
     
     // 메시지 읽음/안읽음 상태 확인
-    void messageReadStatus(Long chatRoomId, MessageReadStatusRequest messageReadStatusRequest);
+    void messageReadStatus(Long chatRoomId, MessageReadStatusRequest messageReadStatusRequest, Member member);
 
     // 채팅방 멤버 로그인/로그아웃 상태 확인
     List<ResponseMemberStatus> memberLoginStatus(Long chatRoomId);
