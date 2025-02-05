@@ -1,28 +1,25 @@
 package com.ll.hfback.domain.festival.comment.service;
 
-import com.ll.hfback.domain.festival.comment.entity.Comment;
-import com.ll.hfback.domain.festival.comment.repository.CommentRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
+import com.ll.hfback.domain.festival.comment.dto.CommentDto;
+import com.ll.hfback.domain.festival.comment.form.AddCommentForm;
+import com.ll.hfback.domain.festival.comment.form.UpdateCommentForm;
+import com.ll.hfback.domain.member.member.entity.Member;
+import jakarta.validation.Valid;
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class CommentService {
-    final CommentRepository commentRepository;
-
-    public List<Comment> searchByMemberId(Long id) {
-        return commentRepository.findByMemberId(id);
-    }
-
+public interface CommentService {
     // 해당 게시글에 작성된 모든 댓글 조회
-    public List<Comment> searchByFestivalId(String festivalId) {
-        return commentRepository.findByFestivalId(festivalId);
-    }
+    List<CommentDto> searchByFestivalId(String festivalId);
 
     // 해당 댓글에 작성된 모든 답글 조회
-    public List<Comment> searchBySuperCommentId(Long superCommentId) {
-        return commentRepository.findBySuperCommentId(superCommentId);
-    }
+    List<CommentDto> searchBySuperCommentId(Long superCommentId);
+
+    // 해당 게시글에 댓글 생성
+    void addComment(String festivalId, @Valid AddCommentForm addCommentForm, Member loginUser);
+
+    // 해당 댓글 수정
+    void updateComment(Long commentId, @Valid UpdateCommentForm updateCommentForm, Member loginUser);
+
+    // 해당 댓글 삭제
+    void deleteComment(Long commentId, Member loginUser);
 }

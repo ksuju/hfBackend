@@ -6,6 +6,10 @@ spring:
     username: root
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: redis_1    # Docker container name으로 변경
+      port: 6379
   jpa:
     hibernate:
       ddl-auto: update
@@ -22,5 +26,8 @@ logging:
     org.hibernate.orm.jdbc.extract: INFO
     org.springframework.transaction.interceptor: INFO
 custom:
+  cookie:
+    domain: hf.codingtori.site
   site:
     name: "My Site Prod"
+    cookieDomain: hf.codingtori.site

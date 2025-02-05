@@ -1,43 +1,26 @@
 package com.ll.hfback.domain.festival.post.service;
 
-import com.ll.hfback.domain.festival.comment.entity.Comment;
-import com.ll.hfback.domain.festival.post.entity.Post;
-import com.ll.hfback.domain.festival.post.repository.PostRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.ll.hfback.domain.festival.post.dto.DetailPostDto;
+import com.ll.hfback.domain.festival.post.dto.PostDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-
-@Transactional(readOnly=true)
-@RequiredArgsConstructor
-@Service
-public class PostService {
-    private final PostRepository postRepository;
-
-    @Transactional
-    public void modifyComment(Comment comment, String content) {
-        comment.setContent(content);
-    }
-
+public interface PostService {
     // 모든 게시글 조회
-    public List<Post> findAll() {
-        return postRepository.findAll();
-    }
+    Page<PostDto> findAll(Pageable pageable);
 
     // 키워드로 게시글 조회
-    public List<Post> searchByKeyword(String keyword) {
-        return postRepository.findByFestivalNameContaining(keyword);
-    }
+    Page<PostDto> searchByKeyword(String keyword, Pageable pageable);
 
     // 게시글ID로 상세 조회
-    public Post searchByFestivalId(String festivalId) {
-        return postRepository.findByFestivalId(festivalId);
-    }
+    DetailPostDto searchByFestivalId(String festivalId);
 
-    // 공연/축제(KOPIS/APIS) 타입으로 게시글 조회
-    public List<Post> searchByInputType(String type) {
-        return postRepository.findByInputType(type);
-    }
+    // 장르별 게시글 조회(축제, 연극, 무용(서양/한국무용), 대중무용, 서양음악(클래식),
+    // 한국음악(국악), 대중음악, 복합, 서커스/마술, 뮤지컬)
+    Page<PostDto> searchByGenreOrAll(String genre, Pageable pageable);
+
+    // 지역 기준으로 게시글 조회
+    List<PostDto> searchByFestivalArea(String area, Integer count);
 }

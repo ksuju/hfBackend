@@ -1,0 +1,26 @@
+package com.ll.hfback.domain.group.chat.request;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+/**
+ * packageName    : com.ll.hfback.domain.group.chat.dto.response
+ * fileName       : ResponseMessage
+ * author         : sungjun
+ * date           : 2025-01-22
+ * description    : 자동 주석 생성
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * -----------------------------------------------------------
+ * 2025-01-22        kyd54       최초 생성
+ */
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor 
+public class RequestMessage {
+//    private Long memberId;
+    private String content;
+}
