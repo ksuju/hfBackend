@@ -1,12 +1,12 @@
 package com.ll.hfback.domain.group.chat.service;
 
-import com.ll.hfback.domain.group.chat.entity.ChatRoomUser;
 import com.ll.hfback.domain.group.chat.response.ResponseMemberStatus;
 import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.request.MessageReadStatusRequest;
 import com.ll.hfback.domain.group.chat.request.MessageSearchKeywordsRequest;
 import com.ll.hfback.domain.group.chat.request.RequestMessage;
 import com.ll.hfback.domain.member.member.entity.Member;
+import com.ll.hfback.global.rsData.RsData;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -25,10 +25,10 @@ import java.util.List;
  */
 public interface ChatMessageService {
     // 해당 채팅방에 채팅 메시지 저장
-    void writeMessage(Long chatRoomId, RequestMessage requestMessage, Member member);
+    RsData<Object> writeMessage(Long chatRoomId, RequestMessage requestMessage, Member loginUser);
 
     // 해당 채팅방의 모든 메시지 불러오기
-    Page<ResponseMessage> readMessages(Long chatRoomId, int page);
+    Page<ResponseMessage> readMessages(Long chatRoomId, int page, Member loginUser);
 
     // 메시지 불러올 때 사용할 커스텀 페이징
     Pageable customPaging(int page);
@@ -36,13 +36,13 @@ public interface ChatMessageService {
     // 조건에 따른 채팅 메시지 검색 기능
     Page<ResponseMessage> searchMessages(Long chatRoomId,
                                          int page,
-                                         MessageSearchKeywordsRequest messageSearchKeywordsRequest);
+                                         MessageSearchKeywordsRequest messageSearchKeywordsRequest, Member loginUser);
     
     // 메시지 읽음/안읽음 상태 확인
-    void messageReadStatus(Long chatRoomId, MessageReadStatusRequest messageReadStatusRequest, Member member);
+    void messageReadStatus(Long chatRoomId, MessageReadStatusRequest messageReadStatusRequest, Member loginUser);
 
     // 채팅방 멤버 로그인/로그아웃 상태 확인
-    List<ResponseMemberStatus> memberLoginStatus(Long chatRoomId);
+    List<ResponseMemberStatus> memberLoginStatus(Long chatRoomId, Member loginUser);
 
     // 채팅방 멤버 로그인 상태 변경 (로그인)
     void chatMemberLogin(Long chatRoomId, Member member);
