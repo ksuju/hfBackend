@@ -304,11 +304,11 @@ public class NotProd {
                         default -> member3;
                     };
 
-                    RequestMessage requestMessage = new RequestMessage(sender.getId(), messages.get(i));
+                    RequestMessage requestMessage = new RequestMessage(messages.get(i));
 
                     // 메시지 저장 호출
-                    chatMessageService.writeMessage(1L, requestMessage
-                    );
+                    chatMessageService.writeMessage(1L, requestMessage, sender
+                            );
                 }
 
 
