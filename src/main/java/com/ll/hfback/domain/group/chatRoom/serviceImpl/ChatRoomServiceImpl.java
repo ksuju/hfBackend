@@ -322,12 +322,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 waitRoomIdList.remove(String.valueOf(chatRoomId));
                 joinRoomIdList.add(String.valueOf(chatRoomId));
 
-                // 가입 승인된 유저 정보 가져오기
-                Member joinMember =  memberRepository.findById(Long.valueOf(applyMemberId))
-                        .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));;
-
                 // 채팅방 멤버 테이블에 가입 승인된 유저를 참여자로 등록
-                AddChatRoomUser(chatRoom, joinMember);
+                AddChatRoomUser(chatRoom, member);
             } else {
                 throw new IllegalStateException("대기자 명단에 등록되지 않은 사용자입니다.");
             }
@@ -395,6 +391,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             joinMemberIdList.remove(memberId);
             joinRoomIdList.remove(String.valueOf(chatRoomId));
         }
+
+        // 채팅방 멤버 테이블에 사용자로 등록된 참여자 삭제
+        RemoveChatRoomUser(chatRoom, member);
     }
 
     // 해당 모임채팅방 나가기(방장이 나가는 경우 해당 모임채팅방 삭제) XXX
@@ -425,6 +424,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             } else {
                 joinMemberIdList.remove(memberId);
                 joinRoomIdList.remove(String.valueOf(chatRoomId));
+                // 채팅방 멤버 테이블에 사용자로 등록된 참여자 삭제
+                RemoveChatRoomUser(chatRoom, loginUser);
             }
         }
     }
@@ -458,12 +459,21 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     // 채팅방 멤버 테이블에 사용자를 참여자로 등록 OOO
     @Transactional
-    public void AddChatRoomUser(ChatRoom chatRoom, Member loginUser) {
+    public void AddChatRoomUser(ChatRoom chatRoom, Member member) {
         ChatRoomUser chatRoomUser = ChatRoomUser.builder()
                 .chatRoom(chatRoom)
-                .member(loginUser)
+                .member(member)
                 .build();
 
         chatRoomUserRepository.save(chatRoomUser);
+    }
+    
+    // 채팅방 멤버 테이블에 사용자로 등록된 참여자 삭제
+    @Transactional
+    public void RemoveChatRoomUser(ChatRoom chatRoom, Member member) {
+        ChatRoomUser chatRoomUser = chatRoomUserRepository.findByChatRoomIdAndMemberId(chatRoom.getId(), member.getId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+
+        chatRoomUserRepository.delete(chatRoomUser);
     }
 }
