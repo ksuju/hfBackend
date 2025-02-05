@@ -1,10 +1,10 @@
 package com.ll.hfback.domain.group.chat.controller;
 
-import com.ll.hfback.domain.group.chat.response.ResponseMemberStatus;
-import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.request.MessageReadStatusRequest;
 import com.ll.hfback.domain.group.chat.request.MessageSearchKeywordsRequest;
 import com.ll.hfback.domain.group.chat.request.RequestMessage;
+import com.ll.hfback.domain.group.chat.response.ResponseMemberStatus;
+import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.service.ChatMessageService;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.global.rsData.RsData;
@@ -14,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * packageName    : com.ll.hfback.domain.group.chat.controller
@@ -36,9 +35,10 @@ public class ApiV1ChatMessageController {
     // 채팅 메시지 작성
     @PostMapping("/messages")
     public RsData<Void> writeMessage(@PathVariable("chatRoom-id") Long chatRoomId,
-                      @RequestBody RequestMessage requestMessage) {
+                        @RequestBody RequestMessage requestMessage,
+                        @LoginUser Member member) {
         try {
-            chatMessageService.writeMessage(chatRoomId, requestMessage);
+            chatMessageService.writeMessage(chatRoomId, requestMessage, member);
             return new RsData<>("200", "채팅 메시지 작성에 성공했습니다.");
         } catch (Exception e) {
             return new RsData<>("500", "채팅 메시지 작성 중 오류가 발생했습니다: " + e.getMessage());
@@ -71,9 +71,10 @@ public class ApiV1ChatMessageController {
     // 메시지 읽음/안읽음 상태 확인용 필드 수정
     @PutMapping("/messages/readStatus")
     public RsData<Void> messageReadStatus(@PathVariable("chatRoom-id") Long chatRoomId,
-                                  @RequestBody MessageReadStatusRequest messageReadStatusRequest) {
+                                    @RequestBody MessageReadStatusRequest messageReadStatusRequest,
+                                    @LoginUser Member member) {
         try {
-            chatMessageService.messageReadStatus(chatRoomId, messageReadStatusRequest);
+            chatMessageService.messageReadStatus(chatRoomId, messageReadStatusRequest, member);
             return new RsData<>("200", "메시지 수신 상태 변경에 성공했습니다.");
         } catch (Exception e) {
             return new RsData<>("500", "메시지 수신 상태 변경에 실패했습니다." + e.getMessage());

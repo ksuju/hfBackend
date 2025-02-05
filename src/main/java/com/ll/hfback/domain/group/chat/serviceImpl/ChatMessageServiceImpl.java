@@ -57,7 +57,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     // 채팅 메시지 작성
     @Transactional
-    public void writeMessage(Long chatId, RequestMessage requestMessage) {
+    public void writeMessage(Long chatId, RequestMessage requestMessage, Member member) {
         try {
             // 빈 메시지 또는 250자 초과 메시지 검사
             if (requestMessage.getContent() == null || requestMessage.getContent().trim().isEmpty()) {
@@ -71,8 +71,6 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             ChatRoom chatRoom = chatRoomRepository.findById(chatId).orElse(null);
 
             if(chatRoom != null) {
-                // memberId로 멤버 정보 가져오기
-                Member member = memberRepository.findById(requestMessage.getMemberId()).orElse(null);
 
                 // 채팅 메시지 저장
                 ChatMessage chatMessage = ChatMessage.builder()
@@ -202,13 +200,13 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     // 메시지 읽음/안읽음 상태 확인
     @Transactional
-    public void messageReadStatus(Long chatRoomId, MessageReadStatusRequest messageReadStatusRequest) {
+    public void messageReadStatus(Long chatRoomId, MessageReadStatusRequest messageReadStatusRequest, Member member) {
         try {
             ChatRoomUser readStatus = chatRoomUserRepository
-                    .findByChatRoomIdAndMemberId(chatRoomId, messageReadStatusRequest.getMemberId())
+                    .findByChatRoomIdAndMemberId(chatRoomId, member.getId())
                     .orElse(ChatRoomUser.builder()
                             .chatRoom(chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new RuntimeException("ChatRoom not found")))
-                            .member(memberRepository.findById(messageReadStatusRequest.getMemberId()).orElseThrow(() -> new RuntimeException("Member not found")))
+                            .member(memberRepository.findById(member.getId()).orElseThrow(() -> new RuntimeException("Member not found")))
                             .lastReadMessageId(messageReadStatusRequest.getMessageId())
                             .build());
 
@@ -217,7 +215,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
             logger.info("ChatRoom ID: {}, Member ID: {} - 마지막 읽은 메시지 ID가 성공적으로 업데이트되었습니다.",
                     chatRoomId,
-                    messageReadStatusRequest.getMemberId());
+                    member.getId());
         } catch (Exception e) {
             logger.error("마지막 읽은 메시지 업데이트 실패");
             throw e;
