@@ -35,7 +35,6 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 	implementation("org.springframework.boot:spring-boot-starter-mail")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
-	implementation("org.springframework.boot:spring-boot-starter-webflux")
 
 	// JWT
 	implementation("io.jsonwebtoken:jjwt-api:0.12.6")
