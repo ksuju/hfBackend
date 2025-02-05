@@ -6,6 +6,7 @@ import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.request.MessageReadStatusRequest;
 import com.ll.hfback.domain.group.chat.request.MessageSearchKeywordsRequest;
 import com.ll.hfback.domain.group.chat.request.RequestMessage;
+import com.ll.hfback.domain.member.member.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -42,4 +43,10 @@ public interface ChatMessageService {
 
     // 채팅방 멤버 로그인/로그아웃 상태 확인
     List<ResponseMemberStatus> memberLoginStatus(Long chatRoomId);
+
+    // 채팅방 멤버 로그인 상태 변경 (로그인)
+    void chatMemberLogin(Long chatRoomId, Member member);
+
+    // 채팅방 멤버 로그인 상태 변경 (로그아웃)
+    void chatMemberLogout(Long chatRoomId, Member member);
 }
