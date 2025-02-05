@@ -17,6 +17,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MessageReadStatusRequest {
-    private Long memberId;
+//    private Long memberId;
     private Long messageId;
 }

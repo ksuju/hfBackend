@@ -19,6 +19,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class RequestMessage {
-    private Long memberId;
+//    private Long memberId;
     private String content;
 }
