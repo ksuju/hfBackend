@@ -1,6 +1,8 @@
 package com.ll.hfback.domain.group.chatRoom.serviceImpl;
 
 import com.ll.hfback.domain.festival.post.repository.PostRepository;
+import com.ll.hfback.domain.group.chat.entity.ChatRoomUser;
+import com.ll.hfback.domain.group.chat.repository.ChatRoomUserRepository;
 import com.ll.hfback.domain.group.chatRoom.dto.ChatRoomDto;
 import com.ll.hfback.domain.group.chatRoom.dto.DetailChatRoomDto;
 import com.ll.hfback.domain.group.chatRoom.entity.ChatRoom;
@@ -27,6 +29,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
+
+    private final ChatRoomUserRepository chatRoomUserRepository;
 
     // 모든 게시글 조회
     @Override
@@ -123,7 +127,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return detailChatRoomDto;
     }
 
-    // 해당 게시글에 모임채팅방 생성
+    // 해당 게시글에 모임채팅방 생성 XXX
     @Override
     @Transactional
     public void createChatRoom(String festivalId, @Valid CreateChatRoomForm createChatRoomForm, Member loginUser) {
@@ -157,6 +161,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         chatRoomRepository.save(chatRoom);
 
+        // 채팅방 멤버 테이블에 사용자를 참여자로 등록 OOO
+        AddChatRoomUser(chatRoom, loginUser);
+
         // 유저가 참여중인 채팅방 리스트 불러옴
         List<String> joinRoomIdList = loginUser.getJoinRoomIdList();
         if (joinRoomIdList == null) {
@@ -188,7 +195,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         chatRoomRepository.save(chatRoom);
     }
 
-    // 해당 모임채팅방 삭제
+    // 해당 모임채팅방 삭제 XXX
     @Override
     @Transactional
     public void deleteChatRoom(Long chatRoomId, Member loginUser) {
@@ -277,7 +284,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         memberRepository.save(loginUser);
     }
 
-    // 해당 모임채팅방 참여신청 승인
+    // 해당 모임채팅방 참여신청 승인 XXX
     @Override
     @Transactional
     public void approveApplyChatRoom(Long chatRoomId, String applyMemberId, Member loginUser) {
@@ -350,7 +357,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         }
     }
 
-    // 해당 모임채팅방의 참여자 강퇴
+    // 해당 모임채팅방의 참여자 강퇴 XXX
     @Override
     @Transactional
     public void unqualifyChatRoom(Long chatRoomId, String memberId, Member loginUser) {
@@ -383,7 +390,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         }
     }
 
-    // 해당 모임채팅방 나가기(방장이 나가는 경우 해당 모임채팅방 삭제)
+    // 해당 모임채팅방 나가기(방장이 나가는 경우 해당 모임채팅방 삭제) XXX
     @Override
     @Transactional
     public void leaveChatRoom(Long chatRoomId, Member loginUser) {
@@ -440,5 +447,16 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         } else {
             chatRoom.setMember(member);
         }
+    }
+
+    // 채팅방 멤버 테이블에 사용자를 참여자로 등록 OOO
+    @Transactional
+    public void AddChatRoomUser(ChatRoom chatRoom, Member loginUser) {
+        ChatRoomUser chatRoomUser = ChatRoomUser.builder()
+                .chatRoom(chatRoom)
+                .member(loginUser)
+                .build();
+
+        chatRoomUserRepository.save(chatRoomUser);
     }
 }
