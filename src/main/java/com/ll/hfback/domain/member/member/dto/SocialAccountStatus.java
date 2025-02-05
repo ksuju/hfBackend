@@ -11,5 +11,6 @@ import java.time.LocalDateTime;
 @Builder
 public class SocialAccountStatus {
   private LocalDateTime createDate;  // 연결 생성일
+  private String email;
   private boolean active;     // 연결 상태
 }
