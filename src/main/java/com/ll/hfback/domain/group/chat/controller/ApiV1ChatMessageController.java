@@ -6,12 +6,15 @@ import com.ll.hfback.domain.group.chat.request.MessageReadStatusRequest;
 import com.ll.hfback.domain.group.chat.request.MessageSearchKeywordsRequest;
 import com.ll.hfback.domain.group.chat.request.RequestMessage;
 import com.ll.hfback.domain.group.chat.service.ChatMessageService;
+import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.global.rsData.RsData;
+import com.ll.hfback.global.webMvc.LoginUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * packageName    : com.ll.hfback.domain.group.chat.controller
@@ -85,5 +88,21 @@ public class ApiV1ChatMessageController {
         } catch (Exception e) {
             return new RsData<>("500", "채팅방 멤버 로그인 상태 조회 실패" + e.getMessage());
         }
+    }
+
+    // 채팅방 멤버 로그인 상태 변경 (로그아웃)
+    @PatchMapping("/members/logout")
+    public RsData<Void> chatMemberLogout(@PathVariable("chatRoom-id") Long chatRoomId,
+                                         @LoginUser Member member) {
+        chatMessageService.chatMemberLogout(chatRoomId, member);
+        return new RsData<Void>("200", "성공");
+    }
+
+    // 채팅방 멤버 로그인 상태 변경 (로그인)
+    @PatchMapping("/members/login")
+    public RsData<Void> chatMemberLogin(@PathVariable("chatRoom-id") Long chatRoomId,
+                                         @LoginUser Member member) {
+        chatMessageService.chatMemberLogin(chatRoomId, member);
+        return new RsData<Void>("200", "성공");
     }
 }
