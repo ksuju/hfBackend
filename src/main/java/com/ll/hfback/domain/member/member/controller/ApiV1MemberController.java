@@ -1,8 +1,12 @@
 package com.ll.hfback.domain.member.member.controller;
 
+import com.ll.hfback.domain.member.auth.dto.PhoneNumberRequest;
+import com.ll.hfback.domain.member.auth.dto.PhoneVerificationRequest;
+import com.ll.hfback.domain.member.auth.service.PhoneVerificationService;
 import com.ll.hfback.domain.member.member.dto.*;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.entity.Member.LoginType;
+import com.ll.hfback.domain.member.member.service.AddressService;
 import com.ll.hfback.domain.member.member.service.MemberService;
 import com.ll.hfback.domain.member.member.service.PasswordService;
 import com.ll.hfback.domain.member.member.service.SocialConnectService;
@@ -13,12 +17,15 @@ import com.ll.hfback.global.webMvc.LoginUser;
 import com.ll.hfback.standard.base.Empty;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,26 +34,62 @@ public class ApiV1MemberController {
 
     private final MemberService memberService;
     private final PasswordService passwordService;
+    private final AddressService addressService;
+    private final PhoneVerificationService phoneVerificationService;
     private final PasswordEncoder passwordEncoder;
     private final SocialConnectService socialConnectService;
+    private final RedisTemplate<String, String> redisTemplate;
 
+    private static final String PHONE_VERIFICATION_STATUS_PREFIX = "phoneNumber:verify:";
+    private static final int MAX_VERIFICATION_ATTEMPTS = 5;
 
+    public record VerifyResponse(String token) {}
+    public record VerifyTokenRequest(String token) {}
 
     // [1. 회원 정보 관리]
     // MEM01_MODIFY01 : 회원정보 수정 전 비밀번호 인증
     @PostMapping("/me/password")
-    public RsData<Void> checkPassword(
+    public RsData<VerifyResponse> checkPassword(
         @Valid @RequestBody CheckPasswordRequest request,
         @LoginUser Member loginUser
     ) {
         if (!passwordEncoder.matches(request.password(), loginUser.getPassword())) {
             throw new ServiceException(ErrorCode.INVALID_PASSWORD);
         }
-        return new RsData<>("200-1", "비밀번호가 확인되었습니다.");
+
+        String token = UUID.randomUUID().toString();
+        redisTemplate.opsForValue().set(
+            "password-verify:" + loginUser.getEmail(),
+            token,
+            30,
+            TimeUnit.MINUTES
+        );
+
+        return new RsData<>("200-1", "비밀번호가 확인되었습니다.", new VerifyResponse(token));
     }
 
 
-    // MEM01_MODIFY02 - 비밀번호 변경
+    // MEM01_MODIFY02 : 비밀번호 인증 정보 확인
+    @PostMapping("/me/password/validate")
+    public RsData<Void> validatePassword(
+        @LoginUser Member loginUser,
+        @RequestBody VerifyTokenRequest request
+    ) {
+        String storedToken = redisTemplate.opsForValue().get("password-verify:" + loginUser.getEmail());
+
+        if (storedToken == null || !storedToken.equals(request.token())) {
+            throw new ServiceException(ErrorCode.PASSWORD_VERIFICATION_REQUIRED);
+        }
+
+        redisTemplate.expire("password-verify:" + loginUser.getEmail(), 30, TimeUnit.MINUTES);
+
+        return new RsData<>("200-1", "비밀번호 확인이 유효합니다.");
+    }
+
+
+
+
+    // MEM01_MODIFY03 - 비밀번호 변경
     @PatchMapping("/me/password")
     public RsData<Void> changePassword(
         @Valid @RequestBody ChangePasswordRequest request,
@@ -61,12 +104,21 @@ public class ApiV1MemberController {
     }
 
 
-    // MEM01_MODIFY03 : 회원정보 수정  (성별, 전화번호, 주소, 마케팅 수신여부 ...)
+    // MEM01_MODIFY04 : 회원정보 수정  (성별, 전화번호, 주소, 마케팅 수신여부 ...)
     @PutMapping("/me/profile")
     public RsData<MemberDto> updateMember(
         @LoginUser Member loginUser,
         @Valid @RequestBody MemberUpdateRequest memberUpdateRequest
     ) {
+        String phoneNumber = memberUpdateRequest.getPhoneNumber();
+        if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
+            String normalizedPhoneNumber = phoneNumber.replaceAll("-", "");
+            String verified = redisTemplate.opsForValue().get(PHONE_VERIFICATION_STATUS_PREFIX + normalizedPhoneNumber);
+            if (verified == null) {
+                throw new ServiceException(ErrorCode.PHONE_NUMBER_NOT_VERIFIED);
+            }
+        }
+
         Member modifiedMember = memberService.updateInfo(loginUser, memberUpdateRequest);
         return new RsData<>(
             "200",
@@ -76,14 +128,50 @@ public class ApiV1MemberController {
     }
 
 
-    // MEM01_MODIFY04 : 전화번호 인증코드 발송 (SMS 인증)
-    // @PostMapping("/me/phone/verification-code")
+    // MEM01_MODIFY05 : 전화번호 인증코드 발송 (SMS 인증)
+    @PostMapping("/me/phone/verification-code")
+    public RsData<Void> sendVerificationCode(@Valid @RequestBody PhoneNumberRequest request) {
+        String verificationKey = PHONE_VERIFICATION_STATUS_PREFIX + request.phoneNumber();
+        String verified = redisTemplate.opsForValue().get(verificationKey);
+        if (verified != null) {
+            throw new ServiceException(ErrorCode.ALREADY_VERIFIED_PHONE_NUMBER);
+        }
 
-    // MEM01_MODIFY05 : 전화번호 인증코드 확인 (SMS 인증)
-    // @PostMapping("/me/phone/verify")
+        phoneVerificationService.sendVerificationCode(request.phoneNumber());
+        return new RsData<>("200", "입력하신 번호로 인증 코드 발송이 성공하였습니다.");
+    }
 
-    // MEM01_MODIFY06 : 주소 등록 (도로명 주소 찾기)
-    //@PostMapping("/me/address")
+    // MEM01_MODIFY06 : 전화번호 인증코드 확인 (SMS 인증)
+    @PostMapping("/me/phone/verify")
+    public RsData<Void> verifyPhoneNumber(@Valid @RequestBody PhoneVerificationRequest request) {
+        if (!phoneVerificationService.verifyCode(request.phoneNumber(), request.code())) {
+            throw new ServiceException(ErrorCode.INVALID_SNS_VERIFICATION_CODE);
+        }
+
+        redisTemplate.opsForValue().set(
+            PHONE_VERIFICATION_STATUS_PREFIX + request.phoneNumber(),
+            "verified",
+            MAX_VERIFICATION_ATTEMPTS,
+            TimeUnit.MINUTES
+        );
+        return new RsData<>("200", "전화번호 인증이 성공하였습니다.");
+    }
+
+
+
+    // MEM01_MODIFY07 : 주소 등록 (도로명 주소 찾기)
+    @GetMapping("/me/address/{keyword}")
+    public RsData<List<AddressResponse>> searchAddress(
+        @PathVariable String keyword
+    ) {
+        List<AddressResponse> addresses = addressService.searchAddress(keyword);
+
+        return new RsData<>(
+            "200",
+            "행정안전부 API를 통해 주소 검색을 완료하였습니다.",
+            addresses
+        );
+    }
 
 
 
