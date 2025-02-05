@@ -145,39 +145,39 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
             // 검색어(keyword)가 있으면 해당 조건 추가
             if (messageSearchKeywordsRequest != null && messageSearchKeywordsRequest.getKeyword() != null) {
-                String keyword = messageSearchKeywordsRequest.getKeyword();
-                builder.and(qChatMessage.chatMessageContent.containsIgnoreCase(keyword)); // 대소문자 구분 없이 검색
+                String keywords = messageSearchKeywordsRequest.getKeyword();
+                builder.and(qChatMessage.chatMessageContent.containsIgnoreCase(keywords)); // 대소문자 구분 없이 검색
             }
 
             // 닉네임(nickname)이 있으면 해당 조건 추가
-            if (messageSearchKeywordsRequest.getNickname() != null) {
+            if (messageSearchKeywordsRequest != null && messageSearchKeywordsRequest.getNickname() != null) {
                 String nickname = messageSearchKeywordsRequest.getNickname();
                 builder.and(qChatMessage.nickname.containsIgnoreCase(nickname)); // 대소문자 구분 없이 검색
             }
-
-            // 날짜 처리: 날짜를 LocalDateTime으로 변환하여 비교
-            // startDate만 있을 경우
-            if (messageSearchKeywordsRequest.getStartDate() != null) {
-                LocalDate startDate = messageSearchKeywordsRequest.getStartDate();
-                LocalDateTime startDateTime = startDate.atStartOfDay(); // startDate를 00:00:00로 변환
-                builder.and(qChatMessage.createDate.goe(startDateTime)); // startDate부터 최근까지 메시지 검색
-            }
-
-            // endDate만 있을 경우
-            if (messageSearchKeywordsRequest.getEndDate() != null) {
-                LocalDate endDate = messageSearchKeywordsRequest.getEndDate();
-                LocalDateTime endDateTime = endDate.atTime(23, 59, 59, 999999999); // endDate를 23:59:59로 변환
-                builder.and(qChatMessage.createDate.loe(endDateTime)); // 처음부터 endDate까지 메시지 검색
-            }
-
-            // startDate와 endDate 모두 있을 경우
-            if (messageSearchKeywordsRequest.getStartDate() != null && messageSearchKeywordsRequest.getEndDate() != null) {
-                LocalDate startDate = messageSearchKeywordsRequest.getStartDate();
-                LocalDate endDate = messageSearchKeywordsRequest.getEndDate();
-                LocalDateTime startDateTime = startDate.atStartOfDay(); // startDate를 00:00:00로 변환
-                LocalDateTime endDateTime = endDate.atTime(23, 59, 59, 999999999); // endDate를 23:59:59로 변환
-                builder.and(qChatMessage.createDate.between(startDateTime, endDateTime)); // 두 날짜 사이의 메시지 검색
-            }
+//
+//            // 날짜 처리: 날짜를 LocalDateTime으로 변환하여 비교
+//            // startDate만 있을 경우
+//            if (messageSearchKeywordsRequest.getStartDate() != null) {
+//                LocalDate startDate = messageSearchKeywordsRequest.getStartDate();
+//                LocalDateTime startDateTime = startDate.atStartOfDay(); // startDate를 00:00:00로 변환
+//                builder.and(qChatMessage.createDate.goe(startDateTime)); // startDate부터 최근까지 메시지 검색
+//            }
+//
+//            // endDate만 있을 경우
+//            if (messageSearchKeywordsRequest.getEndDate() != null) {
+//                LocalDate endDate = messageSearchKeywordsRequest.getEndDate();
+//                LocalDateTime endDateTime = endDate.atTime(23, 59, 59, 999999999); // endDate를 23:59:59로 변환
+//                builder.and(qChatMessage.createDate.loe(endDateTime)); // 처음부터 endDate까지 메시지 검색
+//            }
+//
+//            // startDate와 endDate 모두 있을 경우
+//            if (messageSearchKeywordsRequest.getStartDate() != null && messageSearchKeywordsRequest.getEndDate() != null) {
+//                LocalDate startDate = messageSearchKeywordsRequest.getStartDate();
+//                LocalDate endDate = messageSearchKeywordsRequest.getEndDate();
+//                LocalDateTime startDateTime = startDate.atStartOfDay(); // startDate를 00:00:00로 변환
+//                LocalDateTime endDateTime = endDate.atTime(23, 59, 59, 999999999); // endDate를 23:59:59로 변환
+//                builder.and(qChatMessage.createDate.between(startDateTime, endDateTime)); // 두 날짜 사이의 메시지 검색
+//            }
 
             // chatRoomId에 맞는 메시지 필터링
             builder.and(qChatMessage.chatRoom.id.eq(chatRoomId));
