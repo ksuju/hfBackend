@@ -234,7 +234,7 @@ public class ApiV1MemberController {
     public RsData<Void> disconnectSocialAccount(
         @PathVariable String provider, @LoginUser Member loginUser
     ) {
-        String upperProvider = provider.toUpperCase();
+        String upperProvider = provider.toUpperCase();  // 받은 소셜이 우리 서비스에서 사용하는 소셜인지 확인
         if (!LoginType.isValid(upperProvider)) {
             throw new ServiceException(ErrorCode.INVALID_LOGIN_TYPE);
         }

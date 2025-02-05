@@ -7,6 +7,7 @@ import com.ll.hfback.global.security.SecurityUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,6 +28,9 @@ public class Rq {
   private final HttpServletRequest req;
   private final HttpServletResponse resp;
   private final AuthService authService;
+
+  @Value("${custom.cookie.domain}")
+  private String domain;
 
 
   public void setLogin(Member member) {
@@ -81,7 +85,7 @@ public class Rq {
   public void setCookie(String name, String value) {
     ResponseCookie cookie = ResponseCookie.from(name, value)
         .path("/")
-        .domain("localhost")
+        .domain(domain)
         .sameSite("Strict")
         .secure(true)
         .httpOnly(true)
@@ -105,7 +109,7 @@ public class Rq {
   public void deleteCookie(String name) {
     ResponseCookie cookie = ResponseCookie.from(name, null)
         .path("/")
-        .domain("localhost")
+        .domain(domain)
         .sameSite("Strict")
         .secure(true)
         .httpOnly(true)
