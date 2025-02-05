@@ -321,6 +321,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 joinMemberIdList.add(applyMemberId);
                 waitRoomIdList.remove(String.valueOf(chatRoomId));
                 joinRoomIdList.add(String.valueOf(chatRoomId));
+
+                // 가입 승인된 유저 정보 가져오기
+                Member joinMember =  memberRepository.findById(Long.valueOf(applyMemberId))
+                        .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));;
+
+                // 채팅방 멤버 테이블에 가입 승인된 유저를 참여자로 등록
+                AddChatRoomUser(chatRoom, joinMember);
             } else {
                 throw new IllegalStateException("대기자 명단에 등록되지 않은 사용자입니다.");
             }
