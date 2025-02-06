@@ -2,7 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "3.4.1"
     id("io.spring.dependency-management") version "1.1.7"
-    id("com.ewerk.gradle.plugins.querydsl") version "1.0.10"
+//    id("com.ewerk.gradle.plugins.querydsl") version "1.0.10"
 }
 
 group = "com.ll"
@@ -34,7 +34,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-websocket:3.4.1")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.boot:spring-boot-starter-mail")
+
+    // redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation ("org.springframework.session:spring-session-data-redis")
 
     // JWT
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
@@ -65,7 +68,7 @@ dependencies {
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
     // Solapi (SMS)
-    implementation("cloud.solapi:java-sdk:4.1.1")
+//    implementation("cloud.solapi:java-sdk:4.1.1")
     implementation("net.nurigo:sdk:4.2.7")
 
 
