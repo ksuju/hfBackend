@@ -51,6 +51,8 @@ public class AuthService {
                 .loginType(loginType)
                 .profilePath(profilePath)
                 .apiKey(UUID.randomUUID().toString())
+                .role(Member.MemberRole.ROLE_USER)
+                .state(Member.MemberState.NORMAL)
                 .build();
 
         if (providerId != null) {

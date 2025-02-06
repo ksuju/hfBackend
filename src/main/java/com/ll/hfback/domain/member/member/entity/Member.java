@@ -1,6 +1,7 @@
 package com.ll.hfback.domain.member.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ll.hfback.domain.group.chatRoom.converter.StringListConverter;
 import com.ll.hfback.domain.member.alert.entity.Alert;
 import com.ll.hfback.domain.member.auth.entity.SocialAccount;
 import com.ll.hfback.domain.member.member.dto.MemberUpdateRequest;
@@ -30,6 +31,14 @@ import static jakarta.persistence.CascadeType.ALL;
 @SuperBuilder
 @DynamicInsert
 public class Member extends BaseEntity {
+
+    // 참여하고 있는 모임채팅방ID 리스트
+    @Convert(converter = StringListConverter.class)
+    private List<String> joinRoomIdList;
+
+    // 대기하고 있는 모임채팅방ID 리스트
+    @Convert(converter = StringListConverter.class)
+    private List<String> waitRoomIdList;
 
     @Column(unique = true, nullable = false, length = 30)
     private String email;
@@ -64,7 +73,6 @@ public class Member extends BaseEntity {
     private String phoneNumber;  // 전화번호
 
 
-    @Column(columnDefinition = "VARCHAR(255) DEFAULT 'default.png'")
     private String profilePath;  // 프로필 사진 경로
 
 
@@ -183,24 +191,28 @@ public class Member extends BaseEntity {
             // Kakao
             statuses.put(LoginType.KAKAO, SocialAccountStatus.builder()
                 .createDate(socialAccount.getKakaoCreateDate())
+                .email(socialAccount.getKakaoEmail())
                 .active(socialAccount.isKakaoActive())
                 .build());
 
             // Google
             statuses.put(LoginType.GOOGLE, SocialAccountStatus.builder()
                 .createDate(socialAccount.getGoogleCreateDate())
+                .email(socialAccount.getGoogleEmail())
                 .active(socialAccount.isGoogleActive())
                 .build());
 
             // Github
             statuses.put(LoginType.GITHUB, SocialAccountStatus.builder()
                 .createDate(socialAccount.getGithubCreateDate())
+                .email(socialAccount.getGithubEmail())
                 .active(socialAccount.isGithubActive())
                 .build());
 
             // Naver
             statuses.put(LoginType.NAVER, SocialAccountStatus.builder()
                 .createDate(socialAccount.getNaverCreateDate())
+                .email(socialAccount.getNaverEmail())
                 .active(socialAccount.isNaverActive())
                 .build());
         }

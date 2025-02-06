@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-
 @Component
 @RequiredArgsConstructor
 public class CustomAuthenticationFilter  extends OncePerRequestFilter {
@@ -101,5 +100,4 @@ public class CustomAuthenticationFilter  extends OncePerRequestFilter {
       rq.setLogin(member);
     filterChain.doFilter(request, response);
   }
-
 }

@@ -64,6 +64,10 @@ dependencies {
 	annotationProcessor("jakarta.annotation:jakarta.annotation-api")
 	annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
+	// Solapi (SMS)
+	implementation ("cloud.solapi:java-sdk:4.1.1")
+	implementation ("net.nurigo:sdk:4.2.7")
+
 	// ApiScheduler: Xml -> Json
 	dependencies {
 		implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.2")

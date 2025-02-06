@@ -2,6 +2,7 @@ package com.ll.hfback.domain.group.chat.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -18,7 +19,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor 
 public class RequestMessage {
-    private Long memberId;
+//    private Long memberId;
     private String content;
 }

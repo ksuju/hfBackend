@@ -40,6 +40,8 @@ public class QMember extends EntityPathBase<Member> {
     //inherited
     public final NumberPath<Long> id = _super.id;
 
+    public final ListPath<String, StringPath> joinRoomIdList = this.<String, StringPath>createList("joinRoomIdList", String.class, StringPath.class, PathInits.DIRECT2);
+
     public final StringPath location = createString("location");
 
     public final StringPath loginType = createString("loginType");
@@ -61,6 +63,8 @@ public class QMember extends EntityPathBase<Member> {
     public final com.ll.hfback.domain.member.auth.entity.QSocialAccount socialAccount;
 
     public final EnumPath<Member.MemberState> state = createEnum("state", Member.MemberState.class);
+
+    public final ListPath<String, StringPath> waitRoomIdList = this.<String, StringPath>createList("waitRoomIdList", String.class, StringPath.class, PathInits.DIRECT2);
 
     public QMember(String variable) {
         this(Member.class, forVariable(variable), INITS);
