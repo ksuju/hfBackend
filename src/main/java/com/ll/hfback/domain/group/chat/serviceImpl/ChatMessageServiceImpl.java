@@ -247,7 +247,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         }
     }
 
-    // 메시지 읽음/안읽음 상태 확인
+    // 채팅방에서 마지막으로 읽은 메시지 ID 갱신
     @Transactional
     public void messageReadStatus(Long chatRoomId, MessageReadStatusRequest messageReadStatusRequest, Member loginUser) {
         try {
@@ -271,6 +271,9 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
             readStatus.setLastReadMessageId(messageReadStatusRequest.getMessageId());
             chatRoomUserRepository.save(readStatus);
+
+            // 마지막으로 읽은 메시지ID 저장과 동시에 채팅 메시지 카운트
+            messageCount(chatRoomId, loginUser);
 
             logger.info("ChatRoom ID: {}, Member ID: {} - 마지막 읽은 메시지 ID가 성공적으로 업데이트되었습니다.",
                     chatRoomId,
