@@ -28,7 +28,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @ToString(callSuper = true)
 public class ChatRoomUser extends BaseEntity {
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "chat_room_id", nullable = false)
     @JsonIgnore
     private ChatRoom chatRoom;
@@ -38,7 +38,8 @@ public class ChatRoomUser extends BaseEntity {
     @JsonIgnore
     private Member member;
 
-    private Long lastReadMessageId; // 마지막으로 읽은 메시지
+    @Builder.Default
+    private Long lastReadMessageId = -1L; // 마지막으로 읽은 메시지
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
