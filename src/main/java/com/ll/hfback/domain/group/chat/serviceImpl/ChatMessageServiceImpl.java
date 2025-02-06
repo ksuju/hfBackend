@@ -88,7 +88,11 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                     .chatMessageContent(requestMessage.getContent())
                     .build();
             chatMessageRepository.save(chatMessage);
-            simpMessagingTemplate.convertAndSend("/topic/chat/" + chatRoomId, chatMessage);
+            simpMessagingTemplate.convertAndSend("/topic/chat/" + chatRoomId,
+                    Map.of(
+                            "type", "MESSAGE",
+                            "data", chatMessage
+                    ));
 
             logger.info("채팅 메시지 작성 성공");
             return new RsData<>("200", "채팅 메시지 작성 성공");
@@ -130,8 +134,14 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     // 채팅 메시지 읽음 카운트
     public List<ResponseMessageCount> messageCount(Long chatRoomId) {
         try {
+            List<ResponseMessageCount> unreadMessageCount = chatMessageRepository.getUnreadMessageCount(chatRoomId);
             logger.info("채팅 메시지 읽음 카운트 성공");
-            return chatMessageRepository.getUnreadMessageCount(chatRoomId);
+            simpMessagingTemplate.convertAndSend("/topic/chat/" + chatRoomId,
+                    Map.of(
+                            "type", "COUNT",
+                            "data", unreadMessageCount
+                    ));
+            return unreadMessageCount;
         } catch (Exception e) {
             logger.error("채팅 메시지 읽음 카운트 실패");
             throw new RuntimeException(e);
