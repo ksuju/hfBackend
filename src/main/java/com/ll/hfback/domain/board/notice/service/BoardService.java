@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,7 +26,8 @@ public class BoardService {
 
     //게시글 목록 리스트
     public Page<Board> list(int page){
-        Pageable pageable = PageRequest.of(page,10);
+        Sort sort = Sort.by(Sort.Order.desc("createDate"));
+        Pageable pageable = PageRequest.of(page,10, sort);
         return this.boardRepository.findAll(pageable);
     }
 
