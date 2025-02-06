@@ -44,7 +44,7 @@ public class ApiV1BoardController {
     }
 
     //게시글 생성
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/create")
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     public RsData<Board> create(@Valid @RequestBody CreateBoard createBoard, @LoginUser Member member){
@@ -59,6 +59,7 @@ public class ApiV1BoardController {
 
     }
     //게시글 수정
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping("/{boardId}")
     public RsData<Board> modify(@PathVariable("boardId") Long boardId,@Valid @RequestBody ModifyBoard modifyBoard, @LoginUser Member member){
         //Board board = this.BoardService.view(id);
@@ -69,6 +70,7 @@ public class ApiV1BoardController {
     }
 
     //게시글 삭제
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{boardId}")
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     public RsData<Void> delete(@PathVariable("boardId") Long boardId, @LoginUser Member member){
