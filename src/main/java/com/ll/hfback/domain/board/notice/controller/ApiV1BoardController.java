@@ -46,7 +46,6 @@ public class ApiV1BoardController {
     //게시글 생성
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/create")
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     public RsData<Board> create(@Valid @RequestBody CreateBoard createBoard, @LoginUser Member member){
         Board board =BoardService.create(createBoard.content,createBoard.title,member);
         return new RsData<>("200","게시글을 성공적으로 생성했습니다.",board);
@@ -62,8 +61,6 @@ public class ApiV1BoardController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping("/{boardId}")
     public RsData<Board> modify(@PathVariable("boardId") Long boardId,@Valid @RequestBody ModifyBoard modifyBoard, @LoginUser Member member){
-        //Board board = this.BoardService.view(id);
-        //return this.BoardService.update(boardId, modifyBoard.title, modifyBoard.content, member);
         Board board = this.BoardService.view(boardId);
         Board updateBoard = this.BoardService.update(board, modifyBoard.title, modifyBoard.content,member);
         return new RsData<>("200","게시글을 성공적으로 수정했습니다.",updateBoard);
@@ -72,7 +69,6 @@ public class ApiV1BoardController {
     //게시글 삭제
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{boardId}")
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     public RsData<Void> delete(@PathVariable("boardId") Long boardId, @LoginUser Member member){
         this.BoardService.delete(boardId);
         return new RsData<>("200","게시글을 성공적으로 삭제했습니다.");

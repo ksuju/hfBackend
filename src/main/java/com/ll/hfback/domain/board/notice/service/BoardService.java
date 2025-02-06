@@ -60,14 +60,6 @@ public class BoardService {
         if (admin == null){
             throw new RuntimeException("Member not found");
         }
-        /*
-        Board board = new Board();
-        Optional<Board> optionalBoard = this.boardRepository.findById(id);
-        if(optionalBoard.isEmpty()){
-            new RuntimeException("err");
-        }
-        Board board = optionalBoard.get();*/
-
         Board b = boardRepository.findById(board.getId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
@@ -83,19 +75,8 @@ public class BoardService {
 
     //게시글 삭제
     public void delete(Long id){
-        /*Optional<Board> board = this.boardRepository.findById(id);
-        if(!board.isPresent()) {
-            throw new ServiceException(ErrorCode.BOARD_NOT_FOUND);
-        }*/
-        //위 코드의 간단한 방법
         Board board = boardRepository.findById(id)
-                //객체가 없을때 예외를 던져준다
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         this.boardRepository.delete(board);
-        /*if(board != null){
-            this.boardRepository.delete(board);
-        }else {
-            throw new RuntimeException("Board not found");
-        }*/
     }
 }

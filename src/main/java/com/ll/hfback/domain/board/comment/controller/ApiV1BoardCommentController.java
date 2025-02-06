@@ -51,10 +51,8 @@ public class ApiV1BoardCommentController {
     @PreAuthorize("isAuthenticated()")
     @PatchMapping("/modify/{boardCommentId}")
     public RsData<BoardComment> modify(@PathVariable("boardCommentId")Long boardCommentId, @RequestBody ModifyBoardComment modifyBoardComment, Principal principal){
-
         BoardComment boardComment = this.boardCommentService.getComment(boardCommentId);
         Member member  = this.memberService.findByEmail(principal.getName());
-
         BoardComment MdfBdComment = boardCommentService.modify(boardComment,modifyBoardComment.getContent(), member);
         return new RsData<>("200","댓글을 성공적으로 수정했습니다.",MdfBdComment);
     }
@@ -64,11 +62,9 @@ public class ApiV1BoardCommentController {
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/delete/{boardCommentId}")
     public RsData<Void> deleteBoardComment(@PathVariable("boardCommentId")Long boardCommentId,Principal principal){
-
         BoardComment boardComment =this.boardCommentService.getComment(boardCommentId);
         Member member  = this.memberService.findByEmail(principal.getName());
         this.boardCommentService.delete(boardComment, member);
-
         return new RsData<>("200","댓글을 성공적으로 삭제했습니다.");
     }
 }
