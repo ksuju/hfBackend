@@ -132,8 +132,18 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     // 채팅 메시지 읽음 카운트
-    public List<ResponseMessageCount> messageCount(Long chatRoomId) {
+    public List<ResponseMessageCount> messageCount(Long chatRoomId, Member loginUser) {
         try {
+            // 1️⃣ 채팅방 존재 여부 확인
+            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() ->
+                    new IllegalArgumentException("존재하지 않는 채팅방입니다.")
+            );
+
+            // 2️⃣ 채팅방 참여 여부 확인
+            if (!chatRoom.getJoinMemberIdList().contains(loginUser.getId().toString())) {
+                throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
+            }
+
             List<ResponseMessageCount> unreadMessageCount = chatMessageRepository.getUnreadMessageCount(chatRoomId);
             logger.info("채팅 메시지 읽음 카운트 성공");
             simpMessagingTemplate.convertAndSend("/topic/chat/" + chatRoomId,
@@ -304,8 +314,18 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     // 멤버 채팅방 접속 상태 변경 (온라인)
-    public void chatMemberLogin(Long chatRoomId, Member member) {
-        chatRoomUserRepository.findByChatRoomIdAndMemberId(chatRoomId, member.getId())
+    public void chatMemberLogin(Long chatRoomId, Member loginUser) {
+        // 1️⃣ 채팅방 존재 여부 확인
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 채팅방입니다.")
+        );
+
+        // 2️⃣ 채팅방 참여 여부 확인
+        if (!chatRoom.getJoinMemberIdList().contains(loginUser.getId().toString())) {
+            throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
+        }
+
+        chatRoomUserRepository.findByChatRoomIdAndMemberId(chatRoomId, loginUser.getId())
                 .ifPresentOrElse(user -> {
                     // chatRoomUser가 존재하면 처리
                     logger.info("채팅방 유저 찾음: {}", user);
@@ -319,13 +339,23 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                     }
                 }, () -> {
                     // chatRoomUser가 없으면 로그 남기기
-                    logger.error("채팅방 유저 정보 없음: chatRoomId={}, memberId={}", chatRoomId, member.getId());
+                    logger.error("채팅방 유저 정보 없음: chatRoomId={}, memberId={}", chatRoomId, loginUser.getId());
                 });
     }
 
     // 멤버 채팅방 접속 상태 변경 (오프라인)
-    public void chatMemberLogout(Long chatRoomId, Member member) {
-        chatRoomUserRepository.findByChatRoomIdAndMemberId(chatRoomId, member.getId())
+    public void chatMemberLogout(Long chatRoomId, Member loginUser) {
+        // 1️⃣ 채팅방 존재 여부 확인
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 채팅방입니다.")
+        );
+
+        // 2️⃣ 채팅방 참여 여부 확인
+        if (!chatRoom.getJoinMemberIdList().contains(loginUser.getId().toString())) {
+            throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
+        }
+
+        chatRoomUserRepository.findByChatRoomIdAndMemberId(chatRoomId, loginUser.getId())
                 .ifPresentOrElse(user -> {
                     // chatRoomUser가 존재하면 처리
                     logger.info("채팅방 유저 찾음: {}", user);
@@ -339,7 +369,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                     }
                 }, () -> {
                     // chatRoomUser가 없으면 로그 남기기
-                    logger.error("채팅방 유저 정보 없음: chatRoomId={}, memberId={}", chatRoomId, member.getId());
+                    logger.error("채팅방 유저 정보 없음: chatRoomId={}, memberId={}", chatRoomId, loginUser.getId());
                 });
     }
 

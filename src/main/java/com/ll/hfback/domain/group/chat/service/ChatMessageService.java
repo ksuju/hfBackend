@@ -33,7 +33,7 @@ public interface ChatMessageService {
     Page<ResponseMessage> readMessages(Long chatRoomId, int page, Member loginUser);
 
     // 채팅 메시지 읽음 카운트
-    List<ResponseMessageCount> messageCount(Long chatRoomId);
+    List<ResponseMessageCount> messageCount(Long chatRoomId, Member loginUser);
 
     // 메시지 불러올 때 사용할 커스텀 페이징
     Pageable customPaging(int page);
@@ -50,10 +50,10 @@ public interface ChatMessageService {
     List<ResponseMemberStatus> memberLoginStatus(Long chatRoomId, Member loginUser);
 
     // 멤버 채팅방 접속 상태 변경 (온라인)
-    void chatMemberLogin(Long chatRoomId, Member member);
+    void chatMemberLogin(Long chatRoomId, Member loginUser);
 
     // 멤버 채팅방 접속 상태 변경 (오프라인)
-    void chatMemberLogout(Long chatRoomId, Member member);
+    void chatMemberLogout(Long chatRoomId, Member loginUser);
 
     // 로그아웃시 전체 채팅방에서 오프라인 처리
     void allChatLogout(Map<String, Long> body);
