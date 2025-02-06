@@ -44,12 +44,16 @@ public class ApiV1BoardController {
     }
 
     //게시글 생성
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     public RsData<Board> create(@Valid @RequestBody CreateBoard createBoard, @LoginUser Member member){
         Board board =BoardService.create(createBoard.content,createBoard.title,member);
         return new RsData<>("200","게시글을 성공적으로 생성했습니다.",board);
     }
+
+
+
     //게시글 수정 dto
     public record ModifyBoard(@NotBlank String title, @NotBlank String content){
 

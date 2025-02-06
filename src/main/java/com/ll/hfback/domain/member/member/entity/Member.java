@@ -52,7 +52,7 @@ public class Member extends BaseEntity {
     }
 
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nickname;  // 닉네임
 
 

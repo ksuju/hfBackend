@@ -5,6 +5,7 @@ import com.ll.hfback.domain.board.comment.service.BoardCommentService;
 import com.ll.hfback.domain.board.notice.entity.Board;
 import com.ll.hfback.domain.board.notice.service.BoardService;
 import com.ll.hfback.domain.member.member.entity.Member;
+import com.ll.hfback.domain.member.member.service.MemberService;
 import com.ll.hfback.global.rsData.RsData;
 import com.ll.hfback.global.webMvc.LoginUser;
 import lombok.Data;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.sql.SQLOutput;
 
 @RequiredArgsConstructor
@@ -21,6 +23,7 @@ public class ApiV1BoardCommentController {
 
     private final BoardService boardService;
     private final BoardCommentService boardCommentService;
+    private final MemberService memberService;
 
     //댓글 생성 dto RequestBody는 키벨류라서 dto로 키벨류 맞춰줘야 json 중첩오류가 안남
     @Data
@@ -45,22 +48,27 @@ public class ApiV1BoardCommentController {
     }
 
     //댓글 수정
-    @PreAuthorize("isAuthenticated")
+    @PreAuthorize("isAuthenticated()")
     @PatchMapping("/modify/{boardCommentId}")
-    public RsData<BoardComment> modify(@PathVariable("boardCommentId")Long boardCommentId,@RequestBody ModifyBoardComment modifyBoardComment){
+    public RsData<BoardComment> modify(@PathVariable("boardCommentId")Long boardCommentId, @RequestBody ModifyBoardComment modifyBoardComment, Principal principal){
+
         BoardComment boardComment = this.boardCommentService.getComment(boardCommentId);
-        //todo 사용자 비교
-        BoardComment MdfBdComment = boardCommentService.modify(boardComment,modifyBoardComment.getContent());
-        return new RsData<>("200","댓글을 성공적으로 생성했습니다.",MdfBdComment);
+        Member member  = this.memberService.findByEmail(principal.getName());
+
+        BoardComment MdfBdComment = boardCommentService.modify(boardComment,modifyBoardComment.getContent(), member);
+        return new RsData<>("200","댓글을 성공적으로 수정했습니다.",MdfBdComment);
     }
 
 
     //댓글 삭제
-    @PreAuthorize("isAuthenticated")
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/delete/{boardCommentId}")
-    public RsData<Void> deleteBoardComment(@PathVariable("boardCommentId")Long boardCommentId){
+    public RsData<Void> deleteBoardComment(@PathVariable("boardCommentId")Long boardCommentId,Principal principal){
+
         BoardComment boardComment =this.boardCommentService.getComment(boardCommentId);
-        this.boardCommentService.delete(boardComment);
+        Member member  = this.memberService.findByEmail(principal.getName());
+        this.boardCommentService.delete(boardComment, member);
+
         return new RsData<>("200","댓글을 성공적으로 삭제했습니다.");
     }
 }
