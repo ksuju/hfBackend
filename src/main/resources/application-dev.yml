@@ -3,10 +3,23 @@ spring:
     ansi:
       enabled: always
   datasource:
-    driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/test_db?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
-    username: root
-    password: 1234
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect-uri: "${custom.dev.backUrl}/login/oauth2/code/{registrationId}"
+          google:
+            redirect-uri: "${custom.dev.backUrl}/login/oauth2/code/{registrationId}"
+          naver:
+            redirect-uri: "${custom.dev.backUrl}/login/oauth2/code/{registrationId}"
+          github:
+            redirect-uri: "${custom.dev.backUrl}/login/oauth2/code/{registrationId}"
   jpa:
     properties:
       hibernate:

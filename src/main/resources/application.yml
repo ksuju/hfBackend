@@ -7,6 +7,10 @@ spring:
   profiles:
     active: dev
     include: secret
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.session.SessionAutoConfiguration
   datasource:
     url: jdbc:h2:./db_dev;MODE=MySQL
     username: sa
@@ -23,10 +27,6 @@ spring:
         format_sql: true
         highlight_sql: true
         use_sql_comments: true
-  data:
-    redis:
-      host: localhost
-      port: 6379
   security:
     oauth2:
       client:
@@ -34,13 +34,11 @@ spring:
           kakao:
             scope: profile_nickname, profile_image, account_email
             authorization-grant-type: authorization_code
-            redirect-uri: "http://localhost:8090/login/oauth2/code/{registrationId}"    # 리디렉션 URI
             client-name: Kakao    # 클라이언트 이름
           google:
             scope:
               - email
               - profile
-            redirect-uri: "http://localhost:8090/login/oauth2/code/{registrationId}"
           naver:
             scope:
               - nickname
@@ -48,12 +46,10 @@ spring:
               - profile_image
             client-name: Naver
             authorization-grant-type: authorization_code
-            redirect-uri: "http://localhost:8090/login/oauth2/code/{registrationId}"
           github:
             scope:
               - read:user
               - user:email
-            redirect-uri: "http://localhost:8090/login/oauth2/code/{registrationId}"
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
@@ -86,8 +82,8 @@ spring:
       auth-code-expiration-millis: 1800000   #  인증 코드 만료 시간 (30분)
 
 
-  config:
-    import: classpath:application-secret.yml
+#  config:
+#    import: classpath:application-secret.yml
 
 logging:
   level:
@@ -96,20 +92,3 @@ logging:
     org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.orm.jdbc.extract: TRACE
     org.springframework.transaction.interceptor: TRACE
-
-custom:
-  dev:
-    cookieDomain: localhost
-    frontUrl: "http://${custom.dev.cookieDomain}:5173"
-    backUrl: "http://${custom.dev.cookieDomain}:${server.port}"
-  prod:
-    cookieDomain: hf.codingtori.site
-    frontUrl: "https://www.${custom.prod.cookieDomain}"
-    backUrl: "https://api.${custom.prod.cookieDomain}"
-  site:
-    name: "SITE PROD"
-    cookieDomain: "${custom.prod.cookieDomain}"
-    frontUrl: "${custom.prod.frontUrl}"
-    backUrl: "${custom.prod.backUrl}"
-  cookie:
-    domain: localhost
