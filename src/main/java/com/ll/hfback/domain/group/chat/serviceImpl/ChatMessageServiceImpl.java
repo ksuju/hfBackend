@@ -11,6 +11,7 @@ import com.ll.hfback.domain.group.chat.request.MessageSearchKeywordsRequest;
 import com.ll.hfback.domain.group.chat.request.RequestMessage;
 import com.ll.hfback.domain.group.chat.entity.ChatMessage;
 import com.ll.hfback.domain.group.chat.repository.ChatMessageRepository;
+import com.ll.hfback.domain.group.chat.response.ResponseMessageCount;
 import com.ll.hfback.domain.group.chat.service.ChatMessageService;
 import com.ll.hfback.domain.group.chatRoom.entity.ChatRoom;
 import com.ll.hfback.domain.group.chatRoom.repository.ChatRoomRepository;
@@ -29,8 +30,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -123,8 +122,19 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                             chatMessage.getId()
                     ));
         } catch (Exception e) {
-            logger.info("채팅 메시지 가져오기 실패");
-            throw e;
+            logger.error("채팅 메시지 가져오기 실패");
+            throw new RuntimeException(e);
+        }
+    }
+
+    // 채팅 메시지 읽음 카운트
+    public List<ResponseMessageCount> messageCount(Long chatRoomId) {
+        try {
+            logger.info("채팅 메시지 읽음 카운트 성공");
+            return chatMessageRepository.getUnreadMessageCount(chatRoomId);
+        } catch (Exception e) {
+            logger.error("채팅 메시지 읽음 카운트 실패");
+            throw new RuntimeException(e);
         }
     }
 
@@ -138,8 +148,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             // 페이지 번호와 크기, 정렬을 포함하여 Pageable 객체 생성
             return PageRequest.of(page, 10, sort);
         } catch (Exception e) {
-            logger.info("커스텀 페이징 실패");
-            throw e;
+            logger.error("커스텀 페이징 실패");
+            throw new RuntimeException(e);
         }
     }
 
@@ -212,8 +222,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                             chatMessage.getCreateDate(),
                             chatMessage.getId()));
         } catch (Exception e) {
-            logger.info("조건에 따른 채팅 메시지 검색 실패");
-            throw e;
+            logger.error("조건에 따른 채팅 메시지 검색 실패");
+            throw new RuntimeException(e);
         }
     }
 
@@ -247,7 +257,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                     loginUser.getId());
         } catch (Exception e) {
             logger.error("마지막 읽은 메시지 업데이트 실패");
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 

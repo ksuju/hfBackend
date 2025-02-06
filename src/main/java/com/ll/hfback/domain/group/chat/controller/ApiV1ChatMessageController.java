@@ -5,6 +5,7 @@ import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.request.MessageReadStatusRequest;
 import com.ll.hfback.domain.group.chat.request.MessageSearchKeywordsRequest;
 import com.ll.hfback.domain.group.chat.request.RequestMessage;
+import com.ll.hfback.domain.group.chat.response.ResponseMessageCount;
 import com.ll.hfback.domain.group.chat.service.ChatMessageService;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.global.rsData.RsData;
@@ -37,8 +38,7 @@ public class ApiV1ChatMessageController {
     public RsData<Object> writeMessage(@PathVariable("chatRoom-id") Long chatRoomId,
                                        @RequestBody RequestMessage requestMessage, @LoginUser Member loginUser) {
         try {
-            RsData<Object> response = chatMessageService.writeMessage(chatRoomId, requestMessage, loginUser);
-            return response; // ✅ 서비스에서 반환한 응답을 그대로 반환
+            return chatMessageService.writeMessage(chatRoomId, requestMessage, loginUser); // ✅ 서비스에서 반환한 응답을 그대로 반환
         } catch (Exception e) {
             return new RsData<>("500", "채팅 메시지 작성 중 오류가 발생했습니다: " + e.getMessage());
         }
@@ -53,6 +53,16 @@ public class ApiV1ChatMessageController {
             return new RsData<>("200", "채팅 메시지 조회 성공", messages);
         } catch (Exception e) {
             return new RsData<>("500", "채팅 메시지 조회 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
+
+    // 채팅 메시지 읽음 카운트
+    @GetMapping("/messages/count")
+    public RsData<List<ResponseMessageCount>> messageCount(@PathVariable("chatRoom-id") Long chatRoomId) {
+        try {
+            return new RsData<>("200", "메시지 카운트 불러오기 성공", chatMessageService.messageCount(chatRoomId));
+        } catch (Exception e) {
+            return new RsData<>("500", "메시지 카운트 불러오기 실패: " + e.getMessage());
         }
     }
 
