@@ -1,6 +1,5 @@
 package com.ll.hfback.domain.group.chatRoom.controller;
 
-import com.ll.hfback.domain.group.chatRoom.dto.ChatRoomDto;
 import com.ll.hfback.domain.group.chatRoom.dto.DetailChatRoomDto;
 import com.ll.hfback.domain.group.chatRoom.form.CreateChatRoomForm;
 import com.ll.hfback.domain.group.chatRoom.form.UpdateChatRoomForm;
@@ -25,19 +24,19 @@ public class ApiV1ChatRoomController {
 
     // 모든 모임채팅방 조회
     @GetMapping("/chat-rooms")
-    public Page<ChatRoomDto> getAllRooms(Pageable pageable){
+    public Page<DetailChatRoomDto> getAllRooms(Pageable pageable){
         return chatRoomService.findAll(pageable);
     }
 
     // 모임채팅방 검색
     @GetMapping("/chat-rooms/search")
-    public Page<ChatRoomDto> searchRooms(@RequestParam("keyword") String keyword, Pageable pageable){
+    public Page<DetailChatRoomDto> searchRooms(@RequestParam("keyword") String keyword, Pageable pageable){
         return chatRoomService.searchByKeyword(keyword, pageable);
     }
 
     // 해당 게시글의 모든 모임채팅방 조회
     @GetMapping("/{festival-id}/chat-rooms")
-    public Page<ChatRoomDto> getRooms(@PathVariable("festival-id") String festivalId, Pageable pageable) {
+    public Page<DetailChatRoomDto> getRooms(@PathVariable("festival-id") String festivalId, Pageable pageable) {
         return chatRoomService.searchByFestivalId(festivalId, pageable);
     }
 
@@ -91,8 +90,8 @@ public class ApiV1ChatRoomController {
 
     // 해당 모임채팅방의 참여자 강퇴
     @GetMapping("/unqualify-chat-room/{chat-room-id}/{member-id}")
-    public ResponseEntity<String> unqualifyChatRoom(@PathVariable("chat-room-id") Long chatRoomId, @PathVariable("member-id") String memberId, @LoginUser Member loginUser) {
-        chatRoomService.unqualifyChatRoom(chatRoomId, memberId, loginUser);
+    public ResponseEntity<String> unqualifyChatRoom(@PathVariable("chat-room-id") Long chatRoomId, @PathVariable("member-id") String unqualifyMemberId, @LoginUser Member loginUser) {
+        chatRoomService.unqualifyChatRoom(chatRoomId, unqualifyMemberId, loginUser);
         return ResponseEntity.status(HttpStatus.CREATED).body("성공적으로 사용자를 강퇴했습니다.");
     }
 
@@ -105,8 +104,8 @@ public class ApiV1ChatRoomController {
 
     // 해당 모임채팅방에서 참여자에게 방장권한 위임
     @GetMapping("/delegate-chat-room/{chat-room-id}/{member-id}")
-    public ResponseEntity<String> delegateChatRoom(@PathVariable("chat-room-id") Long chatRoomId, @PathVariable("member-id") Long memberId, @LoginUser Member loginUser) {
-        chatRoomService.delegateChatRoom(chatRoomId, memberId, loginUser);
+    public ResponseEntity<String> delegateChatRoom(@PathVariable("chat-room-id") Long chatRoomId, @PathVariable("member-id") String delegateMemberId, @LoginUser Member loginUser) {
+        chatRoomService.delegateChatRoom(chatRoomId, delegateMemberId, loginUser);
         return ResponseEntity.status(HttpStatus.CREATED).body("성공적으로 방장권한을 위임했습니다.");
     }
 }
