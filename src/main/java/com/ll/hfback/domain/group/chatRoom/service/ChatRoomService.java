@@ -14,13 +14,13 @@ import java.util.Optional;
 
 public interface ChatRoomService {
     // 모든 모임채팅방 조회
-    Page<ChatRoomDto> findAll(Pageable pageable);
+    Page<DetailChatRoomDto> findAll(Pageable pageable);
 
     // 모임채팅방 검색
-    Page<ChatRoomDto> searchByKeyword(String keyword, Pageable pageable);
+    Page<DetailChatRoomDto> searchByKeyword(String keyword, Pageable pageable);
 
     // 해당 게시글의 모든 모임채팅방 조회
-    Page<ChatRoomDto> searchByFestivalId(String festivalId, Pageable pageable);
+    Page<DetailChatRoomDto> searchByFestivalId(String festivalId, Pageable pageable);
 
     // 해당 게시글의 모임채팅방 상세 조회(참여자 명단에 있는 사용자만 접근 가능)
     Optional<DetailChatRoomDto> searchById(Long id, Member loginUser);
@@ -47,11 +47,11 @@ public interface ChatRoomService {
     void refuseApplyChatRoom(Long chatRoomId, String applyMemberId, Member loginUser);
 
     // 해당 모임채팅방의 참여자 강퇴
-    void unqualifyChatRoom(Long chatRoomId, String memberId, Member loginUser);
+    void unqualifyChatRoom(Long chatRoomId, String unqualifyMemberId, Member loginUser);
 
     // 해당 모임채팅방 나가기(방장이 나가는 경우 해당 모임채팅방 삭제)
     void leaveChatRoom(Long chatRoomId, Member loginUser);
 
     // 해당 모임채팅방에서 참여자에게 방장권한 위임
-    void delegateChatRoom(Long chatRoomId, Long memberId, Member loginUser);
+    void delegateChatRoom(Long chatRoomId, String delegateMemberId, Member loginUser);
 }
