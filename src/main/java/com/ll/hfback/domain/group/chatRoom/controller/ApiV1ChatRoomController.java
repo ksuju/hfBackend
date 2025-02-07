@@ -1,6 +1,5 @@
 package com.ll.hfback.domain.group.chatRoom.controller;
 
-import com.ll.hfback.domain.group.chatRoom.dto.ChatRoomDto;
 import com.ll.hfback.domain.group.chatRoom.dto.DetailChatRoomDto;
 import com.ll.hfback.domain.group.chatRoom.form.CreateChatRoomForm;
 import com.ll.hfback.domain.group.chatRoom.form.UpdateChatRoomForm;
