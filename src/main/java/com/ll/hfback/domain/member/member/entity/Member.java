@@ -73,7 +73,8 @@ public class Member extends BaseEntity {
     private String phoneNumber;  // 전화번호
 
 
-    private String profilePath;  // 프로필 사진 경로
+    @Column(columnDefinition = "VARCHAR(255) DEFAULT 'default.png'")
+    private String profilePath = "default.png";  // 프로필 사진 경로
 
 
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
@@ -240,8 +241,6 @@ public class Member extends BaseEntity {
         Alert alert = Alert.builder()
             .member(this)
             .content(content)
-            .url(url)
-            .category(category)
             .build();
         alerts.add(alert);
     }

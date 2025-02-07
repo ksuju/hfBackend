@@ -115,7 +115,7 @@ public class ApiV1AuthController {
 
         Member member = authService.signup(
             request.getEmail(), request.getPassword(), request.getNickname(),
-            Member.LoginType.SELF, null, null, null
+            Member.LoginType.SELF, null, null, "default.png"
         );
 
         return new RsData<>(

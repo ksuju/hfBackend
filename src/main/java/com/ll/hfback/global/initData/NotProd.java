@@ -6,7 +6,6 @@ import com.ll.hfback.domain.festival.comment.form.AddCommentForm;
 import com.ll.hfback.domain.festival.comment.form.UpdateCommentForm;
 import com.ll.hfback.domain.festival.comment.service.CommentService;
 import com.ll.hfback.domain.group.chat.request.RequestMessage;
-import com.ll.hfback.domain.group.chat.response.ResponseMessage;
 import com.ll.hfback.domain.group.chat.service.ChatMessageService;
 import com.ll.hfback.domain.group.chatRoom.form.CreateChatRoomForm;
 import com.ll.hfback.domain.group.chatRoom.form.UpdateChatRoomForm;

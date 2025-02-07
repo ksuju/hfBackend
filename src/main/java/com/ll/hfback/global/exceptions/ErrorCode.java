@@ -61,6 +61,11 @@ public enum ErrorCode {
   PHONE_NUMBER_NOT_VERIFIED(400, "SMS_006", "휴대폰 번호는 인증을 완료 후 추가할 수 있습니다."),
   ALREADY_VERIFIED_PHONE_NUMBER(400, "SMS_007", "이미 인증된 휴대폰 번호입니다."),
 
+  // 알림 관련 에러
+  ALERT_NOT_FOUND(404, "ALERT_001", "해당 알림을 찾을 수 없습니다."),
+  MAP_TO_JSON_FAILED(500, "ALERT_002", "맵을 JSON으로 변환하는데 실패했습니다."),
+  NOT_AUTHORIZED(401, "ALERT_003", "권한이 없습니다."),
+
   // Business 에러 (500번대)
   INTERNAL_ERROR(500, "SYS_001", "내부 시스템 에러"),
   API_CALL_FAILED(500, "SYS_002", "외부 API 호출에 실패했습니다.");
