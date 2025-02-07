@@ -89,7 +89,7 @@ public class ApiV1ReportController {
 
 
     // 권한 테스트용도 (제거예정)
-    record RoleChangeRequest(String role) {
+    public record RoleChangeRequest(String role) {
     }
     @PatchMapping("/{memberId}/change-role")
     public RsData<Member> changeRole(

@@ -1,5 +1,7 @@
 package com.ll.hfback.global.initData;
 
+import com.ll.hfback.domain.board.notice.entity.Board;
+import com.ll.hfback.domain.board.notice.service.BoardService;
 import com.ll.hfback.domain.festival.api.scheduler.FetchApisScheduler;
 import com.ll.hfback.domain.festival.api.scheduler.FetchKopisScheduler;
 import com.ll.hfback.domain.festival.comment.form.AddCommentForm;
@@ -12,6 +14,7 @@ import com.ll.hfback.domain.group.chatRoom.form.UpdateChatRoomForm;
 import com.ll.hfback.domain.group.chatRoom.service.ChatRoomService;
 import com.ll.hfback.domain.member.auth.service.AuthService;
 import com.ll.hfback.domain.member.member.entity.Member;
+import com.ll.hfback.domain.member.report.controller.ApiV1ReportController;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +34,8 @@ public class NotProd {
             AuthService authService,
             CommentService commentService,
             ChatRoomService chatroomservice,
+            BoardService boardService,
+            ApiV1ReportController apiV1ReportController,
             ChatMessageService chatMessageService
     ) {
         return new ApplicationRunner() {
@@ -51,6 +56,43 @@ public class NotProd {
                     "test3@test.com", "1234", "제펫토",
                     Member.LoginType.SELF, null, null, null
                 );
+
+                apiV1ReportController.changeRole(member1.getId(), new ApiV1ReportController.RoleChangeRequest("ROLE_ADMIN"));
+
+                Board board = boardService.create("이용약관 변경 안내","안녕하세요, 고객님.\n" +
+                        "저희 서비스의 이용약관이 다음과 같이 변경되었습니다.\n" +
+                        "변경 사항:\n" +
+                        "\n" +
+                        "서비스 이용 시 개인정보 처리 방식에 대한 구체적인 안내 추가\n" +
+                        "회원 탈퇴 절차에 대한 세부 규정 변경\n" +
+                        "적용일: 2025년 2월 10일부터\n" +
+                        "변경된 이용약관은 홈페이지에서 확인하실 수 있습니다.\n" +
+                        "서비스 이용에 참고해 주시기 바랍니다. 감사합니다." +
+                        "이용에 불편을 드려 죄송합니다. 감사합니다.", member1);
+                Board board1 = boardService.create("서버 점검 안내","안녕하세요, 고객님.\n" +
+                        "저희 서비스의 안정성을 위한 서버 점검이 예정되어 있습니다.\n" +
+                        "점검 시간: 2025년 2월 7일 (금) 03:00 ~ 05:00 (KST)\n" +
+                        "점검 동안 서비스 이용이 일시적으로 중단됩니다.\n" +
+                        "이용에 불편을 드려 죄송하며, 빠른 시간 내에 점검을 완료하도록 하겠습니다. 감사합니다.", member1);
+                Board board2 = boardService.create("이용약관 개정 안내","안녕하세요, 고객님.\n" +
+                        "저희 서비스의 이용약관이 아래와 같이 개정되었습니다.\n" +
+                        "주요 변경 사항:\n" +
+                        "\n" +
+                        "서비스 이용 시 책임 및 의무에 대한 명확한 정의 추가\n" +
+                        "서비스 제공 범위에 대한 세부 규정 변경\n" +
+                        "적용일: 2025년 2월 15일부터\n" +
+                        "개정된 약관은 서비스 내 \"약관 및 정책\"에서 확인 가능합니다.\n" +
+                        "이용에 참고 부탁드리며, 변경 사항에 대해 궁금한 점이 있으시면 고객센터로 문의해 주세요. 감사합니다.", member1);
+                Board board3 = boardService.create("긴급 점검 안내","안녕하세요, 고객님.\n" +
+                        "예기치 못한 시스템 오류로 인한 긴급 점검이 진행됩니다.\n" +
+                        "점검 시간: 2025년 2월 6일 (목) 22:00 ~ 23:30 (KST)\n" +
+                        "점검 기간 동안 서비스 이용에 불편이 있을 수 있습니다.\n" +
+                        "빠른 시간 내에 문제를 해결할 수 있도록 최선을 다하겠습니다. 양해 부탁드립니다.", member1);
+                Board board4 = boardService.create("정기 서버 점검 안내","안녕하세요, 고객님.\n" +
+                        "저희는 서비스 품질 향상을 위해 정기 서버 점검을 진행합니다.\n" +
+                        "점검 시간: 2025년 2월 8일 (토) 01:00 ~ 03:00 (KST)\n" +
+                        "점검 시간 동안 일부 기능이 일시적으로 중단될 수 있습니다.\n" +
+                        "서비스 이용에 불편을 드려 죄송하며, 점검이 완료되는 대로 정상 서비스를 제공하겠습니다. 감사합니다.ㅌ", member1);
 
 
 

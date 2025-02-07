@@ -1,6 +1,8 @@
 package com.ll.hfback.domain.group.chatRoom.serviceImpl;
 
 import com.ll.hfback.domain.festival.post.repository.PostRepository;
+import com.ll.hfback.domain.group.chat.entity.ChatRoomUser;
+import com.ll.hfback.domain.group.chat.repository.ChatRoomUserRepository;
 import com.ll.hfback.domain.group.chatRoom.dto.ChatRoomDto;
 import com.ll.hfback.domain.group.chatRoom.dto.DetailChatRoomDto;
 import com.ll.hfback.domain.group.chatRoom.entity.ChatRoom;
@@ -27,6 +29,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
+
+    private final ChatRoomUserRepository chatRoomUserRepository;
 
     // 모든 게시글 조회
     @Override
@@ -157,6 +161,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         chatRoomRepository.save(chatRoom);
 
+        // 채팅방 멤버 테이블에 사용자를 참여자로 등록
+        AddChatRoomUser(chatRoom, loginUser);
+
         // 유저가 참여중인 채팅방 리스트 불러옴
         List<String> joinRoomIdList = loginUser.getJoinRoomIdList();
         if (joinRoomIdList == null) {
@@ -200,6 +207,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         if (!chatRoom.getMember().getId().equals(currentUserId)) {
             throw new IllegalStateException("모임 채팅방 삭제 권한이 없습니다.");
         }
+
+        // 채팅방 삭제 시 채팅방 참여자 모두 삭제
+        RemoveAllUser(chatRoomId);
 
         chatRoomRepository.delete(chatRoom);
     }
@@ -314,6 +324,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 joinMemberIdList.add(applyMemberId);
                 waitRoomIdList.remove(String.valueOf(chatRoomId));
                 joinRoomIdList.add(String.valueOf(chatRoomId));
+
+                // 채팅방 멤버 테이블에 가입 승인된 유저를 참여자로 등록
+                AddChatRoomUser(chatRoom, member);
             } else {
                 throw new IllegalStateException("대기자 명단에 등록되지 않은 사용자입니다.");
             }
@@ -381,6 +394,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             joinMemberIdList.remove(memberId);
             joinRoomIdList.remove(String.valueOf(chatRoomId));
         }
+
+        // 채팅방 멤버 테이블에 사용자로 등록된 참여자 삭제
+        RemoveChatRoomUser(chatRoom, member);
     }
 
     // 해당 모임채팅방 나가기(방장이 나가는 경우 해당 모임채팅방 삭제)
@@ -404,6 +420,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         if (currentUserId.equals(chatRoom.getMember().getId())) {
             deleteChatRoom(chatRoomId, loginUser);
             joinRoomIdList.remove(String.valueOf(chatRoomId));
+            // 채팅방 삭제 시 채팅방 참여자 모두 삭제
+            RemoveAllUser(chatRoomId);
         } else {
             // 참여자 명단 등록여부 확인 및 사용자 ID 제거
             if (!joinMemberIdList.contains(memberId)) {
@@ -411,6 +429,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             } else {
                 joinMemberIdList.remove(memberId);
                 joinRoomIdList.remove(String.valueOf(chatRoomId));
+                // 채팅방 멤버 테이블에 사용자로 등록된 참여자 삭제
+                RemoveChatRoomUser(chatRoom, loginUser);
             }
         }
     }
@@ -440,5 +460,31 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         } else {
             chatRoom.setMember(member);
         }
+    }
+
+    // 채팅방 멤버 테이블에 사용자를 참여자로 등록 OOO
+    @Transactional
+    public void AddChatRoomUser(ChatRoom chatRoom, Member member) {
+        ChatRoomUser chatRoomUser = ChatRoomUser.builder()
+                .chatRoom(chatRoom)
+                .member(member)
+                .build();
+
+        chatRoomUserRepository.save(chatRoomUser);
+    }
+    
+    // 채팅방 멤버 테이블에 사용자로 등록된 참여자 삭제 (한명)
+    @Transactional
+    public void RemoveChatRoomUser(ChatRoom chatRoom, Member member) {
+        ChatRoomUser chatRoomUser = chatRoomUserRepository.findByChatRoomIdAndMemberId(chatRoom.getId(), member.getId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+
+        chatRoomUserRepository.delete(chatRoomUser);
+    }
+    
+    // 채팅방 삭제 시 채팅방 참여자 모두 삭제
+    @Transactional
+    public void RemoveAllUser(Long chatRoomId) {
+        chatRoomUserRepository.deleteAllByChatRoomId(chatRoomId);
     }
 }

@@ -1,6 +1,7 @@
 package com.ll.hfback.domain.member.auth.controller;
 
 
+import com.ll.hfback.domain.group.chat.service.ChatMessageService;
 import com.ll.hfback.domain.member.auth.dto.*;
 import com.ll.hfback.domain.member.auth.service.AuthService;
 import com.ll.hfback.domain.member.auth.service.EmailService;
@@ -20,6 +21,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
@@ -34,6 +36,8 @@ public class ApiV1AuthController {
     private final Rq rq;
     private final PasswordEncoder passwordEncoder;
     private final StringRedisTemplate redisTemplate;
+
+    private final ChatMessageService chatMessageService;
 
 
     // [1. 인증/인가 프로세스]
@@ -94,7 +98,10 @@ public class ApiV1AuthController {
 
     // AUTH01_LOGIN05 : 로그아웃
     @PostMapping("/logout")
-    public RsData<Void> logout() {
+    public RsData<Void> logout(@RequestBody Map<String, Long> body) {
+        // 로그아웃시 모든 채팅방에서 로그아웃 처리
+        chatMessageService.allChatLogout(body);
+
         rq.deleteCookie("accessToken");
         rq.deleteCookie("apiKey");
 

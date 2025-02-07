@@ -39,6 +39,17 @@ public class MemberService {
         return memberRepository.findById(id);
     }
 
+    /*
+    //게시글 작성자 확인 용도
+    public Member getEmail(String nickName) {
+        Optional<Member> member = this.memberRepository.findByEmail(nickName);
+        if (member.isPresent()) {
+            return member.get();
+        } else {
+            throw new ServiceException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+    }*/
+
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(email)
             .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND));
