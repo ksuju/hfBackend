@@ -2,6 +2,7 @@ package com.ll.hfback.domain.group.chatRoom.serviceImpl;
 
 import com.ll.hfback.domain.festival.post.repository.PostRepository;
 import com.ll.hfback.domain.group.chat.entity.ChatRoomUser;
+import com.ll.hfback.domain.group.chat.repository.ChatMessageRepository;
 import com.ll.hfback.domain.group.chat.repository.ChatRoomUserRepository;
 import com.ll.hfback.domain.group.chatRoom.dto.ChatRoomDto;
 import com.ll.hfback.domain.group.chatRoom.dto.DetailChatRoomDto;
@@ -14,16 +15,19 @@ import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatRoomServiceImpl implements ChatRoomService {
@@ -31,6 +35,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
     private final ChatRoomUserRepository chatRoomUserRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
     // 모든 게시글 조회
     @Override
@@ -54,21 +59,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public Page<DetailChatRoomDto> searchByFestivalId(String festivalId, Pageable pageable) {
         Page<ChatRoom> chatRooms = chatRoomRepository.findByFestivalId(festivalId, pageable);
         return chatRooms.map(this::convertToDetailChatRoomDto);
-    }
-
-    // 해당 게시글의 모임채팅방 상세 조회(참여자 명단에 있는 사용자만 접근 가능)
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<DetailChatRoomDto> searchById(Long id, Member loginUser) {
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findById(id);
-        // 사용자 검증 - 현재 로그인한 사용자의 ID를 가져오는 메서드
-        String currentUserIdStr = loginUser.getId().toString();
-
-        return chatRoom
-                // joinMemberIdNickNameList에서 첫 번째 요소(ID)만 가져와서 비교
-                .filter(room -> room.getJoinMemberIdNickNameList().stream()
-                        .anyMatch(member -> member.get(0).equals(currentUserIdStr)))
-                .map(this::convertToDetailChatRoomDto);
     }
 
     // ChatRoom을 ChatRoomDto로 변환하는 메서드
@@ -162,8 +152,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     // 해당 모임채팅방 수정(방장만 가능)
     @Override
     @Transactional
-    public void updateChatRoom(Long chatRoomId, @Valid UpdateChatRoomForm updateChatRoomForm, Member loginUser) {
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+    public void updateChatRoom(String chatRoomId, @Valid UpdateChatRoomForm updateChatRoomForm, Member loginUser) {
+        ChatRoom chatRoom = chatRoomRepository.findById(Long.valueOf(chatRoomId))
                 .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
 
         // 사용자 검증 - 현재 로그인한 사용자의 ID를 가져오는 메서드
@@ -181,8 +171,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     // 해당 모임채팅방 삭제
     @Override
     @Transactional
-    public void deleteChatRoom(Long chatRoomId, Member loginUser) {
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+    public void deleteChatRoom(String chatRoomId, Member loginUser) {
+        ChatRoom chatRoom = chatRoomRepository.findById(Long.valueOf(chatRoomId))
                 .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
 
         // 사용자 검증 - 현재 로그인한 사용자의 ID를 가져오는 메서드
@@ -191,17 +181,47 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             throw new IllegalStateException("모임 채팅방 삭제 권한이 없습니다.");
         }
 
-        // 채팅방 삭제 시 채팅방 참여자 모두 삭제
-        RemoveAllUser(chatRoomId);
+        // 채팅방 참여자 목록에서 각 참여자의 joinRoomIdList에서 해당 채팅방 제거
+        List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
+        for (List<String> memberInfo : joinMemberIdNickNameList) {
+            Member member = memberRepository.findById(Long.valueOf(memberInfo.get(0)))
+                    .orElse(null);
+            if (member != null) {
+                // 유저가 참여중인 채팅방 리스트 불러옴
+                List<String> joinRoomIdList = member.getJoinRoomIdList();
+                joinRoomIdList.remove(chatRoomId);
+                // JPA의 변경 감지(dirty checking)
+                member.setJoinRoomIdList(joinRoomIdList);
+                memberRepository.save(member);
+            }
+        }
 
+        // 대기자 목록에서 각 대기자의 waitRoomIdList에서 해당 채팅방 제거
+        List<List<String>> waitingMemberIdNickNameList = chatRoom.getWaitingMemberIdNickNameList();
+        for (List<String> memberInfo : waitingMemberIdNickNameList) {
+            Member member = memberRepository.findById(Long.valueOf(memberInfo.get(0)))
+                    .orElse(null);
+            if (member != null) {
+                // 유저가 대기중인 채팅방 리스트 불러옴
+                List<String> waitRoomIdList = member.getWaitRoomIdList();
+                waitRoomIdList.remove(chatRoomId);
+                // JPA의 변경 감지(dirty checking)
+                member.setWaitRoomIdList(waitRoomIdList);
+                memberRepository.save(member);
+            }
+        }
+
+        // 채팅방 삭제 시 채팅방 참여자 모두 삭제 & 채팅방의 메시지 모두 삭제
+        RemoveAllUser(Long.valueOf(chatRoomId));
+        chatMessageRepository.removeAllByChatRoomId(Long.valueOf(chatRoomId));
         chatRoomRepository.delete(chatRoom);
     }
 
     // 해당 모임채팅방에 참여신청
     @Override
     @Transactional
-    public void applyChatRoom(Long chatRoomId, Member loginUser) {
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+    public void applyChatRoom(String chatRoomId, Member loginUser) {
+        ChatRoom chatRoom = chatRoomRepository.findById(Long.valueOf(chatRoomId))
                 .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
 
         // 사용자 검증 - 현재 로그인한 사용자의 ID를 가져오는 메서드
@@ -234,7 +254,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         } else {
             if (!isUserInWaitList) {
                 waitingMemberIdNickNameList.add(Arrays.asList(memberId, nickName));
-                waitRoomIdList.add(String.valueOf(chatRoomId));
+                waitRoomIdList.add(chatRoomId);
             } else {
                 throw new IllegalStateException("이미 대기자 명단에 등록된 사용자입니다.");
             }
@@ -250,8 +270,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     // 해당 모임채팅방에 참여신청 취소
     @Override
     @Transactional
-    public void cancelApplyChatRoom(Long chatRoomId, Member loginUser) {
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+    public void cancelApplyChatRoom(String chatRoomId, Member loginUser) {
+        ChatRoom chatRoom = chatRoomRepository.findById(Long.valueOf(chatRoomId))
                 .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
 
         // 사용자 검증 - 현재 로그인한 사용자의 ID를 가져오는 메서드
@@ -272,7 +292,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         // 대기자 명단 등록여부 확인 및 사용자 ID 제거
         if (isUserInWaitList) {
             waitingMemberIdNickNameList.remove(Arrays.asList(memberId, nickName));
-            waitRoomIdList.remove(String.valueOf(chatRoomId));
+            waitRoomIdList.remove(chatRoomId);
         } else {
             throw new IllegalStateException("대기자 명단에 등록되지 않은 사용자입니다.");
         }
@@ -287,8 +307,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     // 해당 모임채팅방 참여신청 승인
     @Override
     @Transactional
-    public void approveApplyChatRoom(Long chatRoomId, String applyMemberId, Member loginUser) {
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+    public void approveApplyChatRoom(String chatRoomId, String applyMemberId, Member loginUser) {
+        ChatRoom chatRoom = chatRoomRepository.findById(Long.valueOf(chatRoomId))
                 .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
         Member applyMember = memberRepository.findById(Long.valueOf(applyMemberId))
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
@@ -311,7 +331,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         List<String> joinRoomIdList = applyMember.getJoinRoomIdList();
         if (joinRoomIdList == null) {
             joinRoomIdList = new ArrayList<>();
-            loginUser.setJoinRoomIdList(joinRoomIdList);
+            applyMember.setJoinRoomIdList(joinRoomIdList);
         }
 
         // 대기자 명단에서도 같은 방식으로 확인
@@ -326,8 +346,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             if (isUserInWaitList) {
                 waitingMemberIdNickNameList.remove(Arrays.asList(applyMemberId, applyNickName));
                 joinMemberIdNickNameList.add(Arrays.asList(applyMemberId, applyNickName));
-                waitRoomIdList.remove(String.valueOf(chatRoomId));
-                joinRoomIdList.add(String.valueOf(chatRoomId));
+                waitRoomIdList.remove(chatRoomId);
+                joinRoomIdList.add(chatRoomId);
 
                 // 채팅방 멤버 테이블에 가입 승인된 유저를 참여자로 등록
                 AddChatRoomUser(chatRoom, applyMember);
@@ -340,8 +360,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     // 해당 모임채팅방 참여신청 거절
     @Override
     @Transactional
-    public void refuseApplyChatRoom(Long chatRoomId, String applyMemberId, Member loginUser) {
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+    public void refuseApplyChatRoom(String chatRoomId, String applyMemberId, Member loginUser) {
+        ChatRoom chatRoom = chatRoomRepository.findById(Long.valueOf(chatRoomId))
                 .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
         Member applyMember = memberRepository.findById(Long.valueOf(applyMemberId))
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
@@ -368,7 +388,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         // 대기자 명단 등록여부 확인 및 사용자 ID 제거
         if (isUserInWaitList) {
             waitingMemberIdNickNameList.remove(Arrays.asList(applyMemberId, applyNickName));
-            waitRoomIdList.remove(String.valueOf(chatRoomId));
+            waitRoomIdList.remove(chatRoomId);
         } else {
             throw new IllegalStateException("대기자 명단에 등록되지 않은 사용자입니다.");
         }
@@ -377,8 +397,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     // 해당 모임채팅방의 참여자 강퇴
     @Override
     @Transactional
-    public void unqualifyChatRoom(Long chatRoomId, String unqualifyMemberId, Member loginUser) {
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+    public void unqualifyChatRoom(String chatRoomId, String unqualifyMemberId, Member loginUser) {
+        ChatRoom chatRoom = chatRoomRepository.findById(Long.valueOf(chatRoomId))
                 .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
         Member unqualifyMember = memberRepository.findById(Long.valueOf(unqualifyMemberId))
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
@@ -410,7 +430,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             throw new IllegalStateException("참여자 명단에 등록되지 않은 사용자입니다.");
         } else {
             joinMemberIdNickNameList.remove(Arrays.asList(unqualifyMemberId, unqualifyNickName));
-            joinRoomIdList.remove(String.valueOf(chatRoomId));
+            joinRoomIdList.remove(chatRoomId);
         }
 
         // 채팅방 멤버 테이블에 사용자로 등록된 참여자 삭제
@@ -420,8 +440,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     // 해당 모임채팅방 나가기(방장이 나가는 경우 해당 모임채팅방 삭제)
     @Override
     @Transactional
-    public void leaveChatRoom(Long chatRoomId, Member loginUser) {
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+    public void leaveChatRoom(String chatRoomId, Member loginUser) {
+        ChatRoom chatRoom = chatRoomRepository.findById(Long.valueOf(chatRoomId))
                 .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
 
         // 사용자 검증 - 현재 로그인한 사용자의 ID를 가져오는 메서드
@@ -441,17 +461,19 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         // 방장이 나가면 모임채팅방 삭제
         if (currentUserId.equals(chatRoom.getMember().getId())) {
+            joinRoomIdList.remove(chatRoomId);
+            // ChatRoom 삭제
             deleteChatRoom(chatRoomId, loginUser);
-            joinRoomIdList.remove(String.valueOf(chatRoomId));
-            // 채팅방 삭제 시 채팅방 참여자 모두 삭제
-            RemoveAllUser(chatRoomId);
         } else {
             // 참여자 명단 등록여부 확인 및 사용자 ID 제거
             if (!isUserInJoinList) {
                 throw new IllegalStateException("참여자 명단에 등록되지 않은 사용자입니다.");
             } else {
                 joinMemberIdNickNameList.remove(Arrays.asList(memberId, nickName));
-                joinRoomIdList.remove(String.valueOf(chatRoomId));
+                joinRoomIdList.remove(chatRoomId);
+                // 영속성 컨텍스트 문제 방지 - 변경사항 즉시 DB 반영
+                loginUser.setJoinRoomIdList(joinRoomIdList);
+                memberRepository.save(loginUser);
                 // 채팅방 멤버 테이블에 사용자로 등록된 참여자 삭제
                 RemoveChatRoomUser(chatRoom, loginUser);
             }
@@ -461,8 +483,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     // 해당 모임채팅방에서 참여자에게 방장권한 위임
     @Override
     @Transactional
-    public void delegateChatRoom(Long chatRoomId, String delegateMemberId, Member loginUser) {
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+    public void delegateChatRoom(String chatRoomId, String delegateMemberId, Member loginUser) {
+        ChatRoom chatRoom = chatRoomRepository.findById(Long.valueOf(chatRoomId))
                 .orElseThrow(() -> new IllegalArgumentException("해당 모임이 존재하지 않습니다."));
         Member delegateMember = memberRepository.findById(Long.valueOf(delegateMemberId))
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
