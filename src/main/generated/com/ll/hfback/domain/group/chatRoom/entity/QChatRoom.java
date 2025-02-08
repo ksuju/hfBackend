@@ -32,7 +32,7 @@ public class QChatRoom extends EntityPathBase<ChatRoom> {
     //inherited
     public final NumberPath<Long> id = _super.id;
 
-    public final ListPath<String, StringPath> joinMemberIdList = this.<String, StringPath>createList("joinMemberIdList", String.class, StringPath.class, PathInits.DIRECT2);
+    public final ListPath<java.util.List<String>, SimplePath<java.util.List<String>>> joinMemberIdNickNameList = this.<java.util.List<String>, SimplePath<java.util.List<String>>>createList("joinMemberIdNickNameList", java.util.List.class, SimplePath.class, PathInits.DIRECT2);
 
     public final com.ll.hfback.domain.member.member.entity.QMember member;
 
@@ -44,7 +44,7 @@ public class QChatRoom extends EntityPathBase<ChatRoom> {
 
     public final StringPath roomTitle = createString("roomTitle");
 
-    public final ListPath<String, StringPath> waitingMemberIdList = this.<String, StringPath>createList("waitingMemberIdList", String.class, StringPath.class, PathInits.DIRECT2);
+    public final ListPath<java.util.List<String>, SimplePath<java.util.List<String>>> waitingMemberIdNickNameList = this.<java.util.List<String>, SimplePath<java.util.List<String>>>createList("waitingMemberIdNickNameList", java.util.List.class, SimplePath.class, PathInits.DIRECT2);
 
     public QChatRoom(String variable) {
         this(ChatRoom.class, forVariable(variable), INITS);

@@ -43,6 +43,7 @@ public class ApiSecurityConfig {
         source.registerCorsConfiguration("/api/**", corsConfig);
         source.registerCorsConfiguration("/oauth2/**", corsConfig);
         source.registerCorsConfiguration("/login/oauth2/**", corsConfig);
+        source.registerCorsConfiguration("/login/**", corsConfig);
 
         return source;
     }
@@ -51,7 +52,7 @@ public class ApiSecurityConfig {
     @Bean
     SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/api/**", "/oauth2/**", "/login/oauth2/**")
+                .securityMatcher("/api/**", "/oauth2/**", "/login/oauth2/**", "/login/**")
                 .authorizeHttpRequests(
                         authorizeRequests -> authorizeRequests
                                 .requestMatchers(HttpMethod.GET, "/api/*/members").permitAll()
@@ -68,6 +69,7 @@ public class ApiSecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/session").permitAll()
                                 .requestMatchers("/oauth2/**").permitAll()
                                 .requestMatchers("/login/oauth2/**").permitAll()
+                                .requestMatchers("/login/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .headers(headers ->

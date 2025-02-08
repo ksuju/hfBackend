@@ -68,8 +68,14 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 return new RsData<>("404", "존재하지 않는 채팅방입니다.");
             }
 
+            // 기존 참여자 명단을 변환하여 불러옴
+            List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
+            // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
+            boolean isUserInJoinList = joinMemberIdNickNameList.stream()
+                    .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
+
             // 2️⃣ 채팅방 참여 여부 확인
-            if (!chatRoom.getJoinMemberIdList().contains(loginUser.getId().toString())) {
+            if (!isUserInJoinList) {
                 return new RsData<>("403", "해당 채팅방에 참여하지 않은 사용자입니다.");
             }
 
@@ -111,8 +117,14 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                     new IllegalArgumentException("존재하지 않는 채팅방입니다.")
             );
 
+            // 기존 참여자 명단을 변환하여 불러옴
+            List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
+            // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
+            boolean isUserInJoinList = joinMemberIdNickNameList.stream()
+                    .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
+
             // 2️⃣ 채팅방 참여 여부 확인
-            if (!chatRoom.getJoinMemberIdList().contains(loginUser.getId().toString())) {
+            if (!isUserInJoinList) {
                 throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
             }
 
@@ -139,8 +151,14 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                     new IllegalArgumentException("존재하지 않는 채팅방입니다.")
             );
 
+            // 기존 참여자 명단을 변환하여 불러옴
+            List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
+            // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
+            boolean isUserInJoinList = joinMemberIdNickNameList.stream()
+                    .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
+
             // 2️⃣ 채팅방 참여 여부 확인
-            if (!chatRoom.getJoinMemberIdList().contains(loginUser.getId().toString())) {
+            if (!isUserInJoinList) {
                 throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
             }
 
@@ -183,8 +201,14 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                     new IllegalArgumentException("존재하지 않는 채팅방입니다.")
             );
 
+            // 기존 참여자 명단을 변환하여 불러옴
+            List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
+            // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
+            boolean isUserInJoinList = joinMemberIdNickNameList.stream()
+                    .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
+
             // 2️⃣ 채팅방 참여 여부 확인
-            if (!chatRoom.getJoinMemberIdList().contains(loginUser.getId().toString())) {
+            if (!isUserInJoinList) {
                 throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
             }
 
@@ -256,8 +280,14 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                     new IllegalArgumentException("존재하지 않는 채팅방입니다.")
             );
 
+            // 기존 참여자 명단을 변환하여 불러옴
+            List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
+            // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
+            boolean isUserInJoinList = joinMemberIdNickNameList.stream()
+                    .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
+
             // 2️⃣ 채팅방 참여 여부 확인
-            if (!chatRoom.getJoinMemberIdList().contains(loginUser.getId().toString())) {
+            if (!isUserInJoinList) {
                 throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
             }
 
@@ -288,8 +318,14 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 new IllegalArgumentException("존재하지 않는 채팅방입니다.")
         );
 
+        // 기존 참여자 명단을 변환하여 불러옴
+        List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
+        // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
+        boolean isUserInJoinList = joinMemberIdNickNameList.stream()
+                .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
+
         // 2️⃣ 채팅방 참여 여부 확인
-        if (!chatRoom.getJoinMemberIdList().contains(loginUser.getId().toString())) {
+        if (!isUserInJoinList) {
             throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
         }
 
@@ -320,8 +356,14 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 new IllegalArgumentException("존재하지 않는 채팅방입니다.")
         );
 
+        // 기존 참여자 명단을 변환하여 불러옴
+        List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
+        // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
+        boolean isUserInJoinList = joinMemberIdNickNameList.stream()
+                .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
+
         // 2️⃣ 채팅방 참여 여부 확인
-        if (!chatRoom.getJoinMemberIdList().contains(loginUser.getId().toString())) {
+        if (!isUserInJoinList) {
             throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
         }
 
@@ -350,8 +392,14 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 new IllegalArgumentException("존재하지 않는 채팅방입니다.")
         );
 
+        // 기존 참여자 명단을 변환하여 불러옴
+        List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
+        // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
+        boolean isUserInJoinList = joinMemberIdNickNameList.stream()
+                .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
+
         // 2️⃣ 채팅방 참여 여부 확인
-        if (!chatRoom.getJoinMemberIdList().contains(loginUser.getId().toString())) {
+        if (!isUserInJoinList) {
             throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
         }
 

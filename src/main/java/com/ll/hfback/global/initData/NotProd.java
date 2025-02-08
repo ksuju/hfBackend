@@ -100,28 +100,24 @@ public class NotProd {
                 //
                 //
                 // member1이 PF256158 공연게시글에 작성한 테스트 댓글
-                // member1 로그인 로직 필요
                 AddCommentForm addCommentForm1 = new AddCommentForm();
                 addCommentForm1.setContent("이것은 member1이 작성한 테스트 댓글입니다.");
                 addCommentForm1.setSuperCommentId(null);
                 commentService.addComment("PF256158", addCommentForm1, member1);
 
                 // member2가 PF256158 공연게시글에 작성한 테스트 댓글
-                // member2 로그인 로직 필요
                 AddCommentForm addCommentForm2 = new AddCommentForm();
                 addCommentForm2.setContent("이것은 member2가 작성한 테스트 댓글입니다.");
                 addCommentForm2.setSuperCommentId(null);
                 commentService.addComment("PF256158", addCommentForm2, member2);
 
                 // member3가 PF256158 공연게시글에서 memeber1의 댓글에 작성한 테스트 답글
-                // member3 로그인 로직 필요
                 AddCommentForm addCommentForm3 = new AddCommentForm();
                 addCommentForm3.setContent("이것은 member3이 작성한 테스트 답글입니다.");
                 addCommentForm3.setSuperCommentId(1L);
                 commentService.addComment("PF256158", addCommentForm3, member3);
 
                 // member3가 PF256158 공연게시글에서 memeber2의 댓글에 작성한 테스트 답글
-                // member3 로그인 로직 필요
                 AddCommentForm addCommentForm4 = new AddCommentForm();
                 addCommentForm4.setContent("이것은 member3이 작성한 테스트 답글입니다.");
                 addCommentForm4.setSuperCommentId(2L);
@@ -133,7 +129,6 @@ public class NotProd {
                 //
                 //
                 // member1이 수정한 테스트 댓글(comment-id=1)
-                // member1 로그인 로직 필요
                 UpdateCommentForm updateCommentForm = new UpdateCommentForm();
                 updateCommentForm.setContent("이것은 member1이 다시 수정한 테스트 댓글입니다.");
                 commentService.updateComment(1L, updateCommentForm, member1);
@@ -144,7 +139,6 @@ public class NotProd {
                 //
                 //
                 // member1이 PF256158 공연게시글에서 만든 모임채팅방
-                // member1 로그인 로직 필요
                 CreateChatRoomForm createChatRoomForm1 = new CreateChatRoomForm();
                 createChatRoomForm1.setRoomTitle("이것은 member1이 작성한 테스트 제목입니다.");
                 createChatRoomForm1.setRoomContent("이것은 member1이 작성한 테스트 본문입니다.");
@@ -152,7 +146,6 @@ public class NotProd {
                 chatroomservice.createChatRoom("PF256158", createChatRoomForm1, member1);
 
                 // member2가 PF256158 공연게시글에서 만든 모임채팅방
-                // member2 로그인 로직 필요
                 CreateChatRoomForm createChatRoomForm2 = new CreateChatRoomForm();
                 createChatRoomForm2.setRoomTitle("이것은 member2가 작성한 테스트 제목입니다.");
                 createChatRoomForm2.setRoomContent("이것은 member2가 작성한 테스트 본문입니다.");
@@ -160,7 +153,6 @@ public class NotProd {
                 chatroomservice.createChatRoom("PF256158", createChatRoomForm2, member2);
 
                 // member3가 PF256158 공연게시글에서 만든 모임채팅방
-                // member3 로그인 로직 필요
                 CreateChatRoomForm createChatRoomForm3 = new CreateChatRoomForm();
                 createChatRoomForm3.setRoomTitle("이것은 member3이 작성한 매우매우매우매우매우매우매우매우매우매우매우매우 긴 테스트 제목입니다.");
                 createChatRoomForm3.setRoomContent("이것은 member3이 작성한  매우매우매우매우매우매우매우매우매우매우매우매우 긴 테스트 본문입니다.");
@@ -168,7 +160,6 @@ public class NotProd {
                 chatroomservice.createChatRoom("PF256158", createChatRoomForm3, member3);
 
                 // member3가 PF256158 공연게시글에서 만든 모임채팅방4
-                // member3 로그인 로직 필요
                 CreateChatRoomForm createChatRoomForm4 = new CreateChatRoomForm();
                 createChatRoomForm4.setRoomTitle("이것은 member3이 작성한 테스트 제목22입니다.");
                 createChatRoomForm4.setRoomContent("이것은 member3이 작성한 테스트 본문22입니다.");
@@ -176,7 +167,6 @@ public class NotProd {
                 chatroomservice.createChatRoom("PF256158", createChatRoomForm4, member3);
 
                 // member3가 PF256158 공연게시글에서 만든 모임채팅방(1-25)
-                // member3 로그인 로직 필요
                 for (int i = 0; i < 25; i++) {
                     CreateChatRoomForm createChatRoomForm = new CreateChatRoomForm();
 
@@ -192,12 +182,11 @@ public class NotProd {
                 //
                 //
                 // member1이 수정한 테스트 모임채팅방(chat-room-id=1)
-                // member1 로그인 로직 필요
                 UpdateChatRoomForm updateChatRoomForm = new UpdateChatRoomForm();
                 updateChatRoomForm.setRoomTitle("이것은 member1이 다시 수정한 테스트 제목입니다.");
                 updateChatRoomForm.setRoomContent("이것은 member1이 다시 수정한 테스트 본문입니다.");
                 updateChatRoomForm.setRoomMemberLimit(100L);
-                chatroomservice.updateChatRoom(1L, updateChatRoomForm, member1);
+                chatroomservice.updateChatRoom("1", updateChatRoomForm, member1);
 
 
 
@@ -205,19 +194,16 @@ public class NotProd {
                 //
                 //
                 // member1이 chat-room-id=2,3에 참여신청
-                // member1 로그인 로직 필요
-                chatroomservice.applyChatRoom(2L, member1);
-                chatroomservice.applyChatRoom(3L, member1);
+                chatroomservice.applyChatRoom("2", member1);
+                chatroomservice.applyChatRoom("3", member1);
 
                 // member2가 chat-room-id=1,3에 참여신청
-                // member2 로그인 로직 필요
-                chatroomservice.applyChatRoom(1L, member2);
-                chatroomservice.applyChatRoom(3L, member2);
+                chatroomservice.applyChatRoom("1", member2);
+                chatroomservice.applyChatRoom("3", member2);
 
                 // member3이 chat-room-id=1,2에 참여신청
-                // member3 로그인 로직 필요
-                chatroomservice.applyChatRoom(1L, member3);
-                chatroomservice.applyChatRoom(2L, member3);
+                chatroomservice.applyChatRoom("1", member3);
+                chatroomservice.applyChatRoom("2", member3);
 
 
 
@@ -225,14 +211,12 @@ public class NotProd {
                 //
                 //
                 // member1이 chat-room-id=1의 모든 참여신청 승인
-                // member1 로그인 로직 필요
-                chatroomservice.approveApplyChatRoom(1L, "2", member1);
-                chatroomservice.approveApplyChatRoom(1L, "3", member1);
+                chatroomservice.approveApplyChatRoom("1", "2", member1);
+                chatroomservice.approveApplyChatRoom("1", "3", member1);
 
                 // member2가 chat-room-id=2의 모든 참여신청 승인
-                // member2 로그인 로직 필요
-                chatroomservice.approveApplyChatRoom(2L, "1", member2);
-                chatroomservice.approveApplyChatRoom(2L, "3", member2);
+                chatroomservice.approveApplyChatRoom("2", "1", member2);
+                chatroomservice.approveApplyChatRoom("2", "3", member2);
 
 
 
@@ -240,8 +224,7 @@ public class NotProd {
                 //
                 //
                 // member1이 chat-room-id=3에 참여신청 취소
-                // member1 로그인 로직 필요
-                chatroomservice.cancelApplyChatRoom(3L, member1);
+                chatroomservice.cancelApplyChatRoom("3", member1);
 
 
 
@@ -249,8 +232,7 @@ public class NotProd {
                 //
                 //
                 // member3이 chat-room-id=3에 member2의 참여신청 거절
-                // member3 로그인 로직 필요
-                chatroomservice.refuseApplyChatRoom(3L, "2", member3);
+                chatroomservice.refuseApplyChatRoom("3", "2", member3);
 
 
 
@@ -258,8 +240,7 @@ public class NotProd {
                 //
                 //
                 // member1가 chat-room-id=2에서 나가기
-                // member1 로그인 로직 필요
-                chatroomservice.leaveChatRoom(2L, member1);
+                chatroomservice.leaveChatRoom("2", member1);
 
 
 
@@ -267,8 +248,7 @@ public class NotProd {
                 //
                 //
                 // member2이 chat-room-id=2에서 member3 강퇴
-                // member2 로그인 로직 필요
-                chatroomservice.unqualifyChatRoom(2L, "3", member2);
+                chatroomservice.unqualifyChatRoom("2", "3", member2);
 
 
 
@@ -276,8 +256,7 @@ public class NotProd {
                 //
                 //
                 // member3이 chat-room-id=4에서 나가기
-                // member3 로그인 로직 필요
-                chatroomservice.leaveChatRoom(4L, member3);
+                chatroomservice.leaveChatRoom("4", member3);
 
 
 
@@ -285,8 +264,7 @@ public class NotProd {
                 //
                 //
                 // member1이 chat-room-id=1에서 member3에게 방장권한 위임
-                // member1 로그인 로직 필요
-                chatroomservice.delegateChatRoom(1L, 3L, member1);
+                chatroomservice.delegateChatRoom("1", "3", member1);
 
 
 
