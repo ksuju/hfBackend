@@ -186,7 +186,7 @@ public class NotProd {
                 updateChatRoomForm.setRoomTitle("이것은 member1이 다시 수정한 테스트 제목입니다.");
                 updateChatRoomForm.setRoomContent("이것은 member1이 다시 수정한 테스트 본문입니다.");
                 updateChatRoomForm.setRoomMemberLimit(100L);
-                chatroomservice.updateChatRoom(1L, updateChatRoomForm, member1);
+                chatroomservice.updateChatRoom("1", updateChatRoomForm, member1);
 
 
 
@@ -194,16 +194,16 @@ public class NotProd {
                 //
                 //
                 // member1이 chat-room-id=2,3에 참여신청
-                chatroomservice.applyChatRoom(2L, member1);
-                chatroomservice.applyChatRoom(3L, member1);
+                chatroomservice.applyChatRoom("2", member1);
+                chatroomservice.applyChatRoom("3", member1);
 
                 // member2가 chat-room-id=1,3에 참여신청
-                chatroomservice.applyChatRoom(1L, member2);
-                chatroomservice.applyChatRoom(3L, member2);
+                chatroomservice.applyChatRoom("1", member2);
+                chatroomservice.applyChatRoom("3", member2);
 
                 // member3이 chat-room-id=1,2에 참여신청
-                chatroomservice.applyChatRoom(1L, member3);
-                chatroomservice.applyChatRoom(2L, member3);
+                chatroomservice.applyChatRoom("1", member3);
+                chatroomservice.applyChatRoom("2", member3);
 
 
 
@@ -211,12 +211,12 @@ public class NotProd {
                 //
                 //
                 // member1이 chat-room-id=1의 모든 참여신청 승인
-                chatroomservice.approveApplyChatRoom(1L, "2", member1);
-                chatroomservice.approveApplyChatRoom(1L, "3", member1);
+                chatroomservice.approveApplyChatRoom("1", "2", member1);
+                chatroomservice.approveApplyChatRoom("1", "3", member1);
 
                 // member2가 chat-room-id=2의 모든 참여신청 승인
-                chatroomservice.approveApplyChatRoom(2L, "1", member2);
-                chatroomservice.approveApplyChatRoom(2L, "3", member2);
+                chatroomservice.approveApplyChatRoom("2", "1", member2);
+                chatroomservice.approveApplyChatRoom("2", "3", member2);
 
 
 
@@ -224,7 +224,7 @@ public class NotProd {
                 //
                 //
                 // member1이 chat-room-id=3에 참여신청 취소
-                chatroomservice.cancelApplyChatRoom(3L, member1);
+                chatroomservice.cancelApplyChatRoom("3", member1);
 
 
 
@@ -232,7 +232,7 @@ public class NotProd {
                 //
                 //
                 // member3이 chat-room-id=3에 member2의 참여신청 거절
-                chatroomservice.refuseApplyChatRoom(3L, "2", member3);
+                chatroomservice.refuseApplyChatRoom("3", "2", member3);
 
 
 
@@ -240,7 +240,7 @@ public class NotProd {
                 //
                 //
                 // member1가 chat-room-id=2에서 나가기
-                chatroomservice.leaveChatRoom(2L, member1);
+                chatroomservice.leaveChatRoom("2", member1);
 
 
 
@@ -248,7 +248,7 @@ public class NotProd {
                 //
                 //
                 // member2이 chat-room-id=2에서 member3 강퇴
-                chatroomservice.unqualifyChatRoom(2L, "3", member2);
+                chatroomservice.unqualifyChatRoom("2", "3", member2);
 
 
 
@@ -256,7 +256,7 @@ public class NotProd {
                 //
                 //
                 // member3이 chat-room-id=4에서 나가기
-                chatroomservice.leaveChatRoom(4L, member3);
+                chatroomservice.leaveChatRoom("4", member3);
 
 
 
@@ -264,7 +264,7 @@ public class NotProd {
                 //
                 //
                 // member1이 chat-room-id=1에서 member3에게 방장권한 위임
-                chatroomservice.delegateChatRoom(1L, "3", member1);
+                chatroomservice.delegateChatRoom("1", "3", member1);
 
 
 

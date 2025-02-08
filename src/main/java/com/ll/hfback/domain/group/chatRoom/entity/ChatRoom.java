@@ -1,7 +1,6 @@
 package com.ll.hfback.domain.group.chatRoom.entity;
 
 import com.ll.hfback.domain.group.chatRoom.converter.StringDoubleListConverter;
-import com.ll.hfback.domain.group.chatRoom.converter.StringListConverter;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.global.jpa.BaseEntity;
 import jakarta.persistence.*;

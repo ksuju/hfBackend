@@ -35,4 +35,7 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage,Long>, 
     GROUP BY m.id
 """)
     List<ResponseMessageCount> getUnreadMessageCount(@Param("chatRoomId") Long chatRoomId);
+
+    // 채팅방 삭제 시 해당 채팅방의 모든 메시지 삭제(FK 제약)
+    void removeAllByChatRoomId(Long chatRoomId);
 }
