@@ -2,6 +2,7 @@ package com.ll.hfback.domain.member.member.service;
 
 import com.ll.hfback.domain.member.member.dto.MemberUpdateRequest;
 import com.ll.hfback.domain.member.member.entity.Member;
+import com.ll.hfback.domain.member.member.entity.Member.MemberState;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
 import com.ll.hfback.global.exceptions.ErrorCode;
 import com.ll.hfback.global.exceptions.ServiceException;
@@ -33,6 +34,10 @@ public class MemberService {
 
     public List<Member> findAll() {
         return memberRepository.findAll();
+    }
+
+    public List<Member> findAllByState(MemberState state) {
+        return memberRepository.findAllByState(state);
     }
 
     public Optional<Member> findById(Long id) {

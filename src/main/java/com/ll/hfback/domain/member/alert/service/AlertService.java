@@ -35,7 +35,7 @@ public class AlertService {
 
     // === 알림 전송 ===
     @Transactional
-    public void send(Long memberId, AlertType type, Map<String, Object> navigationData, Object... args) {
+    public void send(Long memberId, AlertType type, Map<String, Object> navigationData, String... args) {
         try {
             String navDataJson = objectMapper.writeValueAsString(navigationData);
 
@@ -45,13 +45,15 @@ public class AlertService {
             Alert alert = Alert.builder()
                 .member(member)
                 .content(type.formatMessage(args))
+                .domain(type.getDomain())
+                .alertTypeCode(type.name())
                 .navigationData(navDataJson)
-                .type(type)
                 .isRead(false)
                 .build();
 
             Alert savedAlert = alertRepository.save(alert);
             _sendWebSocketMessage(savedAlert);
+
         } catch (JsonProcessingException e) {
             throw new ServiceException(ErrorCode.MAP_TO_JSON_FAILED);
         }

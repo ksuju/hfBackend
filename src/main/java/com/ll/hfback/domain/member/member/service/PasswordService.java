@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.member.member.service;
 
+import com.ll.hfback.domain.member.alert.service.AlertEventPublisher;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
 import com.ll.hfback.global.exceptions.ErrorCode;
@@ -15,6 +16,7 @@ public class PasswordService {
 
   private final PasswordEncoder passwordEncoder;
   private final MemberRepository memberRepository;
+  private final AlertEventPublisher alertEventPublisher;
 
 
   @Transactional
@@ -26,6 +28,8 @@ public class PasswordService {
       throw new ServiceException(ErrorCode.INVALID_PASSWORD);
     }
     member.setPassword(passwordEncoder.encode(newPassword));
+
+    alertEventPublisher.publishPasswordChange(member.getId());
   }
 
 

@@ -1,7 +1,6 @@
 package com.ll.hfback.domain.member.alert.dto;
 
 import com.ll.hfback.domain.member.alert.entity.Alert;
-import com.ll.hfback.domain.member.alert.enums.AlertType.AlertPriority;
 import com.ll.hfback.domain.member.alert.enums.NavigationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +20,6 @@ public class AlertResponse {
   private LocalDateTime createDate;
   private NavigationType navigationType;
   private String navigationData;
-  private AlertPriority priority;
 
   public static AlertResponse of(Alert alert) {
     return AlertResponse.builder()
@@ -31,7 +29,6 @@ public class AlertResponse {
         .createDate(alert.getCreateDate())
         .navigationType(alert.getNavigationType())
         .navigationData(alert.getNavigationData())
-        .priority(alert.getPriority())
         .build();
   }
 }
