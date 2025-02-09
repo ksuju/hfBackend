@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * packageName    : com.ll.hfback.domain.group.chat.serviceImpl
@@ -34,13 +35,28 @@ public class ChatS3ServiceImpl implements ChatS3Service {
     private final AmazonS3 s3Client;
     private final Logger logger = LoggerFactory.getLogger(ChatS3ServiceImpl.class.getName());
 
+    private static final long MAX_FILE_SIZE = 5_242_880; // 5MB
+
+    // S3 파일 URL 가져오기
     public static String getS3FileUrl(String fileName) {
         return "https://" + BUCKET_NAME + ".s3." + REGION + ".amazonaws.com/" + fileName;
     }
+    
+    // S3에 파일 업로드 후 URL 가져오기 (채팅방에 이미지 출력을 위함)
     @Transactional
-    public String uploadFile(Long chatRoomId, MultipartFile file) throws IOException {
+    public String fileUpload(Long chatRoomId, MultipartFile file) throws IOException {
         try {
-            String fileName = "chatRooms/" + chatRoomId + "/" + file.getOriginalFilename();
+            // 파일 크기 검증
+            if (file.getSize() > MAX_FILE_SIZE) { // 5MB
+                throw new IOException();
+            }
+            // 파일 확장자 추출
+            String originalFilename = file.getOriginalFilename();
+            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+
+            // UUID로 고유한 파일명 생성
+            String uuid = UUID.randomUUID().toString();
+            String fileName = "chatRooms/" + chatRoomId + "/" + uuid + extension;
 
             // ObjectMetadata 객체 생성
             ObjectMetadata metadata = new ObjectMetadata();
@@ -62,7 +78,7 @@ public class ChatS3ServiceImpl implements ChatS3Service {
 
             return getS3FileUrl(fileName);  // S3 파일 URL 반환
         } catch (IOException e) {
-            logger.info("파일 업로드 실패: IOException");
+            logger.info("5MB 이상의 파일은 업로드 할 수 없습니다: IOException");
             throw new RuntimeException(e);
         } catch (SdkClientException e) {
             logger.info("파일 업로드 실패: SdkClientException");
