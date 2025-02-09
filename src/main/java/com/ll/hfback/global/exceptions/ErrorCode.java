@@ -64,6 +64,22 @@ public enum ErrorCode {
   // ChatRoom 관련 에러
   CHATROOM_NOT_FOUND(404, "CHATROOM_001", "채팅방을 찾을 수 없습니다."),
 
+  // Friend 관련 에러
+  FRIEND_LIMIT_EXCEEDED(400, "FRIEND_002", "친구 수가 초과되었습니다."),
+  FRIEND_REQUEST_NOT_FOUND(404, "FRIEND_003", "친구 요청을 찾을 수 없습니다."),
+  ALREADY_REQUESTED(400, "FRIEND_004", "이미 친구 요청을 보냈습니다."),
+  CANNOT_FRIEND_SELF(400, "FRIEND_005", "자기 자신을 친구로 추가할 수 없습니다."),
+  BLOCKED_BY_USER(400, "FRIEND_006", "사용자에 의해 차단되었습니다."),
+  REQUESTER_NOT_FOUND(404, "FRIEND_007", "요청자를 찾을 수 없습니다."),
+  RECEIVER_NOT_FOUND(404, "FRIEND_008", "수신자를 찾을 수 없습니다."),
+  UNAUTHORIZED_ACCESS(401, "FRIEND_009", "승낙/취소할 권한이 없습니다."),
+  ALREADY_HANDLED(400, "FRIEND_010", "이미 수락된 요청입니다."),
+  ALREADY_FRIEND(400, "FRIEND_011", "이미 친구입니다."),
+  ALREADY_RECEIVED_REQUEST(400, "FRIEND_012", "이미 친구 요청을 받았습니다."),
+  INVALID_MEMBER_STATE(400, "FRIEND_013", "상대가 유효하지 않은 회원 상태입니다."),
+  NOT_FRIEND(400, "FRIEND_014", "친구가 아닙니다."),
+  FRIEND_NOT_FOUND(404, "FRIEND_015", "해당 정보를 찾을 수 없습니다."),
+
   //board 관련 에러
   BOARD_NOT_FOUND(400,"BOARD_001","게시글을 찾을 수 없습니다."),
 

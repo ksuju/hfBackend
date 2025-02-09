@@ -20,6 +20,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static jakarta.persistence.CascadeType.ALL;
 
@@ -80,6 +81,24 @@ public class Member extends BaseEntity {
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
     private boolean mkAlarm;  // 마케팅 수신여부
 
+    @Column(columnDefinition = "INT DEFAULT 0")
+    private int friendCount;  // 현재 친구 수
+    private static final int MAX_FRIENDS = 10;
+
+    public boolean canAddFriend() {
+        return friendCount < MAX_FRIENDS;
+    }
+
+    public void increaseFriendCount() {
+        if (!canAddFriend()) {
+            throw new ServiceException(ErrorCode.FRIEND_LIMIT_EXCEEDED);
+        }
+        friendCount++;
+    }
+
+    public void decreaseFriendCount() {
+        if (friendCount > 0) friendCount--;
+    }
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "ENUM('NORMAL', 'DELETED', 'BANNED') DEFAULT 'NORMAL'")
@@ -261,10 +280,52 @@ public class Member extends BaseEntity {
 
     public void addReport(Report report) { reports.add(report); }
 
-    public void removeReport(Report report) {
-        reports.remove(report);
+
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "requester", cascade = ALL)
+    @Builder.Default
+    private List<Friend> sentFriendRequests = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "receiver", cascade = ALL)
+    @Builder.Default
+    private List<Friend> receivedFriendRequests = new ArrayList<>();
+
+    // 수락한 친구 목록 (내가 요청한 것 + 내가 요청받은 것)
+    public List<Member> getFriends() {
+        List<Member> friends = new ArrayList<>();
+
+        // 내가 신청하고 수락받은 친구
+        sentFriendRequests.stream()
+            .filter(Friend::isAccepted)
+            .map(Friend::getReceiver)
+            .forEach(friends::add);
+
+        // 내가 받아서 수락한 친구
+        receivedFriendRequests.stream()
+            .filter(Friend::isAccepted)
+            .map(Friend::getRequester)
+            .forEach(friends::add);
+
+
+        return friends;
     }
 
+    // 친구 요청 대기 목록
+    public List<Friend> getPendingFriends() {
+        return receivedFriendRequests.stream()
+            .filter(Friend::isPending)
+            .collect(Collectors.toList());
+    }
+
+    // 친구 요청 수락 대기 목록
+    public List<Friend> getPendingRequests() {
+        return sentFriendRequests.stream()
+            .filter(Friend::isPending)
+            .collect(Collectors.toList());
+    }
 
 
 
@@ -285,5 +346,4 @@ public class Member extends BaseEntity {
         location = request.getLocation();
         phoneNumber = request.getPhoneNumber();
     }
-
 }
