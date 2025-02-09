@@ -88,13 +88,13 @@ public class ChatS3ServiceImpl implements ChatS3Service {
         String extension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
 
         // 허용된 파일 확장자 검증
-        if (!extension.matches("\\.(jpg|jpeg|png|gif|pdf)$")) {
-            throw new IllegalArgumentException("지원하지 않는 파일 형식입니다. jpg, jpeg, png, gif, pdf 파일만 업로드 가능합니다.");
+        if (!extension.matches("\\.(jpg|jpeg|png|gif)$")) {
+            throw new IllegalArgumentException("지원하지 않는 파일 형식입니다. jpg, jpeg, png, gif 파일만 업로드 가능합니다.");
         }
 
         // MIME 타입 검증
         String contentType = file.getContentType();
-        if (contentType != null && !contentType.matches("^(image/(jpeg|png|gif)|application/pdf)$")) {
+        if (contentType != null && !contentType.matches("^(image/(jpeg|png|gif))$")) {
             throw new IllegalArgumentException("올바르지 않은 파일 형식입니다.");
         }
 
