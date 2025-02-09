@@ -17,4 +17,5 @@ import java.io.IOException;
  */
 public interface ChatS3Service {
     String fileUpload(Long chatRoomId, MultipartFile file) throws IOException;
+    void fileDelete(Long chatRoomId, String fileName);
 }

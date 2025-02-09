@@ -2,8 +2,11 @@ package com.ll.hfback.domain.group.chat.serviceImpl;
 
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.ll.hfback.domain.group.chat.entity.ChatMessage;
+import com.ll.hfback.domain.group.chat.repository.ChatMessageRepository;
 import com.ll.hfback.domain.group.chat.service.ChatS3Service;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +40,8 @@ public class ChatS3ServiceImpl implements ChatS3Service {
     private final Logger logger = LoggerFactory.getLogger(ChatS3ServiceImpl.class.getName());
 
     private static final long MAX_FILE_SIZE = 5_242_880; // 5MB
+
+    private final ChatMessageRepository chatMessageRepository;
 
     // S3 파일 URL 가져오기
     public static String getS3FileUrl(String fileName) {
@@ -115,5 +120,26 @@ public class ChatS3ServiceImpl implements ChatS3Service {
                 file.getInputStream(), // 파일 InputStream
                 metadata     // 메타데이터
         );
+    }
+
+    // 파일 삭제
+    @Transactional
+    public void fileDelete(Long chatRoomId, String fileName) {
+        try {
+            // S3 URL에서 파일 키(경로) 추출
+            String fileKey = fileName.substring(fileName.indexOf(".com/") + 5);
+
+            // S3에서 파일 삭제
+            s3Client.deleteObject(BUCKET_NAME, fileKey);
+
+            // 해당 채팅 삭제
+            ChatMessage chatMessage = chatMessageRepository.findByChatMessageContent(fileName);
+            chatMessageRepository.delete(chatMessage);
+
+            logger.info("파일 삭제 성공");
+        } catch (Exception e) {
+            logger.error("파일 삭제 실패: SdkClientException" + e);
+            throw new SdkClientException(e);
+        }
     }
 }

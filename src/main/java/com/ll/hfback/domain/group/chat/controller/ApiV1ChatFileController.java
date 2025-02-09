@@ -3,7 +3,6 @@ package com.ll.hfback.domain.group.chat.controller;
 import com.ll.hfback.domain.group.chat.service.ChatS3Service;
 import com.ll.hfback.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,6 +35,18 @@ public class ApiV1ChatFileController {
             return new RsData<String>("501", "파일 업로드 실패, 5MB 이상의 파일은 업로드 할 수 없습니다.");
         } catch (IllegalArgumentException e) {
             return new RsData<String>("502", "파일 업로드 실패, 지원하지 않는 파일 형식입니다. jpg, jpeg, png, gif 파일만 업로드 가능합니다.");
+        }
+    }
+
+    // 채팅방 파일 삭제
+    @DeleteMapping("/files/delete")
+    public RsData<Void> fileDelete(@PathVariable("chatRoom-id") Long chatRoomId,
+                                   String fileName) {
+        try {
+            chatS3Service.fileDelete(chatRoomId, fileName);
+            return new RsData<>("200", "파일 삭제 성공");
+        } catch (Exception e) {
+            return new RsData<>("500", "파일 다운로드 실패");
         }
     }
 }
