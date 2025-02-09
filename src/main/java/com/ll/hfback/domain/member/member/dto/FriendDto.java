@@ -17,11 +17,16 @@ public class FriendDto {
   private final Long requestId;
 
 
-  public static FriendDto fromAcceptedFriend(Member member) {
+  public static FriendDto fromAcceptedFriend(Friend friend, Long loginUserId) {
+    Member friendMember = friend.getRequester().getId().equals(loginUserId)
+        ? friend.getReceiver()
+        : friend.getRequester();
+
     return FriendDto.builder()
-        .id(member.getId())
-        .nickname(member.getNickname())
-        .profilePath(member.getProfilePath())
+        .id(friendMember.getId())
+        .nickname(friendMember.getNickname())
+        .profilePath(friendMember.getProfilePath())
+        .requestId(friend.getId())
         .build();
   }
 

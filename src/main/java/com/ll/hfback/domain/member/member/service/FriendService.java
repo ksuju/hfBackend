@@ -122,7 +122,7 @@ public class FriendService {
         .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND));
 
     return loginUser.getFriends().stream()
-        .map(FriendDto::fromAcceptedFriend)
+        .map(friend -> FriendDto.fromAcceptedFriend(friend, loginUserId))
         .collect(Collectors.toList());
   }
 

@@ -294,21 +294,18 @@ public class Member extends BaseEntity {
     private List<Friend> receivedFriendRequests = new ArrayList<>();
 
     // 수락한 친구 목록 (내가 요청한 것 + 내가 요청받은 것)
-    public List<Member> getFriends() {
-        List<Member> friends = new ArrayList<>();
+    public List<Friend> getFriends() {
+        List<Friend> friends = new ArrayList<>();
 
         // 내가 신청하고 수락받은 친구
-        sentFriendRequests.stream()
+        friends.addAll(sentFriendRequests.stream()
             .filter(Friend::isAccepted)
-            .map(Friend::getReceiver)
-            .forEach(friends::add);
+            .toList());
 
         // 내가 받아서 수락한 친구
-        receivedFriendRequests.stream()
+        friends.addAll(receivedFriendRequests.stream()
             .filter(Friend::isAccepted)
-            .map(Friend::getRequester)
-            .forEach(friends::add);
-
+            .toList());
 
         return friends;
     }
