@@ -109,8 +109,8 @@ public class AlertService {
         alerts.forEach(Alert::readAlert);
     }
 
-    // === 해당 회원의 알림 목록 ===
-    public Page<AlertResponse> getMemberAlerts(Long memberId, int page, int size) {
+    // === 해당 회원의 전체 알림 목록 ===
+    public Page<AlertResponse> getAllMemberAlerts(Long memberId, int page, int size) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -119,4 +119,14 @@ public class AlertService {
             .map(AlertResponse::of);
     }
 
+
+    // === 해당 회원의 읽지 않은 알림 목록 ===
+    public Page<AlertResponse> getUnreadMemberAlerts(Long memberId, int page, int size) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createDate").descending());
+        return alertRepository.findByMemberIdAndIsReadFalse(member.getId(), pageable)
+            .map(AlertResponse::of);
+    }
 }

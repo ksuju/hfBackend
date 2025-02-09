@@ -8,16 +8,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum FestivalAlertType implements AlertType {
 
-  MEETING_REMINDER_1HOUR(
-      "'%s'가 1시간 후 시작됩니다",
+  FESTIVAL_ONGOING(
+      "%s 페스티벌이 현재 진행중입니다!",
       NavigationType.FESTIVAL
-  ),
-  MEETING_REMINDER_6HOUR(
-      "'%s'가 6시간 후 시작됩니다",
-      NavigationType.FESTIVAL
-      );
-
-
+  );
 
   private final String messageTemplate;
   private final NavigationType navigationType;

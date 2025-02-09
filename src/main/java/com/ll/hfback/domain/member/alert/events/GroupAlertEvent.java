@@ -17,21 +17,21 @@ public class GroupAlertEvent implements AlertEvent {
 
   private final GroupAlertType alertType;
   private final ChatRoom chatRoom;
-  private final Member applyMember;
+  private final Member targetMember;
 
 
   @Override
   public List<Long> getReceiverIds() {
     return switch (alertType) {
-      case GROUP_APPLICATION ->
-          List.of(chatRoom.getMember().getId());   // 방장에게만
-      case GROUP_APPLICATION_APPROVED, GROUP_APPLICATION_REJECTED ->
-          List.of(applyMember.getId());  // 신청자에게만
-      case GROUP_APPROVED, GROUP_NEW_POST ->
-          chatRoom.getJoinMemberIdList().stream()  // 모든 참가자에게
-              .map(Long::parseLong)
+      case GROUP_APPLICATION, GROUP_APPLICATION_CANCEL
+          -> List.of(chatRoom.getMember().getId());   // 방장에게만
+      case GROUP_APPLICATION_REJECTED, GROUP_KICKED_TARGET
+          -> List.of(targetMember.getId());  // 신청자에게만
+      case GROUP_APPROVED, GROUP_MEMBER_KICKED,
+           GROUP_DELETED, GROUP_DELEGATE_OWNER
+          -> chatRoom.getJoinMemberIdNickNameList().stream() // 그룹방 모든 참가자에게
+              .map(info -> Long.parseLong(info.getFirst()))
               .collect(Collectors.toList());
-      default -> List.of();
     };
   }
 
@@ -47,11 +47,12 @@ public class GroupAlertEvent implements AlertEvent {
   @Override
   public String[] getMessageArgs() {
     return switch (alertType) {
-      case GROUP_APPLICATION, GROUP_APPROVED
-          -> new String[]{applyMember.getNickname(), chatRoom.getRoomTitle()};
-      case GROUP_APPLICATION_APPROVED, GROUP_APPLICATION_REJECTED,
-           GROUP_KICKED, GROUP_DELETED, GROUP_NEW_POST
+      case GROUP_APPLICATION, GROUP_APPROVED, GROUP_DELEGATE_OWNER,
+           GROUP_MEMBER_KICKED, GROUP_APPLICATION_CANCEL
+          -> new String[]{chatRoom.getRoomTitle(), targetMember.getNickname()};
+      case GROUP_APPLICATION_REJECTED, GROUP_KICKED_TARGET, GROUP_DELETED
           -> new String[]{chatRoom.getRoomTitle()};
     };
   }
+
 }

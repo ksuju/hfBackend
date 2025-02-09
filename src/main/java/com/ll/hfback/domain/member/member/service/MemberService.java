@@ -150,4 +150,5 @@ public class MemberService {
             .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND))
             .disconnectSocialAccount(upperProvider);
     }
+
 }

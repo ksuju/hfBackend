@@ -9,12 +9,11 @@ import lombok.Getter;
 public enum BoardAlertType implements AlertType {
 
   BOARD_NEW(
-      "새로운 전체 공지사항이 등록되었습니다",
+      "전체 공지\n새로운 공지사항이 등록되었습니다",
       NavigationType.BOARD
   ),
-
   SYSTEM_MAINTENANCE(
-      "시스템 점검 안내",
+      "전체 공지\n시스템 점검 안내",
       NavigationType.BOARD
   );
 

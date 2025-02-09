@@ -9,10 +9,8 @@ import lombok.Getter;
 public enum CommentAlertType implements AlertType {
 
   COMMENT_REPLY(
-      "'%s' 님이 회원님의 댓글에 답글을 남겼습니다", NavigationType.COMMENT
+      "'%s' 님이 회원님의 댓글에 답글을 남겼습니다 : %s", NavigationType.COMMENT
   );
-
-
 
   private final String messageTemplate;
   private final NavigationType navigationType;

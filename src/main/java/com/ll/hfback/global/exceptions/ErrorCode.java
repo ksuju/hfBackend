@@ -60,6 +60,10 @@ public enum ErrorCode {
   INVALID_SNS_VERIFICATION_CODE(400, "SMS_005", "인증번호가 일치하지 않습니다."),
   PHONE_NUMBER_NOT_VERIFIED(400, "SMS_006", "휴대폰 번호는 인증을 완료 후 추가할 수 있습니다."),
   ALREADY_VERIFIED_PHONE_NUMBER(400, "SMS_007", "이미 인증된 휴대폰 번호입니다."),
+
+  // ChatRoom 관련 에러
+  CHATROOM_NOT_FOUND(404, "CHATROOM_001", "채팅방을 찾을 수 없습니다."),
+
   //board 관련 에러
   BOARD_NOT_FOUND(400,"BOARD_001","게시글을 찾을 수 없습니다."),
 

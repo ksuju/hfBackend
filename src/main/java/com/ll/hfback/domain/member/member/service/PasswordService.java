@@ -39,5 +39,7 @@ public class PasswordService {
         .orElseThrow(() -> new ServiceException(ErrorCode.INVALID_EMAIL));
 
     member.setPassword(passwordEncoder.encode(newPassword));
+
+    alertEventPublisher.publishPasswordChange(member.getId());
   }
 }

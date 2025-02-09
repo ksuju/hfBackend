@@ -8,32 +8,41 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum GroupAlertType implements AlertType {
 
+  // 대상 : 그룹 방장
   GROUP_APPLICATION(
-      "'%s' 님이 '%s' 모임에 참가 신청을 했습니다",
+      "%s\n'%s' 님이 참가 신청을 했습니다",
       NavigationType.GROUP
   ),
-  GROUP_APPROVED(
-      "'%s' 님이 '%s' 모임에 참여했습니다",
+  GROUP_APPLICATION_CANCEL(
+      "%s\n'%s' 님이 참가 신청을 취소했습니다",
       NavigationType.GROUP
   ),
-  GROUP_APPLICATION_APPROVED(
-      "회원님의 '%s' 모임 참가 신청이 승인되었습니다",
-      NavigationType.GROUP
-  ),
+
+
+  // 대상 : 신청자
   GROUP_APPLICATION_REJECTED(
-      "회원님의 '%s' 모임 참가 신청이 거절되었습니다",
+      "%s\n회원님의 참가 신청이 거절되었습니다",
       NavigationType.GROUP
   ),
-  GROUP_KICKED(
-      "회원님이 '%s' 모임에서 강퇴되었습니다",
+  GROUP_KICKED_TARGET(
+      "%s\n회원님이 강퇴되었습니다",
+      NavigationType.GROUP),
+
+
+  // 대상 : 그룹 멤버 전체
+  GROUP_APPROVED(
+      "%s\n'%s' 님이 참여했습니다",
+      NavigationType.GROUP
+  ),
+  GROUP_MEMBER_KICKED(
+      "%s\n'%s' 님이 강퇴되었습니다",
+      NavigationType.GROUP),
+  GROUP_DELEGATE_OWNER(
+      "%s\n'%s' 님이 모임장을 위임받았습니다",
       NavigationType.GROUP),
   GROUP_DELETED(
-      "'%s' 모임이 삭제되었습니다",
+      "%s\n해당 모임이 삭제되었습니다",
       NavigationType.NONE
-  ),
-  GROUP_NEW_POST(
-      "'%s' 모임에 새로운 공지가 등록되었습니다",
-      NavigationType.GROUP
   );
 
 
