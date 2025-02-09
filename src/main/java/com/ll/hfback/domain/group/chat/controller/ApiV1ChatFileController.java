@@ -31,11 +31,11 @@ public class ApiV1ChatFileController {
             @PathVariable("chatRoom-id") Long chatRoomId,
             @RequestParam("file") MultipartFile file) {
         try {
-            return new RsData<String>("200","파일 업로드 성공", chatS3Service.fileUpload(chatRoomId, file));
+            return new RsData<String>("200", "파일 업로드 성공", chatS3Service.fileUpload(chatRoomId, file));
         } catch (IOException e) {
-            return new RsData<String>("501","파일 업로드 실패, 5MB 이상의 파일은 업로드 할 수 없습니다." + e);
-        } catch (Exception e) {
-            return new RsData<String>("500","파일 업로드 실패" + e);
+            return new RsData<String>("501", "파일 업로드 실패, 5MB 이상의 파일은 업로드 할 수 없습니다.");
+        } catch (IllegalArgumentException e) {
+            return new RsData<String>("502", "파일 업로드 실패, 지원하지 않는 파일 형식입니다. jpg, jpeg, png, gif, pdf 파일만 업로드 가능합니다.");
         }
     }
 }
