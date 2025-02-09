@@ -92,6 +92,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                     .chatRoom(chatRoom)
                     .nickname(loginUser.getNickname())
                     .chatMessageContent(requestMessage.getContent())
+                    .originalFileName(requestMessage.getOriginalFileName())
                     .build();
             chatMessageRepository.save(chatMessage);
             simpMessagingTemplate.convertAndSend("/topic/chat/" + chatRoomId,
