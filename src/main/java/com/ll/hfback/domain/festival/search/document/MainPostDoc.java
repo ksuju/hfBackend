@@ -11,7 +11,7 @@ import org.springframework.data.elasticsearch.annotations.Setting;
 @Builder
 @Setting(settingPath = "/elasticsearch/settings.json")
 @Mapping(mappingPath = "/elasticsearch/mappings.json")
-@Document(indexName = "app1_posts")
+@Document(indexName = "festival")
 @AllArgsConstructor
 @NoArgsConstructor
 public class MainPostDoc {
@@ -32,4 +32,7 @@ public class MainPostDoc {
 
     @Field(name = "festival_url")
     private String festivalUrl; // 축제 사진
+
+    @Field(name = "genrenm")
+    private String festivalGenre;
 }

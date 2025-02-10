@@ -1,12 +1,27 @@
 {
   "properties": {
-    "title": {
+    "festival_name": {
       "type": "text",
       "analyzer": "korean"
     },
-    "content": {
+    "festival_area": {
       "type": "text",
       "analyzer": "korean"
+    },
+    "festival_start_date": {
+      "type": "date",
+      "format": "strict_date_optional_time||epoch_millis"
+    },
+    "festival_end_date": {
+      "type": "date",
+      "format": "strict_date_optional_time||epoch_millis"
+    },
+    "genrenm": {
+      "type": "text",
+      "analyzer": "korean"
+    },
+    "festival_state": {
+      "type": "keyword"
     }
   }
 }
