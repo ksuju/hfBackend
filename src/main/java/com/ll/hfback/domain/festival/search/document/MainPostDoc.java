@@ -35,4 +35,7 @@ public class MainPostDoc {
 
     @Field(name = "genrenm")
     private String festivalGenre;
+
+    @Field(name = "charoom_count")
+    private int chatroomCount;
 }

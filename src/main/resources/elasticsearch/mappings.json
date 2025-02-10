@@ -10,11 +10,11 @@
     },
     "festival_start_date": {
       "type": "date",
-      "format": "strict_date_optional_time||epoch_millis"
+      "format": "yyyy.MM.dd"
     },
     "festival_end_date": {
       "type": "date",
-      "format": "strict_date_optional_time||epoch_millis"
+      "format": "yyyy.MM.dd"
     },
     "genrenm": {
       "type": "text",
@@ -22,6 +22,9 @@
     },
     "festival_state": {
       "type": "keyword"
+    },
+    "chatroom_count": {
+      "type": "integer"
     }
   }
 }
