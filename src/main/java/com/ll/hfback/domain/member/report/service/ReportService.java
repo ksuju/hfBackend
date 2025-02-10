@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.member.report.service;
 
+import com.ll.hfback.domain.member.alert.service.AlertEventPublisher;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.service.MemberService;
 import com.ll.hfback.domain.member.report.entity.Report;
@@ -20,6 +21,7 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
     private final MemberService memberService;
+    private final AlertEventPublisher alertEventPublisher;
 
 
     @Transactional
@@ -67,6 +69,8 @@ public class ReportService {
 
         report.confirm();
 
+        alertEventPublisher.publishMemberReport(report.getReported().getId());
+
         long confirmCount = reportRepository.countByReportedAndState(
             report.getReported(),
             ReportState.CONFIRMED
@@ -74,6 +78,7 @@ public class ReportService {
 
         if (confirmCount >= 3) {
             memberService.banMember(report.getReported().getId());
+            alertEventPublisher.publishMemberBlock(report.getReported().getId());
         }
     }
 }

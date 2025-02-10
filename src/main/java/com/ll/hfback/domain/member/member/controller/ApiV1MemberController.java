@@ -73,7 +73,7 @@ public class ApiV1MemberController {
         @LoginUser Member loginUser,
         @RequestBody VerifyTokenRequest request
     ) {
-        String storedToken = redisTemplate.opsForValue().get("password-verify:" + loginUser.getEmail());
+        String storedToken = redisTemplate.opsForValue() .get("password-verify:" + loginUser.getEmail());
 
         if (storedToken == null || !storedToken.equals(request.token())) {
             throw new ServiceException(ErrorCode.PASSWORD_VERIFICATION_REQUIRED);
@@ -296,5 +296,4 @@ public class ApiV1MemberController {
         memberService.banMember(memberId);
         return new RsData("200-1", "%d번 회원을 차단했습니다.".formatted(memberId));
     }
-
 }

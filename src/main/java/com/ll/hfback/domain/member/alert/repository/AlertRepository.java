@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AlertRepository extends JpaRepository<Alert, Long> {
   Page<Alert> findByMemberId(Long memberId, Pageable pageable);
+
+  Page<Alert> findByMemberIdAndIsReadFalse(Long memberId, Pageable pageable);
 }

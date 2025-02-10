@@ -35,7 +35,7 @@ public class AlertService {
 
     // === 알림 전송 ===
     @Transactional
-    public void send(Long memberId, AlertType type, Map<String, Object> navigationData, Object... args) {
+    public void send(Long memberId, AlertType type, Map<String, Object> navigationData, String... args) {
         try {
             String navDataJson = objectMapper.writeValueAsString(navigationData);
 
@@ -45,13 +45,15 @@ public class AlertService {
             Alert alert = Alert.builder()
                 .member(member)
                 .content(type.formatMessage(args))
+                .domain(type.getDomain())
+                .alertTypeCode(type.name())
                 .navigationData(navDataJson)
-                .type(type)
                 .isRead(false)
                 .build();
 
             Alert savedAlert = alertRepository.save(alert);
             _sendWebSocketMessage(savedAlert);
+
         } catch (JsonProcessingException e) {
             throw new ServiceException(ErrorCode.MAP_TO_JSON_FAILED);
         }
@@ -107,7 +109,7 @@ public class AlertService {
         alerts.forEach(Alert::readAlert);
     }
 
-    // === 해당 회원의 알림 목록 ===
+    // === 해당 회원의 전체 알림 목록 ===
     public Page<AlertResponse> getMemberAlerts(Long memberId, int page, int size) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND));
@@ -116,5 +118,4 @@ public class AlertService {
         return alertRepository.findByMemberId(member.getId(), pageable)
             .map(AlertResponse::of);
     }
-
 }
