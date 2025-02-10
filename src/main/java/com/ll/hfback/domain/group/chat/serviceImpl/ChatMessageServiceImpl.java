@@ -87,6 +87,10 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
             logger.info("채팅 메시지 작성 성공");
             return new RsData<>("200", "채팅 메시지 작성 성공");
+        } catch (IllegalArgumentException e) {
+            // 검증 실패 예외 (채팅방 없음, 참여하지 않은 사용자)
+            logger.error("채팅방 접근 권한 오류: ", e);
+            return new RsData<>("403", e.getMessage());
         } catch (Exception e) {
             logger.error("채팅 메시지 작성 실패: ", e);
             return new RsData<>("500", "서버 내부 오류가 발생했습니다.");
@@ -116,9 +120,13 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                             chatMessage.getCreateDate(),
                             chatMessage.getId()
                     ));
+        } catch (IllegalArgumentException e) {
+            // 검증 실패 예외 (채팅방 없음, 참여하지 않은 사용자)
+            logger.error("채팅방 접근 권한 오류: ", e);
+            throw e;
         } catch (Exception e) {
             logger.error("채팅 메시지 가져오기 실패");
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
@@ -142,9 +150,13 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                             "data", unreadMessageCount
                     ));
             return unreadMessageCount;
+        } catch (IllegalArgumentException e) {
+            // 검증 실패 예외 (채팅방 없음, 참여하지 않은 사용자)
+            logger.error("채팅방 접근 권한 오류: ", e);
+            throw  e;
         } catch (Exception e) {
             logger.error("채팅 메시지 읽음 카운트 실패");
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
@@ -159,7 +171,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             return PageRequest.of(page, 10, sort);
         } catch (Exception e) {
             logger.error("커스텀 페이징 실패");
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
@@ -230,9 +242,13 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                             chatMessage.getChatMessageContent(),
                             chatMessage.getCreateDate(),
                             chatMessage.getId()));
+        } catch (IllegalArgumentException e) {
+            // 검증 실패 예외 (채팅방 없음, 참여하지 않은 사용자)
+            logger.error("채팅방 접근 권한 오류: ", e);
+            throw  e;
         } catch (Exception e) {
             logger.error("조건에 따른 채팅 메시지 검색 실패");
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
@@ -263,9 +279,13 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             logger.info("ChatRoom ID: {}, Member ID: {} - 마지막 읽은 메시지 ID가 성공적으로 업데이트되었습니다.",
                     chatRoomId,
                     loginUser.getId());
+        } catch (IllegalArgumentException e) {
+            // 검증 실패 예외 (채팅방 없음, 참여하지 않은 사용자)
+            logger.error("채팅방 접근 권한 오류: ", e);
+            throw e;
         } catch (Exception e) {
             logger.error("마지막 읽은 메시지 업데이트 실패");
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
@@ -337,10 +357,6 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
         // 기존 참여자 명단을 변환하여 불러옴
         List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
-
-        // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
-        boolean isUserInJoinList = joinMemberIdNickNameList.stream()
-                .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
 
         chatRoomUserRepository.findByChatRoomIdAndMemberId(chatRoomId, loginUser.getId())
                 .ifPresentOrElse(user -> {
