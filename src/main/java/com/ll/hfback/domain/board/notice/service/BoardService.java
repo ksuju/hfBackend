@@ -29,7 +29,7 @@ public class BoardService {
 
     //게시글 목록 리스트
     public Page<Board> list(int page){
-        Sort sort = Sort.by(Sort.Order.desc("createDate"));
+        Sort sort = Sort.by(Sort.Order.desc("Id"));
         Pageable pageable = PageRequest.of(page,10, sort);
         return this.boardRepository.findAll(pageable);
     }
