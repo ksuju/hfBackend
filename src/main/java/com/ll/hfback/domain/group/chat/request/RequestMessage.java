@@ -21,6 +21,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor 
 public class RequestMessage {
-//    private Long memberId;
+    //    private Long memberId;
     private String content;
+    private String originalFileName;
+
+    public RequestMessage(String content) {
+        this.content = content;
+    }
 }
