@@ -73,7 +73,7 @@ public class ApiV1MemberController {
         @LoginUser Member loginUser,
         @RequestBody VerifyTokenRequest request
     ) {
-        String storedToken = redisTemplate.opsForValue().get("password-verify:" + loginUser.getEmail());
+        String storedToken = redisTemplate.opsForValue() .get("password-verify:" + loginUser.getEmail());
 
         if (storedToken == null || !storedToken.equals(request.token())) {
             throw new ServiceException(ErrorCode.PASSWORD_VERIFICATION_REQUIRED);

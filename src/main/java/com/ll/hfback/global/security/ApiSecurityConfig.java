@@ -65,6 +65,7 @@ public class ApiSecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/api/*/auth/password/reset/verify").permitAll()
                                 .requestMatchers(HttpMethod.PATCH, "/api/*/auth/password/reset/new").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/boards/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/session").permitAll()
                                 .requestMatchers("/oauth2/**").permitAll()
                                 .requestMatchers("/login/oauth2/**").permitAll()
