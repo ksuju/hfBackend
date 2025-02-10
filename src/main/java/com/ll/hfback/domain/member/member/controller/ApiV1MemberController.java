@@ -296,5 +296,4 @@ public class ApiV1MemberController {
         memberService.banMember(memberId);
         return new RsData("200-1", "%d번 회원을 차단했습니다.".formatted(memberId));
     }
-
 }

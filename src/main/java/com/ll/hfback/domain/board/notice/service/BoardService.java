@@ -3,7 +3,9 @@ package com.ll.hfback.domain.board.notice.service;
 
 import com.ll.hfback.domain.board.notice.entity.Board;
 import com.ll.hfback.domain.board.notice.repository.BoardRepository;
+import com.ll.hfback.domain.member.alert.service.AlertEventPublisher;
 import com.ll.hfback.domain.member.member.entity.Member;
+import com.ll.hfback.domain.member.member.entity.Member.MemberState;
 import com.ll.hfback.domain.member.member.service.MemberService;
 import com.ll.hfback.global.exceptions.ErrorCode;
 import com.ll.hfback.global.exceptions.ServiceException;
@@ -22,6 +24,7 @@ import java.util.Optional;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final AlertEventPublisher alertEventPublisher;
     private final MemberService memberService;
 
     //게시글 목록 리스트
@@ -53,6 +56,9 @@ public class BoardService {
         board.setContent(content);
         board.setAuthor(admin);
         Board saveBoard = this.boardRepository.save(board);
+
+        alertEventPublisher.publishNewBoard(saveBoard, memberService.findAllByState(MemberState.NORMAL));
+
         return  saveBoard;
     }
 

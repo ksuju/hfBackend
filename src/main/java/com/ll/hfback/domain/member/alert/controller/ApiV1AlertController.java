@@ -54,7 +54,7 @@ public class ApiV1AlertController {
     }
 
 
-    // ALERT04 : 회원별 알림 목록
+    // ALERT04 : 회원별 알림 목록 (전체)
     @GetMapping
     public RsData<Page<AlertResponse>> getMemberAlerts(
             @LoginUser Member loginUser,
@@ -62,7 +62,7 @@ public class ApiV1AlertController {
             @RequestParam(defaultValue = "10") int size
         ) {
         Page<AlertResponse> alertResponses = alertService.getMemberAlerts(loginUser.getId(), page, size);
-        return new RsData<>("200", "알림 목록을 조회하였습니다.", alertResponses);
+        return new RsData<>("200", "전체 알림 목록을 조회하였습니다.", alertResponses);
     }
 
 }
