@@ -60,26 +60,10 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Transactional
     public RsData<Object> writeMessage(Long chatRoomId, RequestMessage requestMessage, Member loginUser) {
         try {
+            // 채팅방 존재 여부와 사용자 참여 여부를 검증하고 ChatRoom 객체를 반환
+            ChatRoom chatRoom = validateChatRoomAndMember(chatRoomId, loginUser);
 
-            // 1️⃣ 채팅방 존재 여부 확인
-            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() ->
-                    new IllegalArgumentException("존재하지 않는 채팅방입니다."));
-            if (chatRoom == null) {
-                return new RsData<>("404", "존재하지 않는 채팅방입니다.");
-            }
-
-            // 기존 참여자 명단을 변환하여 불러옴
-            List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
-            // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
-            boolean isUserInJoinList = joinMemberIdNickNameList.stream()
-                    .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
-
-            // 2️⃣ 채팅방 참여 여부 확인
-            if (!isUserInJoinList) {
-                return new RsData<>("403", "해당 채팅방에 참여하지 않은 사용자입니다.");
-            }
-
-            // 3️⃣ 빈 메시지 또는 250자 초과 메시지 검사
+            // 1. 빈 메시지 또는 250자 초과 메시지 검사
             if (requestMessage.getContent() == null || requestMessage.getContent().trim().isEmpty()) {
                 return new RsData<>("400", "채팅 메시지는 비어 있을 수 없습니다.");
             }
@@ -87,7 +71,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 return new RsData<>("400", "채팅 메시지는 250자를 넘을 수 없습니다.");
             }
 
-            // 4️⃣ 메시지 저장 및 전송
+            // 2. 메시지 저장 및 전송
             ChatMessage chatMessage = ChatMessage.builder()
                     .chatRoom(chatRoom)
                     .nickname(loginUser.getNickname())
@@ -113,21 +97,15 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Transactional(readOnly = true)
     public Page<ResponseMessage> readMessages(Long chatRoomId, int page, Member loginUser) {
         try {
-            // 1️⃣ 채팅방 존재 여부 확인
-            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() ->
-                    new IllegalArgumentException("존재하지 않는 채팅방입니다.")
-            );
+
+            // 채팅방 존재 여부와 사용자 참여 여부를 검증하고 ChatRoom 객체를 반환
+            ChatRoom chatRoom = validateChatRoomAndMember(chatRoomId, loginUser);
 
             // 기존 참여자 명단을 변환하여 불러옴
             List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
             // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
             boolean isUserInJoinList = joinMemberIdNickNameList.stream()
                     .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
-
-            // 2️⃣ 채팅방 참여 여부 확인
-            if (!isUserInJoinList) {
-                throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
-            }
 
             Page<ChatMessage> chatMessages = chatMessageRepository.findByChatRoomId(chatRoomId, customPaging(page));
             logger.info("채팅 메시지 가져오기 성공");
@@ -147,21 +125,14 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     // 채팅 메시지 읽음 카운트
     public List<ResponseMessageCount> messageCount(Long chatRoomId, Member loginUser) {
         try {
-            // 1️⃣ 채팅방 존재 여부 확인
-            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() ->
-                    new IllegalArgumentException("존재하지 않는 채팅방입니다.")
-            );
+            // 채팅방 존재 여부와 사용자 참여 여부를 검증하고 ChatRoom 객체를 반환
+            ChatRoom chatRoom = validateChatRoomAndMember(chatRoomId, loginUser);
 
             // 기존 참여자 명단을 변환하여 불러옴
             List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
             // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
             boolean isUserInJoinList = joinMemberIdNickNameList.stream()
                     .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
-
-            // 2️⃣ 채팅방 참여 여부 확인
-            if (!isUserInJoinList) {
-                throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
-            }
 
             List<ResponseMessageCount> unreadMessageCount = chatMessageRepository.getUnreadMessageCount(chatRoomId);
             logger.info("채팅 메시지 읽음 카운트 성공");
@@ -197,21 +168,14 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                                                 int page,
                                                 MessageSearchKeywordsRequest messageSearchKeywordsRequest, Member loginUser) {
         try {
-            // 1️⃣ 채팅방 존재 여부 확인
-            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() ->
-                    new IllegalArgumentException("존재하지 않는 채팅방입니다.")
-            );
+            // 채팅방 존재 여부와 사용자 참여 여부를 검증하고 ChatRoom 객체를 반환
+            ChatRoom chatRoom = validateChatRoomAndMember(chatRoomId, loginUser);
 
             // 기존 참여자 명단을 변환하여 불러옴
             List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
             // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
             boolean isUserInJoinList = joinMemberIdNickNameList.stream()
                     .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
-
-            // 2️⃣ 채팅방 참여 여부 확인
-            if (!isUserInJoinList) {
-                throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
-            }
 
             QChatMessage qChatMessage = QChatMessage.chatMessage; // QueryDSL 메타 모델 객체
 
@@ -276,21 +240,14 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Transactional
     public void messageReadStatus(Long chatRoomId, MessageReadStatusRequest messageReadStatusRequest, Member loginUser) {
         try {
-            // 1️⃣ 채팅방 존재 여부 확인
-            ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() ->
-                    new IllegalArgumentException("존재하지 않는 채팅방입니다.")
-            );
+            // 채팅방 존재 여부와 사용자 참여 여부를 검증하고 ChatRoom 객체를 반환
+            ChatRoom chatRoom = validateChatRoomAndMember(chatRoomId, loginUser);
 
             // 기존 참여자 명단을 변환하여 불러옴
             List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
             // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
             boolean isUserInJoinList = joinMemberIdNickNameList.stream()
                     .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
-
-            // 2️⃣ 채팅방 참여 여부 확인
-            if (!isUserInJoinList) {
-                throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
-            }
 
             ChatRoomUser readStatus = chatRoomUserRepository
                     .findByChatRoomIdAndMemberId(chatRoomId, loginUser.getId())
@@ -314,21 +271,15 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     // 채팅방 멤버 로그인/로그아웃 상태 확인
     public List<ResponseMemberStatus> memberLoginStatus(Long chatRoomId, Member loginUser) {
-        // 1️⃣ 채팅방 존재 여부 확인
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() ->
-                new IllegalArgumentException("존재하지 않는 채팅방입니다.")
-        );
+
+        // 채팅방 존재 여부와 사용자 참여 여부를 검증하고 ChatRoom 객체를 반환
+        ChatRoom chatRoom = validateChatRoomAndMember(chatRoomId, loginUser);
 
         // 기존 참여자 명단을 변환하여 불러옴
         List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
         // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
         boolean isUserInJoinList = joinMemberIdNickNameList.stream()
                 .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
-
-        // 2️⃣ 채팅방 참여 여부 확인
-        if (!isUserInJoinList) {
-            throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
-        }
 
         // 채팅방에 속한 사용자 정보 가져오기
         List<ChatRoomUser> chatRoomUsers =
@@ -352,74 +303,12 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     // 멤버 채팅방 접속 상태 변경 (온라인)
     public void chatMemberLogin(Long chatRoomId, Member loginUser) {
-        // 1️⃣ 채팅방 존재 여부 확인
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() ->
-                new IllegalArgumentException("존재하지 않는 채팅방입니다.")
-        );
-
-        // 기존 참여자 명단을 변환하여 불러옴
-        List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
-        // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
-        boolean isUserInJoinList = joinMemberIdNickNameList.stream()
-                .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
-
-        // 2️⃣ 채팅방 참여 여부 확인
-        if (!isUserInJoinList) {
-            throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
-        }
-
-        chatRoomUserRepository.findByChatRoomIdAndMemberId(chatRoomId, loginUser.getId())
-                .ifPresentOrElse(user -> {
-                    // chatRoomUser가 존재하면 처리
-                    logger.info("채팅방 유저 찾음: {}", user);
-                    if (user.getUserLoginStatus() != ChatRoomUserStatus.LOGIN) {    // 로그인 상태가 변경되어야 할 때만 처리
-                        user.setUserLoginStatus(ChatRoomUserStatus.LOGIN);  // 로그인 상태로 변경
-                        chatRoomUserRepository.save(user);  // 저장
-
-                        // 유저 상태 전송
-                        simpMessagingTemplate.convertAndSend("/topic/members/" + chatRoomId, user);
-                        logger.info("로그인 처리 완료");
-                    }
-                }, () -> {
-                    // chatRoomUser가 없으면 로그 남기기
-                    logger.error("채팅방 유저 정보 없음: chatRoomId={}, memberId={}", chatRoomId, loginUser.getId());
-                });
+        updateChatMemberStatus(chatRoomId, loginUser, ChatRoomUserStatus.LOGIN);
     }
 
     // 멤버 채팅방 접속 상태 변경 (오프라인)
     public void chatMemberLogout(Long chatRoomId, Member loginUser) {
-        // 1️⃣ 채팅방 존재 여부 확인
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() ->
-                new IllegalArgumentException("존재하지 않는 채팅방입니다.")
-        );
-
-        // 기존 참여자 명단을 변환하여 불러옴
-        List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
-        // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
-        boolean isUserInJoinList = joinMemberIdNickNameList.stream()
-                .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
-
-        // 2️⃣ 채팅방 참여 여부 확인
-        if (!isUserInJoinList) {
-            throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
-        }
-
-        chatRoomUserRepository.findByChatRoomIdAndMemberId(chatRoomId, loginUser.getId())
-                .ifPresentOrElse(user -> {
-                    // chatRoomUser가 존재하면 처리
-                    logger.info("채팅방 유저 찾음: {}", user);
-                    if (user.getUserLoginStatus() != ChatRoomUserStatus.LOGOUT) {    // 로그아웃 상태가 변경되어야 할 때만 처리
-                        user.setUserLoginStatus(ChatRoomUserStatus.LOGOUT);  // 로그아웃 상태로 변경
-                        chatRoomUserRepository.save(user);  // 저장
-
-                        // 유저 상태 전송
-                        simpMessagingTemplate.convertAndSend("/topic/members/" + chatRoomId, user);
-                        logger.info("로그아웃 처리 완료");
-                    }
-                }, () -> {
-                    // chatRoomUser가 없으면 로그 남기기
-                    logger.error("채팅방 유저 정보 없음: chatRoomId={}, memberId={}", chatRoomId, loginUser.getId());
-                });
+        updateChatMemberStatus(chatRoomId, loginUser, ChatRoomUserStatus.LOGOUT);
     }
 
     // 로그아웃시 전체 채팅방에서 오프라인 처리
@@ -439,5 +328,64 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         chatRoomUserRepository.saveAll(chatRoomUsers);
 
         logger.info("로그아웃 처리 완료");
+    }
+
+    // 멤버 온라인, 오프라인 상태 변환 메서드
+    public void updateChatMemberStatus(Long chatRoomId, Member loginUser, ChatRoomUserStatus status) {
+        // 채팅방 존재 여부와 사용자 참여 여부를 검증하고 ChatRoom 객체를 반환
+        ChatRoom chatRoom = validateChatRoomAndMember(chatRoomId, loginUser);
+
+        // 기존 참여자 명단을 변환하여 불러옴
+        List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
+
+        // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
+        boolean isUserInJoinList = joinMemberIdNickNameList.stream()
+                .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
+
+        chatRoomUserRepository.findByChatRoomIdAndMemberId(chatRoomId, loginUser.getId())
+                .ifPresentOrElse(user -> {
+                    // chatRoomUser가 존재하면 처리
+                    logger.info("채팅방 유저 찾음: {}", user);
+                    if (user.getUserLoginStatus() != status) {    // 상태 변경이 필요할 때만 처리
+                        user.setUserLoginStatus(status);  // 상태 변경
+                        chatRoomUserRepository.save(user);  // 저장
+
+                        // 상태 변경 정보를 Map으로 전송
+                        Map<String, Object> statusUpdate = Map.of(
+                                "type", "STATUS_CHANGE",
+                                "data", Map.of(
+                                        "memberId", user.getId(),
+                                        "nickname", loginUser.getNickname(),
+                                        "status", status.toString()
+                                )
+                        );
+
+                        simpMessagingTemplate.convertAndSend("/topic/members/" + chatRoomId, statusUpdate);
+                        logger.info("상태 변경 처리 완료: {}", status);
+                    }
+                }, () -> {
+                    logger.error("채팅방 유저 정보 없음: chatRoomId={}, memberId={}", chatRoomId, loginUser.getId());
+                });
+    }
+
+    // 공통 검증 메서드
+    private ChatRoom validateChatRoomAndMember(Long chatRoomId, Member loginUser) {
+        // 1️⃣ 채팅방 존재 여부 확인
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 채팅방입니다.")
+        );
+
+        // 기존 참여자 명단을 변환하여 불러옴
+        List<List<String>> joinMemberIdNickNameList = chatRoom.getJoinMemberIdNickNameList();
+        // 참여자 명단에서 현재 사용자의 ID가 존재하는지 확인
+        boolean isUserInJoinList = joinMemberIdNickNameList.stream()
+                .anyMatch(member -> member.get(0).equals(loginUser.getId().toString()));
+
+        // 2️⃣ 채팅방 참여 여부 확인
+        if (!isUserInJoinList) {
+            throw new IllegalArgumentException("해당 채팅방에 참여하지 않은 사용자입니다.");
+        }
+
+        return chatRoom;
     }
 }
