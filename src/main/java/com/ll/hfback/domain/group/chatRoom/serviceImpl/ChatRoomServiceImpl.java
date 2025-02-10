@@ -11,16 +11,15 @@ import com.ll.hfback.domain.group.chatRoom.form.CreateChatRoomForm;
 import com.ll.hfback.domain.group.chatRoom.form.UpdateChatRoomForm;
 import com.ll.hfback.domain.group.chatRoom.repository.ChatRoomRepository;
 import com.ll.hfback.domain.group.chatRoom.service.ChatRoomService;
+import com.ll.hfback.domain.member.alert.service.AlertEventPublisher;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -36,6 +35,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final PostRepository postRepository;
     private final ChatRoomUserRepository chatRoomUserRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final AlertEventPublisher alertEventPublisher;
 
     // 모든 게시글 조회
     @Override
@@ -215,6 +215,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         RemoveAllUser(Long.valueOf(chatRoomId));
         chatMessageRepository.removeAllByChatRoomId(Long.valueOf(chatRoomId));
         chatRoomRepository.delete(chatRoom);
+
+        // 알림 발송
+        alertEventPublisher.publishGroupDeletion(chatRoom);
     }
 
     // 해당 모임채팅방에 참여신청
@@ -265,6 +268,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         loginUser.setWaitRoomIdList(waitRoomIdList);
         chatRoomRepository.save(chatRoom); // 트랜잭션 종료 시 자동 저장
         memberRepository.save(loginUser);
+
+        // 알림 발송
+        alertEventPublisher.publishGroupApplication(chatRoom, loginUser);
     }
 
     // 해당 모임채팅방에 참여신청 취소
@@ -302,6 +308,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         loginUser.setWaitRoomIdList(waitRoomIdList);
         chatRoomRepository.save(chatRoom); // 트랜잭션 종료 시 자동 저장
         memberRepository.save(loginUser);
+
+        // 알림 발송
+        alertEventPublisher.publishGroupApplicationCancel(chatRoom, loginUser);
     }
 
     // 해당 모임채팅방 참여신청 승인
@@ -351,6 +360,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
                 // 채팅방 멤버 테이블에 가입 승인된 유저를 참여자로 등록
                 AddChatRoomUser(chatRoom, applyMember);
+
+                // 알림 발송
+                alertEventPublisher.publishGroupApproval(chatRoom, applyMember);
             } else {
                 throw new IllegalStateException("대기자 명단에 등록되지 않은 사용자입니다.");
             }
@@ -389,6 +401,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         if (isUserInWaitList) {
             waitingMemberIdNickNameList.remove(Arrays.asList(applyMemberId, applyNickName));
             waitRoomIdList.remove(chatRoomId);
+
+            alertEventPublisher.publishGroupApplicationRejection(chatRoom, applyMember);
         } else {
             throw new IllegalStateException("대기자 명단에 등록되지 않은 사용자입니다.");
         }
@@ -435,6 +449,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         // 채팅방 멤버 테이블에 사용자로 등록된 참여자 삭제
         RemoveChatRoomUser(chatRoom, unqualifyMember);
+
+        // 알림 발송
+        alertEventPublisher.publishGroupKickToTarget(chatRoom, unqualifyMember);  // 강퇴 대상에게
+        alertEventPublisher.publishGroupKickToMembers(chatRoom, unqualifyMember);  // 그룹 전체에게
     }
 
     // 해당 모임채팅방 나가기(방장이 나가는 경우 해당 모임채팅방 삭제)
@@ -507,6 +525,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             throw new IllegalStateException("참여자 명단에 등록되지 않은 사용자입니다.");
         } else {
             chatRoom.setMember(delegateMember);
+
+            // 알림 발송
+            alertEventPublisher.publishGroupDelegateOwner(chatRoom, delegateMember);
         }
     }
 
