@@ -36,4 +36,6 @@ public class ChatMessage extends BaseEntity {
 
     @Column(nullable = false)
     private String nickname;
+
+    private String originalFileName;
 }
