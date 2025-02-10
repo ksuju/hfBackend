@@ -29,7 +29,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-websocket:3.4.1")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
@@ -71,16 +70,18 @@ dependencies {
 //    implementation("cloud.solapi:java-sdk:4.1.1")
     implementation("net.nurigo:sdk:4.2.7")
 
-
+    // Jackson
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.2")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.18.2")
 
 
     // 축제 데이터 가져오기 (페이지 스크롤링 기준 요청)
-
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
 
+    // elastic
+    implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
+    implementation("com.github.f4b6a3:tsid-creator:5.2.6")
 }
 
 tasks.withType<Test> {
