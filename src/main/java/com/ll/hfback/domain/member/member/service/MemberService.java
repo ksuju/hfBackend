@@ -2,6 +2,7 @@ package com.ll.hfback.domain.member.member.service;
 
 import com.ll.hfback.domain.member.member.dto.MemberUpdateRequest;
 import com.ll.hfback.domain.member.member.entity.Member;
+import com.ll.hfback.domain.member.member.entity.Member.MemberState;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
 import com.ll.hfback.global.exceptions.ErrorCode;
 import com.ll.hfback.global.exceptions.ServiceException;
@@ -35,9 +36,24 @@ public class MemberService {
         return memberRepository.findAll();
     }
 
+    public List<Member> findAllByState(MemberState state) {
+        return memberRepository.findAllByState(state);
+    }
+
     public Optional<Member> findById(Long id) {
         return memberRepository.findById(id);
     }
+
+    /*
+    //게시글 작성자 확인 용도
+    public Member getEmail(String nickName) {
+        Optional<Member> member = this.memberRepository.findByEmail(nickName);
+        if (member.isPresent()) {
+            return member.get();
+        } else {
+            throw new ServiceException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+    }*/
 
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(email)
@@ -134,4 +150,5 @@ public class MemberService {
             .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND))
             .disconnectSocialAccount(upperProvider);
     }
+
 }

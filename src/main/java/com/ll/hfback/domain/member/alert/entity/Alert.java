@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.member.alert.entity;
 
+import com.ll.hfback.domain.member.alert.enums.*;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.global.jpa.BaseEntity;
 import jakarta.persistence.*;
@@ -24,19 +25,38 @@ public class Alert extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false, length = 100)
-    private String url;
-
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean isRead;
 
-    @Column(nullable = false, length = 50)
-    private String category;  // 알림 유형
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AlertDomain domain;  // GROUP, MEMBER, BOARD, FESTIVAL, COMMENT, FRIEND
+    @Getter
+    @AllArgsConstructor
+    public enum AlertDomain {
+        GROUP, MEMBER, BOARD, FESTIVAL, COMMENT, FRIEND
+    }
 
+    @Column(nullable = false)
+    private String alertTypeCode;
+
+    @Column(columnDefinition = "TEXT")
+    private String navigationData;  // 클릭 시 이동에 필요한 데이터
 
 
     // Entity 메서드
     public void readAlert() {
         isRead = true;
+    }
+
+    public NavigationType getNavigationType() {
+        return switch (domain) {
+            case GROUP -> GroupAlertType.valueOf(alertTypeCode).getNavigationType();
+            case MEMBER -> MemberAlertType.valueOf(alertTypeCode).getNavigationType();
+            case BOARD -> BoardAlertType.valueOf(alertTypeCode).getNavigationType();
+            case FESTIVAL -> FestivalAlertType.valueOf(alertTypeCode).getNavigationType();
+            case COMMENT -> CommentAlertType.valueOf(alertTypeCode).getNavigationType();
+            case FRIEND -> FriendAlertType.valueOf(alertTypeCode).getNavigationType();
+        };
     }
 }

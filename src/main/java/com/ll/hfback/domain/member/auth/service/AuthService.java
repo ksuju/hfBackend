@@ -3,7 +3,6 @@ package com.ll.hfback.domain.member.auth.service;
 import com.ll.hfback.domain.member.auth.dto.EmailInfo;
 import com.ll.hfback.domain.member.auth.dto.FindEmailsResponse;
 import com.ll.hfback.domain.member.auth.entity.SocialAccount;
-import com.ll.hfback.domain.member.auth.repository.SocialAccountRepository;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.entity.Member.LoginType;
 import com.ll.hfback.domain.member.member.repository.MemberRepository;
@@ -26,7 +25,6 @@ import java.util.UUID;
 public class AuthService {
 
     private final AuthTokenService authTokenService;
-    private final SocialAccountRepository socialAccountRepository;
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
 
@@ -146,6 +144,7 @@ public class AuthService {
         }
         _connectSocialAccount(loginUser, loginType, providerId, providerEmail);
     }
+
 
 
     private void _connectSocialAccount(

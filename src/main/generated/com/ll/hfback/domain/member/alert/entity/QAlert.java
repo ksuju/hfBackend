@@ -24,12 +24,14 @@ public class QAlert extends EntityPathBase<Alert> {
 
     public final com.ll.hfback.global.jpa.QBaseEntity _super = new com.ll.hfback.global.jpa.QBaseEntity(this);
 
-    public final StringPath category = createString("category");
+    public final StringPath alertTypeCode = createString("alertTypeCode");
 
     public final StringPath content = createString("content");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createDate = _super.createDate;
+
+    public final EnumPath<Alert.AlertDomain> domain = createEnum("domain", Alert.AlertDomain.class);
 
     //inherited
     public final NumberPath<Long> id = _super.id;
@@ -38,7 +40,7 @@ public class QAlert extends EntityPathBase<Alert> {
 
     public final com.ll.hfback.domain.member.member.entity.QMember member;
 
-    public final StringPath url = createString("url");
+    public final StringPath navigationData = createString("navigationData");
 
     public QAlert(String variable) {
         this(Alert.class, forVariable(variable), INITS);

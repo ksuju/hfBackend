@@ -1,6 +1,6 @@
 package com.ll.hfback.domain.group.chatRoom.entity;
 
-import com.ll.hfback.domain.group.chatRoom.converter.StringListConverter;
+import com.ll.hfback.domain.group.chatRoom.converter.StringDoubleListConverter;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.global.jpa.BaseEntity;
 import jakarta.persistence.*;
@@ -25,8 +25,8 @@ public class ChatRoom extends BaseEntity {
     private String roomContent;
     private Long roomMemberLimit;
     private Long roomState;
-    @Convert(converter = StringListConverter.class)
-    private List<String> joinMemberIdList;
-    @Convert(converter = StringListConverter.class)
-    private List<String> waitingMemberIdList;
+    @Convert(converter = StringDoubleListConverter.class)
+    private List<List<String>> joinMemberIdNickNameList;
+    @Convert(converter = StringDoubleListConverter.class)
+    private List<List<String>> waitingMemberIdNickNameList;
 }

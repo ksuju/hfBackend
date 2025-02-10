@@ -61,6 +61,38 @@ public enum ErrorCode {
   PHONE_NUMBER_NOT_VERIFIED(400, "SMS_006", "휴대폰 번호는 인증을 완료 후 추가할 수 있습니다."),
   ALREADY_VERIFIED_PHONE_NUMBER(400, "SMS_007", "이미 인증된 휴대폰 번호입니다."),
 
+  // ChatRoom 관련 에러
+  CHATROOM_NOT_FOUND(404, "CHATROOM_001", "채팅방을 찾을 수 없습니다."),
+
+  // Friend 관련 에러
+  FRIEND_LIMIT_EXCEEDED(400, "FRIEND_002", "친구 수가 초과되었습니다."),
+  FRIEND_REQUEST_NOT_FOUND(404, "FRIEND_003", "친구 요청을 찾을 수 없습니다."),
+  ALREADY_REQUESTED(400, "FRIEND_004", "이미 친구 요청을 보냈습니다."),
+  CANNOT_FRIEND_SELF(400, "FRIEND_005", "자기 자신을 친구로 추가할 수 없습니다."),
+  BLOCKED_BY_USER(400, "FRIEND_006", "사용자에 의해 차단되었습니다."),
+  REQUESTER_NOT_FOUND(404, "FRIEND_007", "요청자를 찾을 수 없습니다."),
+  RECEIVER_NOT_FOUND(404, "FRIEND_008", "수신자를 찾을 수 없습니다."),
+  UNAUTHORIZED_ACCESS(401, "FRIEND_009", "승낙/취소할 권한이 없습니다."),
+  ALREADY_HANDLED(400, "FRIEND_010", "이미 수락된 요청입니다."),
+  ALREADY_FRIEND(400, "FRIEND_011", "이미 친구입니다."),
+  ALREADY_RECEIVED_REQUEST(400, "FRIEND_012", "이미 친구 요청을 받았습니다."),
+  INVALID_MEMBER_STATE(400, "FRIEND_013", "상대가 유효하지 않은 회원 상태입니다."),
+  NOT_FRIEND(400, "FRIEND_014", "친구가 아닙니다."),
+  FRIEND_NOT_FOUND(404, "FRIEND_015", "해당 정보를 찾을 수 없습니다."),
+
+  //board 관련 에러
+  BOARD_NOT_FOUND(400,"BOARD_001","게시글을 찾을 수 없습니다."),
+
+  //boardComment 관련 에러
+  BOARDCOMMENT_NOT_FOUND(400,"BOARDCOMMENT_001","게시글의 댓글을 찾을 수 없습니다."),
+
+  // 알림 관련 에러
+  ALERT_NOT_FOUND(404, "ALERT_001", "해당 알림을 찾을 수 없습니다."),
+  MAP_TO_JSON_FAILED(500, "ALERT_002", "맵을 JSON으로 변환하는데 실패했습니다."),
+  NOT_AUTHORIZED(401, "ALERT_003", "권한이 없습니다."),
+  NAVI_VALIDATE_ERROR(400, "ALERT_004", "navigationData에 필수 키가 없습니다"),
+  ARGS_VALIDATE_ERROR(400, "ALERT_005", "메시지 인자가 부족합니다."),
+
   // Business 에러 (500번대)
   INTERNAL_ERROR(500, "SYS_001", "내부 시스템 에러"),
   API_CALL_FAILED(500, "SYS_002", "외부 API 호출에 실패했습니다.");

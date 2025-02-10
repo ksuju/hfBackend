@@ -36,6 +36,8 @@ public class QChatMessage extends EntityPathBase<ChatMessage> {
 
     public final StringPath nickname = createString("nickname");
 
+    public final StringPath originalFileName = createString("originalFileName");
+
     public QChatMessage(String variable) {
         this(ChatMessage.class, forVariable(variable), INITS);
     }
