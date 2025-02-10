@@ -3,11 +3,14 @@ package com.ll.hfback.domain.member.alert.service;
 import com.ll.hfback.domain.board.notice.entity.Board;
 import com.ll.hfback.domain.group.chatRoom.entity.ChatRoom;
 import com.ll.hfback.domain.member.alert.enums.BoardAlertType;
+import com.ll.hfback.domain.member.alert.enums.FriendAlertType;
 import com.ll.hfback.domain.member.alert.enums.GroupAlertType;
 import com.ll.hfback.domain.member.alert.enums.MemberAlertType;
 import com.ll.hfback.domain.member.alert.events.BoardAlertEvent;
+import com.ll.hfback.domain.member.alert.events.FriendAlertEvent;
 import com.ll.hfback.domain.member.alert.events.GroupAlertEvent;
 import com.ll.hfback.domain.member.alert.events.MemberAlertEvent;
+import com.ll.hfback.domain.member.member.entity.Friend;
 import com.ll.hfback.domain.member.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -120,6 +123,36 @@ public class AlertEventPublisher {
   public void publishPasswordChange(Long loginUserId) {
     eventPublisher.publishEvent(new MemberAlertEvent(loginUserId, MemberAlertType.PASSWORD_CHANGED));
   }
+
+
+
+
+  // === Friend ===
+  // 친구 신청이 들어옴  (수신자)
+  public void publishFriendApplication(Friend friend) {
+    eventPublisher.publishEvent(new FriendAlertEvent(friend, FriendAlertType.FRIEND_APPLICATION));
+  }
+
+  // 친구 신청이 취소됨  (수신자)
+  public void publishFriendApplicationCancel(Friend friend) {
+    eventPublisher.publishEvent(new FriendAlertEvent(friend, FriendAlertType.FRIEND_APPLICATION_CANCEL));
+  }
+
+  // 친구 신청이 승인됨  (신청자)
+  public void publishFriendApplicationAccept(Friend friend) {
+    eventPublisher.publishEvent(new FriendAlertEvent(friend, FriendAlertType.FRIEND_APPLICATION_ACCEPT));
+  }
+
+  // 친구 신청이 거절됨  (신청자)
+  public void publishFriendApplicationReject(Friend friend) {
+    eventPublisher.publishEvent(new FriendAlertEvent(friend, FriendAlertType.FRIEND_APPLICATION_REJECT));
+  }
+
+  // 친구 삭제됨  (양쪽)
+  public void publishDisconnect(Friend friend) {
+    eventPublisher.publishEvent(new FriendAlertEvent(friend, FriendAlertType.FRIEND_DISCONNECT));
+  }
+
 
 
 

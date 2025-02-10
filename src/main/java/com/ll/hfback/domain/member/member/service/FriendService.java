@@ -1,6 +1,6 @@
 package com.ll.hfback.domain.member.member.service;
 
-import com.ll.hfback.domain.member.alert.service.AlertService;
+import com.ll.hfback.domain.member.alert.service.AlertEventPublisher;
 import com.ll.hfback.domain.member.member.dto.FriendDto;
 import com.ll.hfback.domain.member.member.entity.Friend;
 import com.ll.hfback.domain.member.member.entity.Member;
@@ -24,7 +24,7 @@ public class FriendService {
 
   private final FriendRepository friendRepository;
   private final MemberRepository memberRepository;
-  private final AlertService alertService;
+  private final AlertEventPublisher alertEventPublisher;
 
 
   @Transactional
@@ -43,6 +43,9 @@ public class FriendService {
         .status(Friend.FriendStatus.PENDING)
         .build();
     friendRepository.save(friendRequest);
+
+    // 알림 발송
+    alertEventPublisher.publishFriendApplication(friendRequest);
   }
 
 
@@ -60,6 +63,9 @@ public class FriendService {
     }
 
     friendRepository.delete(friend);
+
+    // 알림 발송
+    alertEventPublisher.publishFriendApplicationCancel(friend);
   }
 
 
@@ -80,6 +86,9 @@ public class FriendService {
     friend.accept();
     friend.getRequester().increaseFriendCount();
     friend.getReceiver().increaseFriendCount();
+
+    // 알림 발송
+    alertEventPublisher.publishFriendApplicationAccept(friend);
   }
 
 
@@ -91,6 +100,13 @@ public class FriendService {
     if (!friend.getReceiver().getId().equals(receiverId)) {
       throw new ServiceException(ErrorCode.UNAUTHORIZED_ACCESS);
     }
+
+    // 이벤트에 필요한 데이터를 미리 초기화
+    String requesterNickname = friend.getRequester().getNickname();
+    String receiverNickname = friend.getReceiver().getNickname();
+    Long requesterId = friend.getId();
+    // 알림 발송
+    alertEventPublisher.publishFriendApplicationReject(friend);
 
     friendRepository.delete(friend);
   }
@@ -113,6 +129,9 @@ public class FriendService {
     friend.getRequester().decreaseFriendCount();
     friend.getReceiver().decreaseFriendCount();
     friendRepository.delete(friend);
+
+    // 알림 발송
+    alertEventPublisher.publishDisconnect(friend);
   }
 
 

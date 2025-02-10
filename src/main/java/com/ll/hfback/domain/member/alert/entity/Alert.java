@@ -30,11 +30,11 @@ public class Alert extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AlertDomain domain;  // GROUP, MEMBER, BOARD, FESTIVAL, COMMENT
+    private AlertDomain domain;  // GROUP, MEMBER, BOARD, FESTIVAL, COMMENT, FRIEND
     @Getter
     @AllArgsConstructor
     public enum AlertDomain {
-        GROUP, MEMBER, BOARD, FESTIVAL, COMMENT
+        GROUP, MEMBER, BOARD, FESTIVAL, COMMENT, FRIEND
     }
 
     @Column(nullable = false)
@@ -56,6 +56,7 @@ public class Alert extends BaseEntity {
             case BOARD -> BoardAlertType.valueOf(alertTypeCode).getNavigationType();
             case FESTIVAL -> FestivalAlertType.valueOf(alertTypeCode).getNavigationType();
             case COMMENT -> CommentAlertType.valueOf(alertTypeCode).getNavigationType();
+            case FRIEND -> FriendAlertType.valueOf(alertTypeCode).getNavigationType();
         };
     }
 }
