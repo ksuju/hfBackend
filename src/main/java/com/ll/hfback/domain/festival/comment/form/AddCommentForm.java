@@ -13,4 +13,3 @@ public class AddCommentForm {
     private String content;
     private Long superCommentId = null;
 }
-

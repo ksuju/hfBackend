@@ -31,12 +31,12 @@ public class QComment extends EntityPathBase<Comment> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createDate = _super.createDate;
 
-    public final StringPath festivalId = createString("festivalId");
-
     //inherited
     public final NumberPath<Long> id = _super.id;
 
     public final com.ll.hfback.domain.member.member.entity.QMember member;
+
+    public final com.ll.hfback.domain.festival.post.entity.QPost post;
 
     public final NumberPath<Long> superCommentId = createNumber("superCommentId", Long.class);
 
@@ -59,6 +59,7 @@ public class QComment extends EntityPathBase<Comment> {
     public QComment(Class<? extends Comment> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new com.ll.hfback.domain.member.member.entity.QMember(forProperty("member"), inits.get("member")) : null;
+        this.post = inits.isInitialized("post") ? new com.ll.hfback.domain.festival.post.entity.QPost(forProperty("post")) : null;
     }
 
 }
