@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.group.chatRoom.serviceImpl;
 
+import com.ll.hfback.domain.festival.post.entity.Post;
 import com.ll.hfback.domain.festival.post.repository.PostRepository;
 import com.ll.hfback.domain.group.chat.entity.ChatRoomUser;
 import com.ll.hfback.domain.group.chat.repository.ChatMessageRepository;
@@ -57,14 +58,14 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     @Transactional(readOnly = true)
     public Page<DetailChatRoomDto> searchByFestivalId(String festivalId, Pageable pageable) {
-        Page<ChatRoom> chatRooms = chatRoomRepository.findByFestivalId(festivalId, pageable);
+        Page<ChatRoom> chatRooms = chatRoomRepository.findByPostFestivalId(festivalId, pageable);
         return chatRooms.map(this::convertToDetailChatRoomDto);
     }
 
     // ChatRoom을 ChatRoomDto로 변환하는 메서드
     private ChatRoomDto convertToChatRoomDto(ChatRoom chatRoom) {
         // festivalId를 기반으로 Festival 엔티티 조회
-        String festivalName = postRepository.findByFestivalId(chatRoom.getFestivalId())
+        String festivalName = postRepository.findByFestivalId(chatRoom.getPost().getFestivalId())
                 .getFestivalName();
         // Create ChatRoomDto
         ChatRoomDto chatRoomDto = new ChatRoomDto(
@@ -103,6 +104,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     @Transactional
     public void createChatRoom(String festivalId, @Valid CreateChatRoomForm createChatRoomForm, Member loginUser) {
+        Post post = postRepository.findByFestivalId(festivalId);
+
         // roomMemberLimit의 값이 유효한지 확인하기 (10-100)
         Long roomMemberLimit = createChatRoomForm.getRoomMemberLimit();
         if (roomMemberLimit == null || roomMemberLimit < 10 || roomMemberLimit > 100) {
@@ -123,7 +126,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         ChatRoom chatRoom = ChatRoom.builder()
                 .member(loginUser)
-                .festivalId(festivalId)
+                .post(post)
                 .roomTitle(createChatRoomForm.getRoomTitle())
                 .roomContent(createChatRoomForm.getRoomContent())
                 .roomMemberLimit(createChatRoomForm.getRoomMemberLimit())

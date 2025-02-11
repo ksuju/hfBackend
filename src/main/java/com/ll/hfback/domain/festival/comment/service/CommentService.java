@@ -12,14 +12,14 @@ public interface CommentService {
     List<CommentDto> searchByFestivalId(String festivalId);
 
     // 해당 댓글에 작성된 모든 답글 조회
-    List<CommentDto> searchBySuperCommentId(Long superCommentId);
+    List<CommentDto> searchBySuperCommentId(String superCommentId);
 
     // 해당 게시글에 댓글 생성
     void addComment(String festivalId, @Valid AddCommentForm addCommentForm, Member loginUser);
 
     // 해당 댓글 수정
-    void updateComment(Long commentId, @Valid UpdateCommentForm updateCommentForm, Member loginUser);
+    void updateComment(String commentId, @Valid UpdateCommentForm updateCommentForm, Member loginUser);
 
     // 해당 댓글 삭제
-    void deleteComment(Long commentId, Member loginUser);
+    void deleteComment(String commentId, Member loginUser);
 }

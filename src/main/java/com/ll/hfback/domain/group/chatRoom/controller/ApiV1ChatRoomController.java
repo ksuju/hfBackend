@@ -33,13 +33,13 @@ public class ApiV1ChatRoomController {
     }
 
     // 해당 게시글의 모든 모임채팅방 조회
-    @GetMapping("/{festival-id}/chat-rooms")
+    @GetMapping("/chat-rooms/{festival-id}")
     public Page<DetailChatRoomDto> getRooms(@PathVariable("festival-id") String festivalId, Pageable pageable) {
         return chatRoomService.searchByFestivalId(festivalId, pageable);
     }
 
     // 해당 게시글에 모임채팅방 생성
-    @PostMapping("/{festival-id}/chat-rooms")
+    @PostMapping("/chat-rooms/{festival-id}")
     public ResponseEntity<String> createRoom(@PathVariable("festival-id") String festivalId, @RequestBody @Valid CreateChatRoomForm createChatRoomForm, @LoginUser Member loginUser) {
         chatRoomService.createChatRoom(festivalId, createChatRoomForm, loginUser);
         return ResponseEntity.status(HttpStatus.CREATED).body("모임이 성공적으로 만들어졌습니다.");

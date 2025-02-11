@@ -15,4 +15,5 @@ public class DetailPostDto {
     private String festivalArea;
     private String festivalHallName;
     private String festivalUrl;
+    private String genrenm;
 }
