@@ -2,6 +2,7 @@ package com.ll.hfback.domain.group.chat.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
  * 2025-01-23        kyd54       최초 생성
  */
 @Setter
+@Getter
 @AllArgsConstructor
 public class ResponseMessage {
     @JsonProperty("nickname")

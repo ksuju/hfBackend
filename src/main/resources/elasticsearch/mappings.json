@@ -1,0 +1,30 @@
+{
+  "properties": {
+    "festival_name": {
+      "type": "text",
+      "analyzer": "korean"
+    },
+    "festival_area": {
+      "type": "text",
+      "analyzer": "korean"
+    },
+    "festival_start_date": {
+      "type": "date",
+      "format": "yyyy.MM.dd"
+    },
+    "festival_end_date": {
+      "type": "date",
+      "format": "yyyy.MM.dd"
+    },
+    "genrenm": {
+      "type": "text",
+      "analyzer": "korean"
+    },
+    "festival_state": {
+      "type": "keyword"
+    },
+    "chatroom_count": {
+      "type": "integer"
+    }
+  }
+}
