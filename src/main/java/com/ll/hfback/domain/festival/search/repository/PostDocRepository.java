@@ -1,10 +1,14 @@
 package com.ll.hfback.domain.festival.search.repository;
 
 import com.ll.hfback.domain.festival.search.document.MainPostDoc;
+import org.eclipse.jdt.internal.compiler.batch.Main;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 public interface PostDocRepository extends ElasticsearchRepository<MainPostDoc, String> {
 
@@ -37,4 +41,24 @@ public interface PostDocRepository extends ElasticsearchRepository<MainPostDoc, 
 
     // 장르 포함 > 지역 검색
     Page<MainPostDoc> findByFestivalGenreAndFestivalAreaContaining(String genre, String keyword, Pageable pageable);
+
+    @Query("{\"bool\":{\"must\":[{\"match\":{\"festival_state\":\"공연중\"}}],\"filter\":[{\"range\":{\"festival_end_date\":{\"gte\":\"now\"}}}]}},\"sort\":[{\"festival_end_date\":{\"order\":\"asc\"}}]}")
+    Page<MainPostDoc> findByFestivalStateAndFestivalEndDateGreaterThanOrderByFestivalEndDateAsc(String festivalState, Pageable pageable);
+
+    @Query("""
+        {
+          "bool": {
+            "must": [
+              {
+                "range": {
+                  "festival_start_date": {
+                    "gte": "now"
+                  }
+                }
+              }
+            ]
+          }
+        }
+    """)
+    Page<MainPostDoc> findUpcomingFestivals(Pageable pageable);
 }
