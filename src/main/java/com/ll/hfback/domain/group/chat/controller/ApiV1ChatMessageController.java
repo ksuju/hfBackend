@@ -39,6 +39,8 @@ public class ApiV1ChatMessageController {
                                        @RequestBody RequestMessage requestMessage, @LoginUser Member loginUser) {
         try {
             return chatMessageService.writeMessage(chatRoomId, requestMessage, loginUser); // ✅ 서비스에서 반환한 응답을 그대로 반환
+        } catch (IllegalArgumentException e) {
+            return new RsData<>("403", e.getMessage());
         } catch (Exception e) {
             return new RsData<>("500", "채팅 메시지 작성 중 오류가 발생했습니다: " + e.getMessage());
         }
