@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.festival.comment.entity;
 
+import com.ll.hfback.domain.festival.post.entity.Post;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.global.jpa.BaseEntity;
 import jakarta.persistence.*;
@@ -17,7 +18,9 @@ public class Comment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
-    private String festivalId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_festival_id", nullable = false)
+    private Post post;
     private String content;
     private Boolean commentState;
     private Long superCommentId;

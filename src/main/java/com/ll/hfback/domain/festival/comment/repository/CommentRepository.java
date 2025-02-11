@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     // 해당 게시글에 작성된 모든 댓글 조회
-    List<Comment> findByFestivalId(String festivalId);
+    List<Comment> findByPostFestivalId(String festivalId);
 
     // 해당 댓글에 작성된 모든 답글 조회
     List<Comment> findBySuperCommentId(Long superCommentId);
