@@ -27,4 +27,9 @@ public interface MemberRepository extends JpaRepository<Member, Long>  {
     @Query("SELECT m FROM Member m JOIN m.socialAccount s WHERE s.naverProviderId = :providerId")
     Optional<Member> findByNaverProviderId(@Param("providerId") String providerId);
 
+    @Query("SELECT DISTINCT m FROM Member m " +
+        "LEFT JOIN FETCH m.sentFriendRequests " +
+        "LEFT JOIN FETCH m.receivedFriendRequests " +
+        "WHERE m.id = :memberId")
+    Optional<Member> findByIdWithFriends(@Param("memberId") Long memberId);
 }
