@@ -9,8 +9,10 @@ import com.ll.hfback.global.exceptions.ErrorCode;
 import com.ll.hfback.global.exceptions.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -19,7 +21,6 @@ public class BoardCommentService {
 
     private final BoardService boardService;
     private final BoardCommentRepository boardCommentRepository;
-
 
     //댓글 작성
     public BoardComment create(Long id, String content, Member member) {
