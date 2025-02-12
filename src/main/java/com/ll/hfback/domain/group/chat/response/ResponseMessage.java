@@ -24,6 +24,8 @@ import java.time.LocalDateTime;
 public class ResponseMessage {
     @JsonProperty("nickname")
     private String nickname;
+    @JsonProperty("email")
+    private String email;
     @JsonProperty("chatMessageContent")
     private String content;
     @JsonProperty("messageTimestamp")
