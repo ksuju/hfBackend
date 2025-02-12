@@ -27,14 +27,14 @@ public class QChatRoom extends EntityPathBase<ChatRoom> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createDate = _super.createDate;
 
-    public final StringPath festivalId = createString("festivalId");
-
     //inherited
     public final NumberPath<Long> id = _super.id;
 
     public final ListPath<java.util.List<String>, SimplePath<java.util.List<String>>> joinMemberIdNickNameList = this.<java.util.List<String>, SimplePath<java.util.List<String>>>createList("joinMemberIdNickNameList", java.util.List.class, SimplePath.class, PathInits.DIRECT2);
 
     public final com.ll.hfback.domain.member.member.entity.QMember member;
+
+    public final com.ll.hfback.domain.festival.post.entity.QPost post;
 
     public final StringPath roomContent = createString("roomContent");
 
@@ -65,6 +65,7 @@ public class QChatRoom extends EntityPathBase<ChatRoom> {
     public QChatRoom(Class<? extends ChatRoom> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new com.ll.hfback.domain.member.member.entity.QMember(forProperty("member"), inits.get("member")) : null;
+        this.post = inits.isInitialized("post") ? new com.ll.hfback.domain.festival.post.entity.QPost(forProperty("post")) : null;
     }
 
 }

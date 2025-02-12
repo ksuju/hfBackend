@@ -82,7 +82,8 @@ public class PostServiceImpl implements PostService {
                 post.getFestivalEndDate(),
                 post.getFestivalArea(),
                 post.getFestivalHallName(),
-                post.getFestivalUrl()
+                post.getFestivalUrl(),
+                post.getGenrenm()
         );
     }
 }
