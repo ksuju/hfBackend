@@ -52,7 +52,6 @@ public class ApiV1BoardController {
         return new RsData<>("200","게시글을 성공적으로 생성했습니다.",board);
     }
 
-
     //게시글 수정 dto
     public record ModifyBoard(@NotBlank String title, @NotBlank String content){
 
