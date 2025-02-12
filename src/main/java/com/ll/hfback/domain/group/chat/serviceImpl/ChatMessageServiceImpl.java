@@ -74,6 +74,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             // 2. 메시지 저장 및 전송
             ChatMessage chatMessage = ChatMessage.builder()
                     .chatRoom(chatRoom)
+                    .email(loginUser.getEmail())
                     .nickname(loginUser.getNickname())
                     .chatMessageContent(requestMessage.getContent())
                     .originalFileName(requestMessage.getOriginalFileName())
@@ -116,6 +117,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             // ChatMessage -> RequestMessage 변환
             return chatMessages.map(chatMessage ->
                     new ResponseMessage(chatMessage.getNickname(),
+                            chatMessage.getEmail(),
                             chatMessage.getChatMessageContent(),
                             chatMessage.getCreateDate(),
                             chatMessage.getId()
@@ -239,6 +241,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             // ChatMessage -> RequestMessage 변환
             return searchMessages.map(chatMessage ->
                     new ResponseMessage(chatMessage.getNickname(),
+                            chatMessage.getEmail(),
                             chatMessage.getChatMessageContent(),
                             chatMessage.getCreateDate(),
                             chatMessage.getId()));

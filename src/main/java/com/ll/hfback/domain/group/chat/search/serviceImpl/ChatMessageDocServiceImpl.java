@@ -63,6 +63,7 @@ public class ChatMessageDocServiceImpl implements ChatMessageDocService {
                 // ChatMessage -> ResponseMessage 변환
                 return searchMessages.map(chatMessage ->
                         new ResponseMessage(chatMessage.getNickname(),
+                                chatMessage.getEmail(),
                                 chatMessage.getChatMessageContent(),
                                 chatMessage.getCreateDate(),
                                 chatMessage.getChatMessageId()));
@@ -77,6 +78,7 @@ public class ChatMessageDocServiceImpl implements ChatMessageDocService {
                 // ChatMessage -> ResponseMessage 변환
                 return searchMessages.map(chatMessage ->
                         new ResponseMessage(chatMessage.getNickname(),
+                                chatMessage.getEmail(),
                                 chatMessage.getChatMessageContent(),
                                 chatMessage.getCreateDate(),
                                 chatMessage.getChatMessageId()));
@@ -89,6 +91,7 @@ public class ChatMessageDocServiceImpl implements ChatMessageDocService {
             // ChatMessage -> ResponseMessage 변환
             return searchMessages.map(chatMessage ->
                     new ResponseMessage(chatMessage.getNickname(),
+                            chatMessage.getEmail(),
                             chatMessage.getChatMessageContent(),
                             chatMessage.getCreateDate(),
                             chatMessage.getChatMessageId()));
