@@ -41,7 +41,7 @@ public class ApiV1PostDocController {
         if (area.equals("null")) {
             area = "서울";
         }
-        return postDocService.searchSubBannerUserLocationMeetingTop10(area);
+        return postDocService.searchSubBannerUserLocationMeetingTop5(area);
     }
 
     @GetMapping("search/main2")

@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class ResponseFestivalSearch {
 
+    private String festivalId;
     private String festivalName;
     private String festivalArea;
     private LocalDate festivalStartDate;
@@ -19,6 +20,7 @@ public class ResponseFestivalSearch {
 
     public static ResponseFestivalSearch convertToDTO(MainPostDoc mainPostDoc) {
         return ResponseFestivalSearch.builder()
+                .festivalId(mainPostDoc.getFestivalId())
                 .festivalName(mainPostDoc.getFestivalName())
                 .festivalArea(mainPostDoc.getFestivalArea())
                 .festivalStartDate(mainPostDoc.getFestivalStartDate())

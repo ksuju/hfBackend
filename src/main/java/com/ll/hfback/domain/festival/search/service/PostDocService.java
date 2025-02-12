@@ -41,6 +41,7 @@ public class PostDocService {
 
         // 장르만 적용
         if (isWhere && keyword.isEmpty()) {
+            log.debug("검색 장르: {}", genre);
             return convertToDTO(postDocRepository.findAllByFestivalGenre(genre, sortingPage));
         }
 
@@ -62,8 +63,8 @@ public class PostDocService {
         };
     }
 
-    public List<ResponseFestivalSearch> searchSubBannerUserLocationMeetingTop10 (String area) {
-        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.desc("chatroom_count")));
+    public List<ResponseFestivalSearch> searchSubBannerUserLocationMeetingTop5 (String area) {
+        Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Order.desc("chatroom_count")));
 
         return postDocRepository.findByFestivalAreaContaining(area.split(" ")[0], pageable)
                         .getContent()
