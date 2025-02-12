@@ -58,13 +58,13 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath profilePath = createString("profilePath");
 
-    public final ListPath<Friend, QFriend> receivedFriendRequests = this.<Friend, QFriend>createList("receivedFriendRequests", Friend.class, QFriend.class, PathInits.DIRECT2);
+    public final SetPath<Friend, QFriend> receivedFriendRequests = this.<Friend, QFriend>createSet("receivedFriendRequests", Friend.class, QFriend.class, PathInits.DIRECT2);
 
     public final ListPath<com.ll.hfback.domain.member.report.entity.Report, com.ll.hfback.domain.member.report.entity.QReport> reports = this.<com.ll.hfback.domain.member.report.entity.Report, com.ll.hfback.domain.member.report.entity.QReport>createList("reports", com.ll.hfback.domain.member.report.entity.Report.class, com.ll.hfback.domain.member.report.entity.QReport.class, PathInits.DIRECT2);
 
     public final EnumPath<Member.MemberRole> role = createEnum("role", Member.MemberRole.class);
 
-    public final ListPath<Friend, QFriend> sentFriendRequests = this.<Friend, QFriend>createList("sentFriendRequests", Friend.class, QFriend.class, PathInits.DIRECT2);
+    public final SetPath<Friend, QFriend> sentFriendRequests = this.<Friend, QFriend>createSet("sentFriendRequests", Friend.class, QFriend.class, PathInits.DIRECT2);
 
     public final com.ll.hfback.domain.member.auth.entity.QSocialAccount socialAccount;
 

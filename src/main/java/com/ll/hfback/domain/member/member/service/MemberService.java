@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.member.member.service;
 
+import com.ll.hfback.domain.member.member.controller.ApiV1MemberController;
 import com.ll.hfback.domain.member.member.dto.MemberUpdateRequest;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.domain.member.member.entity.Member.MemberState;
@@ -149,6 +150,18 @@ public class MemberService {
         memberRepository.findById(memberId)
             .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND))
             .disconnectSocialAccount(upperProvider);
+    }
+
+
+
+    public ApiV1MemberController.MemberProfileInfo getProfileInfo(Long memberId, Member loginUser) {
+        Member member = memberRepository.findByIdWithFriends(memberId)
+            .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Member fullLoginUser = memberRepository.findByIdWithFriends(loginUser.getId())
+            .orElseThrow(() -> new ServiceException(ErrorCode.MEMBER_NOT_FOUND));
+
+        return new ApiV1MemberController.MemberProfileInfo(member, fullLoginUser);
     }
 
 }
