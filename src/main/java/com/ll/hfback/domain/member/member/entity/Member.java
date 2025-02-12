@@ -34,10 +34,12 @@ import static jakarta.persistence.CascadeType.ALL;
 public class Member extends BaseEntity {
 
     // 참여하고 있는 모임채팅방ID 리스트
+    @Column(columnDefinition = "TEXT")
     @Convert(converter = StringListConverter.class)
     private List<String> joinRoomIdList;
 
     // 대기하고 있는 모임채팅방ID 리스트
+    @Column(columnDefinition = "TEXT")
     @Convert(converter = StringListConverter.class)
     private List<String> waitRoomIdList;
 
