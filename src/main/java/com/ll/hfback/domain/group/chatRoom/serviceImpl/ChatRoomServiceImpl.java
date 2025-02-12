@@ -93,6 +93,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         DetailChatRoomDto detailChatRoomDto = new DetailChatRoomDto(
                 chatRoom.getMember().getId(),
                 chatRoom.getId(),
+                chatRoom.getPost().getFestivalName(),
                 chatRoom.getMember().getNickname(),
                 chatRoom.getRoomTitle(),
                 chatRoom.getRoomContent(),
