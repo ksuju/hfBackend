@@ -30,7 +30,7 @@ public class ApiV1PostController {
     }
 
     // 게시글ID로 상세 조회
-    @GetMapping("/{festival-id}")
+    @GetMapping("/detail/{festival-id}")
     public DetailPostDto getPost(@PathVariable("festival-id") String festivalId) {
         return postService.searchByFestivalId(festivalId);
     }

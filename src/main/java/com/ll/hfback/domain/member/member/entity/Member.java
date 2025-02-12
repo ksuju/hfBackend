@@ -1,6 +1,8 @@
 package com.ll.hfback.domain.member.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ll.hfback.domain.board.comment.entity.BoardComment;
 import com.ll.hfback.domain.group.chatRoom.converter.StringListConverter;
 import com.ll.hfback.domain.member.alert.entity.Alert;
 import com.ll.hfback.domain.member.auth.entity.SocialAccount;
@@ -33,11 +35,18 @@ import static jakarta.persistence.CascadeType.ALL;
 @DynamicInsert
 public class Member extends BaseEntity {
 
+    //게시글 댓글 Id값
+    @JsonManagedReference
+    @OneToMany(mappedBy = "author",cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    private List<BoardComment> boardComments;
+
     // 참여하고 있는 모임채팅방ID 리스트
+    @Column(columnDefinition = "TEXT")
     @Convert(converter = StringListConverter.class)
     private List<String> joinRoomIdList;
 
     // 대기하고 있는 모임채팅방ID 리스트
+    @Column(columnDefinition = "TEXT")
     @Convert(converter = StringListConverter.class)
     private List<String> waitRoomIdList;
 
@@ -286,43 +295,73 @@ public class Member extends BaseEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "requester", cascade = ALL)
     @Builder.Default
-    private List<Friend> sentFriendRequests = new ArrayList<>();
+    private Set<Friend> sentFriendRequests = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "receiver", cascade = ALL)
     @Builder.Default
-    private List<Friend> receivedFriendRequests = new ArrayList<>();
+    private Set<Friend> receivedFriendRequests = new HashSet<>();
 
     // 수락한 친구 목록 (내가 요청한 것 + 내가 요청받은 것)
-    public List<Friend> getFriends() {
-        List<Friend> friends = new ArrayList<>();
+    public Set<Friend> getFriends() {
+        Set<Friend> friends = new HashSet<>();
 
         // 내가 신청하고 수락받은 친구
         friends.addAll(sentFriendRequests.stream()
             .filter(Friend::isAccepted)
-            .toList());
+            .collect(Collectors.toSet()));
 
         // 내가 받아서 수락한 친구
         friends.addAll(receivedFriendRequests.stream()
             .filter(Friend::isAccepted)
-            .toList());
+            .collect(Collectors.toSet()));
 
         return friends;
     }
 
     // 친구 요청 대기 목록
-    public List<Friend> getPendingFriends() {
+    public Set<Friend> getPendingFriends() {
         return receivedFriendRequests.stream()
             .filter(Friend::isPending)
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
     }
 
     // 친구 요청 수락 대기 목록
-    public List<Friend> getPendingRequests() {
+    public Set<Friend> getPendingRequests() {
         return sentFriendRequests.stream()
             .filter(Friend::isPending)
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
     }
+
+    public boolean isFriend(Member member) {
+        if (this.equals(member)) {
+            return false;
+        }
+
+        // 내가 요청하고 수락된 친구 관계 확인
+        boolean isSentAndAccepted = sentFriendRequests.stream()
+            .anyMatch(friend -> friend.isFriend(member));
+
+        // 내가 받고 수락한 친구 관계 확인
+        boolean isReceivedAndAccepted = receivedFriendRequests.stream()
+            .anyMatch(friend -> friend.isFriend(member));
+
+        return isSentAndAccepted || isReceivedAndAccepted;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Member member)) return false;
+        return Objects.equals(getId(), member.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
+
+
 
 
 
