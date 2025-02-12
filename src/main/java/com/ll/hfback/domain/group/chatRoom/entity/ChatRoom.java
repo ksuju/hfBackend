@@ -25,7 +25,7 @@ public class ChatRoom extends BaseEntity {
     @JoinColumn(name = "post_festival_id", nullable = false)
     private Post post;
     private String roomTitle;
-    @@Column(length = 500)
+    @Column(length = 500)
     private String roomContent;
     private Long roomMemberLimit;
     private Long roomState;
