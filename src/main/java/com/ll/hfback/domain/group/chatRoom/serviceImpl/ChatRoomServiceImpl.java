@@ -139,7 +139,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .roomTitle(createChatRoomForm.getRoomTitle())
                 .roomContent(createChatRoomForm.getRoomContent())
                 .roomMemberLimit(createChatRoomForm.getRoomMemberLimit())
-                .roomState(0L)
+                .roomState(Long.valueOf(0L))
                 .joinMemberIdNickNameList(joinMemberIdNickNameList)
                 .waitingMemberIdNickNameList(waitingMemberIdNickNameList)
                 .build();
