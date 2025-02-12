@@ -43,6 +43,9 @@ public class ChatMessageDoc {
 
     @Field(name = "nickname")
     private String nickname; // 작성자 닉네임
+    
+    @Field(name = "email")
+    private String email; // 작성자 이메일
 
     @Field(name = "original_file_name")
     private String originalFileName; // 파일 첨부 시 원본 파일 이름

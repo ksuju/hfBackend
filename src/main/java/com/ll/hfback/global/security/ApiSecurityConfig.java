@@ -71,6 +71,7 @@ public class ApiSecurityConfig {
                                 .requestMatchers("/oauth2/**").permitAll()
                                 .requestMatchers("/login/oauth2/**").permitAll()
                                 .requestMatchers("/login/**").permitAll()
+//                                .requestMatchers(HttpMethod.GET, "/api/v1/chatRooms/*/messages/search/**").permitAll()  // 임시
                                 .anyRequest().authenticated()
                 )
                 .headers(headers ->
