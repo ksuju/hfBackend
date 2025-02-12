@@ -139,7 +139,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .roomTitle(createChatRoomForm.getRoomTitle())
                 .roomContent(createChatRoomForm.getRoomContent())
                 .roomMemberLimit(createChatRoomForm.getRoomMemberLimit())
-                .roomState(0L)
+                .roomState(Long.valueOf(0L))
                 .joinMemberIdNickNameList(joinMemberIdNickNameList)
                 .waitingMemberIdNickNameList(waitingMemberIdNickNameList)
                 .build();
@@ -189,7 +189,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         // 사용자 검증 - 현재 로그인한 사용자의 ID를 가져오는 메서드
         Long currentUserId = loginUser.getId();
-        if (!chatRoom.getMember().getId().equals(currentUserId) || !loginUser.getRole().equals(ROLE_ADMIN)) {
+        if (!chatRoom.getMember().getId().equals(currentUserId) && !loginUser.getRole().equals(ROLE_ADMIN)) {
             throw new IllegalStateException("모임 채팅방 삭제 권한이 없습니다.");
         }
 
