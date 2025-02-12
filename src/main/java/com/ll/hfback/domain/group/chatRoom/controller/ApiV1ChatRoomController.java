@@ -94,6 +94,13 @@ public class ApiV1ChatRoomController {
         return ResponseEntity.status(HttpStatus.CREATED).body("성공적으로 모임채팅방을 나갔습니다.");
     }
 
+    // 해당 모임채팅방 삭제(관리자 권한)
+    @GetMapping("/delete-chat-room/{chat-room-id}")
+    public ResponseEntity<String> deleteChatRoom(@PathVariable("chat-room-id") String chatRoomId, @LoginUser Member loginUser) {
+        chatRoomService.deleteChatRoom(chatRoomId, loginUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body("성공적으로 모임채팅방을 삭제했습니다.");
+    }
+
     // 해당 모임채팅방에서 참여자에게 방장권한 위임
     @GetMapping("/delegate-chat-room/{chat-room-id}/{member-id}")
     public ResponseEntity<String> delegateChatRoom(@PathVariable("chat-room-id") String chatRoomId, @PathVariable("member-id") String delegateMemberId, @LoginUser Member loginUser) {
