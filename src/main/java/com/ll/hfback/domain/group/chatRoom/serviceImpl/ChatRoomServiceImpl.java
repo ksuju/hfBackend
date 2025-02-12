@@ -19,7 +19,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +44,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     @Transactional
     public Page<DetailChatRoomDto> findAll(Pageable pageable) {
-        Page<ChatRoom> chatRooms = chatRoomRepository.findAll(pageable);
+        // 정렬 정보 추가: chatRoomId를 기준으로 내림차순
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+
+        Page<ChatRoom> chatRooms = chatRoomRepository.findAll(sortedPageable);
         return chatRooms.map(this::convertToDetailChatRoomDto);
     }
 
@@ -50,7 +56,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     @Transactional
     public Page<DetailChatRoomDto> searchByKeyword(String keyword, Pageable pageable) {
-        Page<ChatRoom> chatRooms = chatRoomRepository.findByRoomTitleContaining(keyword, pageable);
+        Page<ChatRoom> chatRooms = chatRoomRepository.findByRoomTitleContainingOrderByIdDesc(keyword, pageable);
         return chatRooms.map(this::convertToDetailChatRoomDto);
     }
 
@@ -58,7 +64,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     @Transactional(readOnly = true)
     public Page<DetailChatRoomDto> searchByFestivalId(String festivalId, Pageable pageable) {
-        Page<ChatRoom> chatRooms = chatRoomRepository.findByPostFestivalId(festivalId, pageable);
+        Page<ChatRoom> chatRooms = chatRoomRepository.findByPostFestivalIdOrderByIdDesc(festivalId, pageable);
         return chatRooms.map(this::convertToDetailChatRoomDto);
     }
 
@@ -87,6 +93,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         DetailChatRoomDto detailChatRoomDto = new DetailChatRoomDto(
                 chatRoom.getMember().getId(),
                 chatRoom.getId(),
+                chatRoom.getPost().getFestivalName(),
                 chatRoom.getMember().getNickname(),
                 chatRoom.getRoomTitle(),
                 chatRoom.getRoomContent(),

@@ -1,6 +1,7 @@
 package com.ll.hfback.domain.board.notice.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ll.hfback.domain.board.comment.entity.BoardComment;
 import com.ll.hfback.domain.member.member.entity.Member;
 import com.ll.hfback.global.jpa.BaseEntity;
@@ -23,11 +24,11 @@ public class Board extends BaseEntity {
 
     private LocalDateTime modifyDate;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "board",cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<BoardComment> boardComments;
 
     @JsonIgnore
     @ManyToOne
     private Member author;
-
 }

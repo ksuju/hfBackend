@@ -2,7 +2,12 @@
   "properties": {
     "festival_name": {
       "type": "text",
-      "analyzer": "korean"
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 256
+        }
+      }
     },
     "festival_area": {
       "type": "text",

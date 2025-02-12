@@ -2,10 +2,10 @@ package com.ll.hfback.domain.festival.search.document;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.Mapping;
-import org.springframework.data.elasticsearch.annotations.Setting;
+import org.springframework.data.elasticsearch.annotations.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter @Setter
 @Builder
@@ -24,11 +24,11 @@ public class MainPostDoc {
     @Field(name = "festival_area")
     private String festivalArea; // 축제 지역
 
-    @Field(name = "festival_start_date")
-    private String festivalStartDate; // 축제 시작일
+    @Field(name = "festival_start_date", type = FieldType.Date, pattern = "yyyy.MM.dd")
+    private LocalDate festivalStartDate; // 축제 시작일
 
-    @Field(name = "festival_end_date")
-    private String festivalEndDate; // 축제 종료일
+    @Field(name = "festival_end_date", type = FieldType.Date, pattern = "yyyy.MM.dd")
+    private LocalDate festivalEndDate; // 축제 종료일
 
     @Field(name = "festival_url")
     private String festivalUrl; // 축제 사진
@@ -36,6 +36,9 @@ public class MainPostDoc {
     @Field(name = "genrenm")
     private String festivalGenre;
 
-    @Field(name = "charoom_count")
+    @Field(name = "chatroom_count")
     private int chatroomCount;
+
+    @Field(name = "festival_state")
+    private String festivalState;
 }
