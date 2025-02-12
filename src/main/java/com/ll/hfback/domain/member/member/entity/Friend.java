@@ -55,4 +55,8 @@ public class Friend extends BaseEntity {
     return this.status == FriendStatus.PENDING;
   }
 
+  public boolean isFriend(Member member) {
+    return (requester.equals(member) || receiver.equals(member)) && status == FriendStatus.ACCEPTED;
+  }
+
 }

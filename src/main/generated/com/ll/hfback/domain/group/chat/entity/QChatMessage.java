@@ -31,6 +31,8 @@ public class QChatMessage extends EntityPathBase<ChatMessage> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createDate = _super.createDate;
 
+    public final StringPath email = createString("email");
+
     //inherited
     public final NumberPath<Long> id = _super.id;
 

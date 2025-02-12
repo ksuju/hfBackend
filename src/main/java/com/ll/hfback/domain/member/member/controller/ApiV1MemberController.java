@@ -296,4 +296,24 @@ public class ApiV1MemberController {
         memberService.banMember(memberId);
         return new RsData("200-1", "%d번 회원을 차단했습니다.".formatted(memberId));
     }
+
+
+
+
+    public record MemberProfileInfo(
+        Long memberId, String nickname, String profilePath, boolean isFriend
+    ) {
+        public MemberProfileInfo(Member member, Member loginUser) {
+            this(member.getId(), member.getNickname(), member.getProfilePath(), loginUser.isFriend(member));
+        }
+    }
+
+    @GetMapping("/{memberId}/profile-info")
+    public RsData<MemberProfileInfo> getProfileInfo(@PathVariable Long memberId, @LoginUser Member loginUser) {
+        MemberProfileInfo memberInfo = memberService.getProfileInfo(memberId, loginUser);
+
+        return new RsData<>("200", "프로필 정보를 조회했습니다.", memberInfo);
+    }
+
+
 }

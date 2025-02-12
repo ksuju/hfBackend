@@ -45,7 +45,7 @@ public class ApiSecurityConfig {
         source.registerCorsConfiguration("/login/oauth2/**", corsConfig);
         source.registerCorsConfiguration("/login/**", corsConfig);
 
-        return source;
+      return source;
     }
 
     // "/api/v1/auth/verification/email/send", "/api/v1/auth/verification/email/verify"
@@ -71,6 +71,7 @@ public class ApiSecurityConfig {
                                 .requestMatchers("/oauth2/**").permitAll()
                                 .requestMatchers("/login/oauth2/**").permitAll()
                                 .requestMatchers("/login/**").permitAll()
+//                                .requestMatchers(HttpMethod.GET, "/api/v1/chatRooms/*/messages/search/**").permitAll()  // 임시
                                 .anyRequest().authenticated()
                 )
                 .headers(headers ->
