@@ -1,5 +1,6 @@
 package com.ll.hfback.domain.board.notice.controller;
 
+import com.ll.hfback.domain.board.notice.dto.BoardDto;
 import com.ll.hfback.domain.board.notice.entity.Board;
 import com.ll.hfback.domain.board.notice.service.BoardService;
 import com.ll.hfback.domain.member.member.entity.Member;
@@ -34,8 +35,8 @@ public class ApiV1BoardController {
 
     //게시글 상세페이지
     @GetMapping("/{boardId}")
-    public RsData<Board> view(@PathVariable("boardId") Long boardId){
-        Board board =this.BoardService.view(boardId);
+    public RsData<BoardDto> view(@PathVariable("boardId") Long boardId){
+        BoardDto board =this.BoardService.detail(boardId);
         return new RsData<>("200","게시글 상세 페이지를 성공적으로 호출했습니다.",board);
     }
 
@@ -50,8 +51,6 @@ public class ApiV1BoardController {
         Board board =BoardService.create(createBoard.content,createBoard.title,member);
         return new RsData<>("200","게시글을 성공적으로 생성했습니다.",board);
     }
-
-
 
     //게시글 수정 dto
     public record ModifyBoard(@NotBlank String title, @NotBlank String content){
