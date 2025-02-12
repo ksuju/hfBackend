@@ -1,9 +1,5 @@
 {
   "properties": {
-    "festival_name": {
-      "type": "text",
-      "analyzer": "korean"
-    },
     "festival_area": {
       "type": "text",
       "analyzer": "korean"
