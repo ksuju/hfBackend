@@ -21,6 +21,7 @@ public class Comment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_festival_id", nullable = false)
     private Post post;
+    @Column(length = 100)
     private String content;
     private Boolean commentState;
     private Long superCommentId;

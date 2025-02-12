@@ -315,5 +315,14 @@ public class ApiV1MemberController {
         return new RsData<>("200", "프로필 정보를 조회했습니다.", memberInfo);
     }
 
+    public record MemberProfileRequest(String email) {}
+
+    @PostMapping("/email/profile-info")
+    public RsData<MemberProfileInfo> getProfileInfoByEmail(@RequestBody MemberProfileRequest request, @LoginUser Member loginUser) {
+        MemberProfileInfo memberInfo = memberService.getProfileInfoByEmail(request.email, loginUser);
+
+        return new RsData<>("200", "프로필 정보를 조회했습니다.", memberInfo);
+    }
+
 
 }
