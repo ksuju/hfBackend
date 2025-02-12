@@ -1,6 +1,7 @@
 package com.ll.hfback.domain.board.notice.service;
 
 
+import com.ll.hfback.domain.board.notice.dto.BoardDto;
 import com.ll.hfback.domain.board.notice.entity.Board;
 import com.ll.hfback.domain.board.notice.repository.BoardRepository;
 import com.ll.hfback.domain.member.alert.service.AlertEventPublisher;
@@ -10,6 +11,7 @@ import com.ll.hfback.domain.member.member.service.MemberService;
 import com.ll.hfback.global.exceptions.ErrorCode;
 import com.ll.hfback.global.exceptions.ServiceException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class BoardService {
@@ -37,12 +40,41 @@ public class BoardService {
     //게시글 상세페이지
     public Board view(Long id) {
         Optional<Board> board = this.boardRepository.findById(id);
+
+
+
         if(board.isPresent()){
             return board.get();
         } else {
             throw new ServiceException(ErrorCode.BOARD_NOT_FOUND);
         }
     }
+
+    //게시글 dto사용 상세페이지
+    public BoardDto detail(Long id){
+        Optional<Board> board = this.boardRepository.findById(id);
+
+        if (board.isPresent()){
+            return new BoardDto(board.get());
+        }else {
+            throw new ServiceException(ErrorCode.BOARD_NOT_FOUND);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //게시글 생성
     public Board create(String title, String content, Member admin){
