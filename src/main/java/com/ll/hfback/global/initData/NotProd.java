@@ -392,9 +392,6 @@ public class NotProd {
                             );
                 }
 
-
-
-
             }
         };
     }
