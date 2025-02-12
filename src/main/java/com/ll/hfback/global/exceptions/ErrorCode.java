@@ -1,6 +1,7 @@
 package com.ll.hfback.global.exceptions;
 
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
@@ -95,9 +96,11 @@ public enum ErrorCode {
 
   // Business 에러 (500번대)
   INTERNAL_ERROR(500, "SYS_001", "내부 시스템 에러"),
-  API_CALL_FAILED(500, "SYS_002", "외부 API 호출에 실패했습니다.");
+  API_CALL_FAILED(500, "SYS_002", "외부 API 호출에 실패했습니다."),
 
-
+  // 포스트 엘라스틱 서치 에러 (
+  DATA_CONVERSION_ERROR(500, "SEARCH_001", "데이터 변환 중 오류가 발생했습니다"),
+  SEARCH_POST_ERROR(500, "SEARCH_002", "엘라스틱 서치 검색 중 에러 발생");
 
   private final int status;
   private final String code;

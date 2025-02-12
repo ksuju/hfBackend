@@ -30,6 +30,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final DatePath<java.time.LocalDate> birthday = createDate("birthday", java.time.LocalDate.class);
 
+    public final ListPath<com.ll.hfback.domain.board.comment.entity.BoardComment, com.ll.hfback.domain.board.comment.entity.QBoardComment> boardComments = this.<com.ll.hfback.domain.board.comment.entity.BoardComment, com.ll.hfback.domain.board.comment.entity.QBoardComment>createList("boardComments", com.ll.hfback.domain.board.comment.entity.BoardComment.class, com.ll.hfback.domain.board.comment.entity.QBoardComment.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createDate = _super.createDate;
 

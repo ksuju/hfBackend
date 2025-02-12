@@ -1,6 +1,8 @@
 package com.ll.hfback.domain.member.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ll.hfback.domain.board.comment.entity.BoardComment;
 import com.ll.hfback.domain.group.chatRoom.converter.StringListConverter;
 import com.ll.hfback.domain.member.alert.entity.Alert;
 import com.ll.hfback.domain.member.auth.entity.SocialAccount;
@@ -33,11 +35,18 @@ import static jakarta.persistence.CascadeType.ALL;
 @DynamicInsert
 public class Member extends BaseEntity {
 
+    //게시글 댓글 Id값
+    @JsonManagedReference
+    @OneToMany(mappedBy = "author",cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    private List<BoardComment> boardComments;
+
     // 참여하고 있는 모임채팅방ID 리스트
+    @Column(columnDefinition = "TEXT")
     @Convert(converter = StringListConverter.class)
     private List<String> joinRoomIdList;
 
     // 대기하고 있는 모임채팅방ID 리스트
+    @Column(columnDefinition = "TEXT")
     @Convert(converter = StringListConverter.class)
     private List<String> waitRoomIdList;
 

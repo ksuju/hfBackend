@@ -229,7 +229,7 @@ public class NotProd {
                 chatroomservice.createChatRoom("PF256158", createChatRoomForm4, member3);
 
                 // member3가 PF256158 공연게시글에서 만든 모임채팅방(1-25)
-                for (int i = 0; i < 25; i++) {
+                for (int i = 0; i < 250; i++) {
                     CreateChatRoomForm createChatRoomForm = new CreateChatRoomForm();
 
                     createChatRoomForm.setRoomTitle(String.format("이것은 member3이 작성한 테스트 제목%d 입니다.", i+1));
