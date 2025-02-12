@@ -12,6 +12,23 @@ import java.util.List;
 
 public interface PostDocRepository extends ElasticsearchRepository<MainPostDoc, String> {
 
+    @Query("""
+        {
+          "bool": {
+            "must": [
+              {
+                "range": {
+                  "festival_end_date": {
+                    "gte": "now"
+                  }
+                }
+              }
+            ]
+          }
+        }
+    """)
+    Page<MainPostDoc> findAllPost(Pageable pageable);
+
     // 장르 검색
     @Query("{\"bool\": {\"must\": [" +
             "{\"match\": {\"genrenm\": \"?0\"}}," +
@@ -21,11 +38,15 @@ public interface PostDocRepository extends ElasticsearchRepository<MainPostDoc, 
 
     // 장르 상관X > 전체 검색
     @Query("{\"bool\": {" +
-            "\"must\": [{\"range\": {\"festival_end_date\": {\"gte\": \"now\"}}}]," +
+            "\"must\": [" +
+            "{\"range\": {\"festival_end_date\": {\"gte\": \"now\"}}}" +
+            "]," +
             "\"should\": [" +
             "{\"wildcard\": {\"festival_name\": \"*?0*\"}}," +
             "{\"wildcard\": {\"festival_area\": \"*?0*\"}}" +
-            "]}}")
+            "]," +
+            "\"minimum_should_match\": 1" +
+            "}}")
     Page<MainPostDoc> findByFestivalNameContainingOrFestivalAreaContaining(String keyword, Pageable pageable);
 
     // 장르 상관X > 제목 검색

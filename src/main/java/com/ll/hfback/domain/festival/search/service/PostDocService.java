@@ -22,7 +22,7 @@ public class PostDocService {
 
     public Page<ResponseFestivalSearch> findAll(Pageable pageable) {
         try {
-            return convertToDTO(postDocRepository.findAll(sortingPageAsc(pageable, "festival_name.keyword")));
+            return convertToDTO(postDocRepository.findAllPost(sortingPageAsc(pageable, "festival_name.keyword")));
         } catch (Exception e) {
             throw new ServiceException(ErrorCode.SEARCH_POST_ERROR);
         }
@@ -30,16 +30,16 @@ public class PostDocService {
 
     public Page<ResponseFestivalSearch> searchByKeyword(String genre, String keyword, String where, Pageable pageable) {
 
-        boolean isWhere = where.isEmpty() || where.equals("all");
+        boolean isWhere = where.isEmpty() || where.equals("all");  // 1개 라도 true > true
 
         Pageable sortingPage = sortingPageAsc(pageable, "festival_name.keyword");
 
-        // 전체 검색
+        // 전체 검색 > genre X && where이 없거나 all && keword가 없을때
         if (genre.isEmpty() && isWhere && keyword.isEmpty()) {
             return findAll(sortingPage);
         }
 
-        // 장르만 적용
+        // 장르만 적용 > where이 없거나 all, && keyword가 없으면
         if (isWhere && keyword.isEmpty()) {
             log.debug("검색 장르: {}", genre);
             return convertToDTO(postDocRepository.findAllByFestivalGenre(genre, sortingPage));
@@ -48,6 +48,7 @@ public class PostDocService {
         // 장르가 없는 경우
         if (genre.isEmpty()) {
             log.debug("where: {}", where);
+            log.debug("genre: {}", genre);
             return switch (where) {
                 case "name" -> convertToDTO(postDocRepository.findByFestivalNameContaining(keyword, sortingPage));
                 case "area" -> convertToDTO(postDocRepository.findByFestivalAreaContaining(keyword, sortingPage));
