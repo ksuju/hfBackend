@@ -12,11 +12,13 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -37,6 +39,7 @@ public class ChatS3ServiceImpl implements ChatS3Service {
     private static final String BUCKET_NAME = "hf-chat";
     private static final String REGION = "ap-northeast-2";
     private final AmazonS3 s3Client;
+    private final SimpMessagingTemplate simpMessagingTemplate;
     private final Logger logger = LoggerFactory.getLogger(ChatS3ServiceImpl.class.getName());
 
     private static final long MAX_FILE_SIZE = 5_242_880; // 5MB
@@ -135,6 +138,10 @@ public class ChatS3ServiceImpl implements ChatS3Service {
             // 해당 채팅 삭제
             ChatMessage chatMessage = chatMessageRepository.findByChatMessageContent(fileName);
             chatMessageRepository.delete(chatMessage);
+
+            // WebSocket 메시지 전송
+            simpMessagingTemplate.convertAndSend("/topic/chat/" + chatRoomId,
+                    Map.of("type", "DELETE", "data", fileName));
 
             logger.info("파일 삭제 성공");
         } catch (Exception e) {
