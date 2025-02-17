@@ -54,8 +54,12 @@
 [발표 영상 올릴예정]
 
 ## 🔧 기술구현(개인) - 단체 채팅
-
 ![기술구현](https://github.com/user-attachments/assets/656f2d53-e2a4-43c2-841a-97ddefc70d33)
+
+## 🔧 K6 부하테스트 결과
+![1번k6](https://github.com/user-attachments/assets/9fdc33bc-09d1-4272-80bb-e1ffb65bb1ee)
+![2번k6](https://github.com/user-attachments/assets/2f17478c-fd4c-405c-92b2-e7dc4854ab23)
+
 
 
 ##  ✒️ 메모
