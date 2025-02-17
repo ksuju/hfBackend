@@ -75,16 +75,16 @@
 ## 🎞️ 시연 영상
 
 #### 멤버 온라인/오프라인 표시, 메시지를 읽지 않은 사람의 수 카운트
-![시연1](https://github.com/user-attachments/assets/de61e6d9-3642-4af2-a54b-4a45cafe87a0)
+![시연1cut](https://github.com/user-attachments/assets/222c69c3-7cc1-4fc0-802a-5d9c04a73165)
 
 #### 실시간 채팅 송/수신
-![시연2](https://github.com/user-attachments/assets/741c9ed3-142e-413b-b789-be6e54b89787)
+![시연2cut](https://github.com/user-attachments/assets/dcc2e18e-d507-42ed-8602-db4595540e30)
 
 #### 실시간 이미지 송/수신, 삭제
-![시연3](https://github.com/user-attachments/assets/e4fd00b6-0c97-4546-b66b-11bbfe432714)
+![시연3cut](https://github.com/user-attachments/assets/a9cd9b40-3a22-4889-85b1-e47c6dad5238)
 
 #### 채팅 메시지 검색
-![시연4](https://github.com/user-attachments/assets/af9cffe8-eb55-409b-b45e-063fa6e707e7)
+![시연4cut](https://github.com/user-attachments/assets/0123d93b-9a64-4ec2-beca-63a0ebab10fc)
 
 
 
