@@ -47,6 +47,7 @@
 ## 🔧 아키텍쳐
 
 ![아키텍처](https://github.com/user-attachments/assets/f18aae8b-605b-43a2-9f55-8b80abe945fa)
+![cicd파이프라인](https://github.com/user-attachments/assets/4b7a95f4-155d-4210-9936-e9e989c46019)
 
 
 ## 🔧 기술구현(단체)
