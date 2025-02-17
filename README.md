@@ -19,38 +19,7 @@
 
 
 ## 💁‍♂ 구현 기능
-### 실시간 채팅 (WebSocket STOMP + REST API)
-- WebSocket + STOMP를 사용한 실시간 채팅 송/수신
-- 메시지를 읽지 않은 사람 수 표시 (카카오톡의 1)
-- 채팅방 멤버 온라인/오프라인 상태 표시
-- AWS S3를 사용한 이미지 업로드, 삭제 기능 구현 (Gif, Png, Jpg, Jpeg)
-### 검색 기능 (V1: MySQL, V2: Elasticsearch)
-- V1 : 동적 쿼리를 사용한 채팅방 내 메시지 검색 기능 (QueryDSL)
-- V2 : Elasticsearch를 이용한 채팅방 내 메시지 검색 기능
-
-
-## 📋 ERD
-
-![erd](https://github.com/user-attachments/assets/a93e37f1-84aa-4c1c-abfe-849775c61b7d)
-
-
-## 📄 API 명세서
-
-![명세](https://github.com/user-attachments/assets/bfec13ae-199b-4880-9e1d-5edd58eeaaa3)
-
-
-## 🔧 기술 스택
-
-![기술스택](https://github.com/user-attachments/assets/6f3419e2-5620-443e-b6fd-312e2c783874)
-
-
-## 🔧 아키텍쳐
-
-![아키텍처](https://github.com/user-attachments/assets/f18aae8b-605b-43a2-9f55-8b80abe945fa)
-![cicd파이프라인](https://github.com/user-attachments/assets/4b7a95f4-155d-4210-9936-e9e989c46019)
-
-
-## 🔧 기술구현(단체)
+### 실시간 채팅 (WebSocket STOMP +팀)
 [발표 영상 올릴예정]
 
 ## 🔧 기술구현(개인) - 단체 채팅
