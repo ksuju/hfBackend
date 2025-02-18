@@ -136,5 +136,5 @@
 #### 채팅 메시지 검색
 - 키워드, 닉네임으로 채팅방 내에 있는 메시지 검색 가능
 ![시연4cut](https://github.com/user-attachments/assets/0123d93b-9a64-4ec2-beca-63a0ebab10fc)
-[QueryDSL - 채팅 메시지 검색](https://github.com/ksuju/hfBackend/blob/73813175ba3fcea12eadcac7a4c9385f18f81a56/src/main/java/com/ll/hfback/domain/group/chat/serviceImpl/ChatMessageServiceImpl.java#L180-L256)</br>
-[Elasticsearch - 채팅 메시지 검색](https://github.com/ksuju/hfBackend/blob/73813175ba3fcea12eadcac7a4c9385f18f81a56/src/main/java/com/ll/hfback/domain/group/chat/search/serviceImpl/ChatMessageDocServiceImpl.java#L30-L103)
+[QueryDSL - 채팅 메시지 검색 소스코드](https://github.com/ksuju/hfBackend/blob/73813175ba3fcea12eadcac7a4c9385f18f81a56/src/main/java/com/ll/hfback/domain/group/chat/serviceImpl/ChatMessageServiceImpl.java#L180-L256)</br>
+[Elasticsearch - 채팅 메시지 검색 소스코드](https://github.com/ksuju/hfBackend/blob/73813175ba3fcea12eadcac7a4c9385f18f81a56/src/main/java/com/ll/hfback/domain/group/chat/search/serviceImpl/ChatMessageDocServiceImpl.java#L30-L103)
