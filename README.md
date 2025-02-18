@@ -409,7 +409,7 @@ Mysql, Redis
 - 채팅방 멤버 온라인/오프라인 상태 표시
 - AWS S3를 사용한 이미지 업로드, 삭제 기능 구현 (Gif, Png, Jpg, Jpeg)
 ### 검색 기능 (V1: MySQL, V2: Elasticsearch)
-- 채팅 ( 개인 구현)
+- 채팅 (개인 구현)
 	- V1 : 동적 쿼리를 사용한 채팅방 내 메시지 검색 기능 (QueryDSL)
 	- V2 : Elasticsearch를 이용한 채팅방 내 메시지 검색 기능
 
