@@ -116,19 +116,25 @@
 - 채팅방에 참여 중인 멤버의 온라인/오프라인 표시가 실시간으로 변경
 - 현재 온라인 상태의 사용자 수에 맞춰서 메시지를 읽지 않은 사람 수 카운트가 표시
 ![시연1cut](https://github.com/user-attachments/assets/222c69c3-7cc1-4fc0-802a-5d9c04a73165)
+[온/오프라인 표시 소스코드](https://github.com/ksuju/hfBackend/blob/fe11ef94d7a2b0704c6eab166ff1ff9a78e3c206/src/main/java/com/ll/hfback/domain/group/chat/serviceImpl/ChatMessageServiceImpl.java#L295-L388)</br>
+[카운트 소스코드](https://github.com/ksuju/hfBackend/blob/fe11ef94d7a2b0704c6eab166ff1ff9a78e3c206/src/main/java/com/ll/hfback/domain/group/chat/serviceImpl/ChatMessageServiceImpl.java#L135-L163)</br>
+[카운트 JPQL](https://github.com/ksuju/hfBackend/blob/73813175ba3fcea12eadcac7a4c9385f18f81a56/src/main/java/com/ll/hfback/domain/group/chat/repository/ChatMessageRepository.java#L28-L37)
 
 #### 실시간 채팅 송/수신
 - 실시간 단체 채팅 기능 구현
 - 10개의 메시지로 페이징
 - 메시지 수신 시, 스크롤 위치에 따라 '새 메시지' 버튼 표시
 ![시연2cut](https://github.com/user-attachments/assets/dcc2e18e-d507-42ed-8602-db4595540e30)
-https://github.com/ksuju/hfBackend/blob/fe11ef94d7a2b0704c6eab166ff1ff9a78e3c206/src/main/java/com/ll/hfback/domain/group/chat/serviceImpl/ChatMessageServiceImpl.java#L59C1-L133C6
+[실시간 채팅 송/수신 소스코드](https://github.com/ksuju/hfBackend/blob/fe11ef94d7a2b0704c6eab166ff1ff9a78e3c206/src/main/java/com/ll/hfback/domain/group/chat/serviceImpl/ChatMessageServiceImpl.java#L59C1-L133C6)
 
 #### 실시간 이미지 송/수신, 삭제
 - 실시간 이미지 송신 수신 가능
 - 이미지 삭제시 채팅방에 실시간으로 반영됨
 ![시연3cut](https://github.com/user-attachments/assets/a9cd9b40-3a22-4889-85b1-e47c6dad5238)
+[이미지 송/수신, 삭제 소스코드](https://github.com/ksuju/hfBackend/blob/73813175ba3fcea12eadcac7a4c9385f18f81a56/src/main/java/com/ll/hfback/domain/group/chat/serviceImpl/ChatS3ServiceImpl.java#L35-L152)
 
 #### 채팅 메시지 검색
 - 키워드, 닉네임으로 채팅방 내에 있는 메시지 검색 가능
 ![시연4cut](https://github.com/user-attachments/assets/0123d93b-9a64-4ec2-beca-63a0ebab10fc)
+[QueryDSL - 채팅 메시지 검색](https://github.com/ksuju/hfBackend/blob/73813175ba3fcea12eadcac7a4c9385f18f81a56/src/main/java/com/ll/hfback/domain/group/chat/serviceImpl/ChatMessageServiceImpl.java#L180-L256)</br>
+[Elasticsearch - 채팅 메시지 검색](https://github.com/ksuju/hfBackend/blob/73813175ba3fcea12eadcac7a4c9385f18f81a56/src/main/java/com/ll/hfback/domain/group/chat/search/serviceImpl/ChatMessageDocServiceImpl.java#L30-L103)
