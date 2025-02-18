@@ -122,6 +122,7 @@
 - 10개의 메시지로 페이징
 - 메시지 수신 시, 스크롤 위치에 따라 '새 메시지' 버튼 표시
 ![시연2cut](https://github.com/user-attachments/assets/dcc2e18e-d507-42ed-8602-db4595540e30)
+https://github.com/ksuju/hfBackend/blob/fe11ef94d7a2b0704c6eab166ff1ff9a78e3c206/src/main/java/com/ll/hfback/domain/group/chat/serviceImpl/ChatMessageServiceImpl.java#L59C1-L133C6
 
 #### 실시간 이미지 송/수신, 삭제
 - 실시간 이미지 송신 수신 가능
