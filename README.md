@@ -449,7 +449,7 @@ Mysql, Redis
 
 
 ## 🔧 기술구현(팀)
-[발표 영상 올릴예정]
+![Video Label](http://img.youtube.com/vi/A1Qw0O46Xkw/0.jpg)<br>(https://youtu.be/A1Qw0O46Xkw)
 
 
 ## 🔧 기술구현(개인) - 단체 채팅
